@@ -1,0 +1,37 @@
+<xml version="1.0">
+<dashboard>
+	<widget field="Gazebo" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
+		<location x="73" y="44"/>
+	</widget>
+	<widget field="Reset" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
+		<location x="14" y="44"/>
+	</widget>
+	<widget field="SimClock" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="151" y="42"/>
+	</widget>
+	<widget field="AutoTime" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="297" y="43"/>
+	</widget>
+	<widget field="Wheels " type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="222" y="12"/>
+		<width>320</width>
+		<height>26</height>
+	</widget>
+	<widget field="Pose" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="2" y="16"/>
+		<width>206</width>
+	</widget>
+		<property name="Team Number/Host" value="localhost"/>
+		<property name="Hide Menu" value="true"/>
+		<property name="Automatically Show Widgets" value="false"/>
+		<property name="Grid Cell Width(s)" value="16"/>
+		<property name="Grid Cell Height(s)" value="16"/>
+		<property name="Window X Position" value="1135"/>
+		<property name="Window Y Position" value="69"/>
+		<property name="Window Width" value="598"/>
+		<property name="Window Height" value="375"/>
+		<property name="Save File" value=".\dashboard.xml"/>
+</dashboard>
+<live-window>
+</live-window>
+</xml>
