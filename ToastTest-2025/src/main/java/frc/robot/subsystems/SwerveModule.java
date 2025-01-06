@@ -18,7 +18,7 @@ import objects.Encoder;
 
 public class SwerveModule {
   private static final double kWheelRadius = Units.inchesToMeters(2.0); // 2 inches
-  static public double distancePerRotation=2*kWheelRadius*Math.PI;
+  private double distancePerRotation=2*kWheelRadius*Math.PI;
 
   private static final double kModuleMaxAngularVelocity = Drivetrain.kMaxAngularVelocity; //degrees per second;
   private static final double kModuleMaxAngularAcceleration = Drivetrain.kMaxAngularAcceleration;// degrees per second per second
@@ -62,8 +62,7 @@ public class SwerveModule {
 
     m_driveMotor=new Motor(driveMotorChannel);
     m_turnMotor=new Motor(turningMotorChannel);
-
-    m_driveMotor.setDistancePerRotation(distancePerRotation);
+    m_driveMotor.setConfig(false, distancePerRotation);
     m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
 
     name = chnlnames[i - 1];
@@ -150,7 +149,7 @@ public class SwerveModule {
       SmartDashboard.putString(name, s);
     }
     m_driveMotor.set(set_drive);
-    m_turnMotor.set(set_turn);
+   // m_turnMotor.set(set_turn);
   }
 
   // just apply a voltage to the turn motor
@@ -193,7 +192,7 @@ public class SwerveModule {
   public double getTurnRate(){
     return  m_turnMotor.getVelocity();
   }
-  public void setInverted(){
-    m_driveMotor.setInverted();
-  }
+  // public void setInverted(){
+  //   m_driveMotor.setInverted();
+  // }
 }
