@@ -37,7 +37,7 @@ public class Drivetrain extends SubsystemBase {
   public static final double kTrackRadius = 0.5
       * Math.sqrt(kFrontWheelBase * kFrontWheelBase + kSideWheelBase * kSideWheelBase);
 
-  public static final double kMaxVelocity = 1.0;
+  public static final double kMaxVelocity = 0.1;
   public static final double kMaxAcceleration = 0.5;
   public static final double kMaxAngularVelocity = Math.toRadians(720); // radians/s
   public static final double kMaxAngularAcceleration = Math.toRadians(360); // radians/s/s
@@ -52,10 +52,10 @@ public class Drivetrain extends SubsystemBase {
   
   private SwerveModule m_frontLeft = new SwerveModule(kFl_Drive, kFl_Turn, kFl_Encoder, 1);
   private SwerveModule m_frontRight = new SwerveModule(kFr_Drive, kFr_Turn, kFr_Encoder, 2);
-  private SwerveModule m_backRight = new SwerveModule(kBr_Drive, kBr_Turn, kBr_Encoder, 3);
-  private SwerveModule m_backLeft = new SwerveModule(kBl_Drive, kBl_Turn, kBl_Encoder, 4);
-    
-  public static String chnlnames[] = { "FL", "FR", "BR", "BL" };
+  private SwerveModule m_backLeft = new SwerveModule(kBl_Drive, kBl_Turn, kBl_Encoder, 3);
+  private SwerveModule m_backRight = new SwerveModule(kBr_Drive, kBr_Turn, kBr_Encoder, 4);
+   
+  public static String chnlnames[] = { "FL", "FR", "BL", "BR" };
 
   private final SwerveModule[] modules = { m_frontLeft, m_frontRight, m_backLeft, m_backRight };
 

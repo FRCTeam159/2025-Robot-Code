@@ -29,7 +29,7 @@ public class SwerveModule {
 
   public static boolean swerveEncoders=false; // false:use REV encoders (ala Waffle) true: use CANcoders
 
-  public static String chnlnames[] = { "BR", "BL", "FL", "FR" };
+  public static String chnlnames[] = { "FL", "FR", "BL", "BR" };
 
   String name;
 
@@ -146,8 +146,8 @@ public class SwerveModule {
       velocity,state.speedMetersPerSecond,set_drive,Math.toDegrees(turn_angle), state.angle.getDegrees(), set_turn); 
       SmartDashboard.putString(name, s);
     }
-    //m_driveMotor.set(set_drive);
-   // m_turnMotor.set(set_turn);
+    m_driveMotor.set(set_drive);
+   //m_turnMotor.set(set_turn);
   }
 
   // just apply a voltage to the turn motor
