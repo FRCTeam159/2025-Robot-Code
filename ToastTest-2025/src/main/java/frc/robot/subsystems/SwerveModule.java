@@ -79,14 +79,12 @@ public class SwerveModule {
     m_turnMotor.enable();
   }
   public void disable(){
-   // m_turningPIDController.reset(0.0);
-    m_enabled=false;
+     m_enabled=false;
     m_driveMotor.disable();
     m_turnMotor.disable();
   }
   public void reset(){
-    //m_turningPIDController.reset(0.0);
-    m_drivePIDController.reset();
+     m_drivePIDController.reset();
     m_turningPIDController.reset(0.0);
     m_enabled=false;
     m_driveMotor.reset();
@@ -148,7 +146,7 @@ public class SwerveModule {
       velocity,state.speedMetersPerSecond,set_drive,Math.toDegrees(turn_angle), state.angle.getDegrees(), set_turn); 
       SmartDashboard.putString(name, s);
     }
-    m_driveMotor.set(set_drive);
+    //m_driveMotor.set(set_drive);
    // m_turnMotor.set(set_turn);
   }
 
@@ -167,8 +165,8 @@ public class SwerveModule {
     current=current%360;
     double turnOutput = m_turningPIDController.calculate(Math.toRadians(current),Math.toRadians(a) );
     //System.out.println(m_drive_chnl/2+" "+a+" "+current+" "+turnOutput+" "+d);
-    m_driveMotor.set(d);
-    m_turnMotor.set(turnOutput); 
+    //m_driveMotor.set(d);
+    //m_turnMotor.set(turnOutput); 
   }
   
   public boolean wheelReset() {
@@ -191,6 +189,11 @@ public class SwerveModule {
   }
   public double getTurnRate(){
     return  m_turnMotor.getVelocity();
+  }
+
+  public void log (){
+    String s = String.format("Angle %g distance %g \n", Math.toDegrees(getAngle()), getDistance());
+    SmartDashboard.putString(name, s);
   }
   // public void setInverted(){
   //   m_driveMotor.setInverted();

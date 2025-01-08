@@ -6,15 +6,11 @@ package objects;
 
 
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
-//import com.revrobotics.servohub.ServoHub.ResetMode;
 
 /** Add your docs here. */
 public class Motor {
@@ -25,15 +21,12 @@ public class Motor {
     boolean m_inverted=false;
     boolean m_enabled=true;
     
-
-
     double m_dpr=1;
     static boolean m_real=false;
      public Motor(int id) {
-        //config.inverted(inverted);
         rev_motor = new SparkMax(id, MotorType.kBrushless);
         rev_encoder = rev_motor.getEncoder();
-         m_chnl=id;
+        m_chnl=id;
 
     }
     static public void setMode(boolean m){
@@ -41,7 +34,7 @@ public class Motor {
     }
     public void enable(){
         m_enabled=true;
-      }
+    }
     public void disable(){
         m_enabled=false;
         rev_motor.disable();
@@ -68,12 +61,6 @@ public class Motor {
     public void setVoltage(double v) {
         rev_motor.setVoltage(v);
     }
-   // public void setDistancePerRotation(double d){
-        //config.encoder.positionConversionFactor(d);
-      // m_dpr=d;
-        //rev_motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-       // rev_encoder.setPositionConversionFactor(d);
-   // }
     public void setConfig(boolean i, double d){
         m_dpr=d;
         SparkMaxConfig config = new SparkMaxConfig();
@@ -88,5 +75,5 @@ public class Motor {
         //    .pid(1.0, 0.0, 0.0);
         
         rev_motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        }
+    }
 }

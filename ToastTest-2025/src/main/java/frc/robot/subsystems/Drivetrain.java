@@ -16,14 +16,13 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Robot;
 import objects.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Drivetrain extends SubsystemBase {
   /** Creates a new Drivetrain. */
-  static public boolean debug=true;
-	static public boolean debug_angles=true;
+  static public boolean debug=false;
+	static public boolean debug_angles=false;
   static public final double kDriveGearRatio = 6.67; // MK4i drive (standard)
   static public final double kTurnGearRatio = 30; // MK4i turn (all)
 
@@ -263,6 +262,10 @@ public class Drivetrain extends SubsystemBase {
     	SmartDashboard.putString("Pose", s);
 
 		m_field_oriented = SmartDashboard.getBoolean("Field Oriented", m_field_oriented);
+    SmartDashboard.putNumber("Gyro", m_gyro.getAngle());
+     	for (int i = 0; i < modules.length; i++) {
+			modules[i].log();
+		}
 		
 		if(debug_angles)
 			displayAngles();	
