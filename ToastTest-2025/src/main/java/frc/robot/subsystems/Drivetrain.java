@@ -94,7 +94,6 @@ public class Drivetrain extends SubsystemBase {
     m_frontRight.setOffset(0);
     m_backRight.setOffset(0);
     m_backLeft.setOffset(0);
-
   }
 
   public void init(){
@@ -207,6 +206,11 @@ public class Drivetrain extends SubsystemBase {
       modules[i].setDesiredState(swerveModuleStates[i]);
 
     updateOdometry();
+  }
+  public void move(double mval){
+    for (int i = 0; i < modules.length; i++) {
+			modules[i].move(mval);
+		}
   }
   public void reset() {
     m_disabled = true;
