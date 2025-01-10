@@ -19,6 +19,7 @@ public class DriveWithGamepad extends Command {
   private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(0.5);
   private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(0.5);
 
+  boolean movemode = true;
   /**
    * Creates a new ExampleCommand.
    *
@@ -63,12 +64,15 @@ public class DriveWithGamepad extends Command {
     final var rot = m_rotLimiter.calculate(MathUtil.applyDeadband(vr, 0.2))
     * Drivetrain.kMaxAngularVelocity;
 
-    if(m_drive.disabled()){
+    if (m_drive.disabled()) {
       m_drive.enable();
     }
     
-    m_drive.drive(xSpeed, ySpeed,rot,m_drive.isFieldOriented());
-
+    if (movemode) {
+      m_drive.turnAndMove(xSpeed, ySpeed);
+    } else {
+      m_drive.drive(xSpeed, ySpeed, rot, m_drive.isFieldOriented());
+    }
   }
 
   // Called once the command ends or is interrupted.

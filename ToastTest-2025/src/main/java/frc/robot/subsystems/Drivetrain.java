@@ -77,16 +77,24 @@ public class Drivetrain extends SubsystemBase {
 
   private int cnt=0;
 
+  public boolean useOffsets=true;
  
   public Drivetrain() {
-     setOffsets();
   }
 
-  public void setOffsets(){
-    m_frontLeft.setOffset(kFrontLeftOffset);
-    m_frontRight.setOffset(kFrontLeftOffset);
-    m_backRight.setOffset(kFrontLeftOffset);
-    m_backLeft.setOffset(kFrontLeftOffset);
+  public void setOffsets(boolean useOffsets){
+    if (!useOffsets) {
+      m_frontLeft.setOffset(0);
+      m_frontRight.setOffset(0);
+      m_backRight.setOffset(0);
+      m_backLeft.setOffset(0);
+    }
+    else{
+     m_frontLeft.setOffset(kFrontLeftOffset);
+      m_frontRight.setOffset(kFrontLeftOffset);
+      m_backRight.setOffset(kFrontLeftOffset);
+      m_backLeft.setOffset(kFrontLeftOffset);
+    }
   }
 
   public void clearOffsets(){
@@ -98,7 +106,8 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void init(){
-       enable();
+    setOffsets(useOffsets);
+    enable();
   }
 
   public boolean enabled(){
@@ -208,6 +217,17 @@ public class Drivetrain extends SubsystemBase {
 
     updateOdometry();
   }
+
+  public void move (double v){
+    for (int i = 0; i < modules.length; i++) {
+			modules[i].move(v);
+		}
+  }
+  public void turnAndMove (double m, double t){
+    for (int i = 0; i < modules.length; i++) 
+			modules[i].turnAndMove(m, t);
+  }
+
   public void reset() {
     m_disabled = true;
 		if(debug)
