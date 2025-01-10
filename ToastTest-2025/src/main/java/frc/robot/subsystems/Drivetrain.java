@@ -37,7 +37,7 @@ public class Drivetrain extends SubsystemBase {
   public static final double kTrackRadius = 0.5
       * Math.sqrt(kFrontWheelBase * kFrontWheelBase + kSideWheelBase * kSideWheelBase);
 
-  public static final double kMaxVelocity = 1.0;
+  public static final double kMaxVelocity = 0.1;
   public static final double kMaxAcceleration = 0.5;
   public static final double kMaxAngularVelocity = Math.toRadians(720); // radians/s
   public static final double kMaxAngularAcceleration = Math.toRadians(360); // radians/s/s
@@ -52,10 +52,10 @@ public class Drivetrain extends SubsystemBase {
   
   private SwerveModule m_frontLeft = new SwerveModule(kFl_Drive, kFl_Turn, kFl_Encoder, 1);
   private SwerveModule m_frontRight = new SwerveModule(kFr_Drive, kFr_Turn, kFr_Encoder, 2);
-  private SwerveModule m_backRight = new SwerveModule(kBr_Drive, kBr_Turn, kBr_Encoder, 3);
-  private SwerveModule m_backLeft = new SwerveModule(kBl_Drive, kBl_Turn, kBl_Encoder, 4);
-    
-  public static String chnlnames[] = { "FL", "FR", "BR", "BL" };
+  private SwerveModule m_backLeft = new SwerveModule(kBl_Drive, kBl_Turn, kBl_Encoder, 3);
+  private SwerveModule m_backRight = new SwerveModule(kBr_Drive, kBr_Turn, kBr_Encoder, 4);
+   
+  public static String chnlnames[] = { "FL", "FR", "BL", "BR" };
 
   private final SwerveModule[] modules = { m_frontLeft, m_frontRight, m_backLeft, m_backRight };
 
@@ -77,16 +77,24 @@ public class Drivetrain extends SubsystemBase {
 
   private int cnt=0;
 
+  public boolean useOffsets=true;
  
   public Drivetrain() {
-     setOffsets();
   }
 
-  public void setOffsets(){
-    m_frontLeft.setOffset(kFrontLeftOffset);
-    m_frontRight.setOffset(kFrontLeftOffset);
-    m_backRight.setOffset(kFrontLeftOffset);
-    m_backLeft.setOffset(kFrontLeftOffset);
+  public void setOffsets(boolean useOffsets){
+    if (!useOffsets) {
+      m_frontLeft.setOffset(0);
+      m_frontRight.setOffset(0);
+      m_backRight.setOffset(0);
+      m_backLeft.setOffset(0);
+    }
+    else{
+     m_frontLeft.setOffset(kFrontLeftOffset);
+      m_frontRight.setOffset(kFrontLeftOffset);
+      m_backRight.setOffset(kFrontLeftOffset);
+      m_backLeft.setOffset(kFrontLeftOffset);
+    }
   }
 
   public void clearOffsets(){
@@ -97,7 +105,8 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void init(){
-       enable();
+    setOffsets(useOffsets);
+    enable();
   }
 
   public boolean enabled(){
@@ -207,11 +216,17 @@ public class Drivetrain extends SubsystemBase {
 
     updateOdometry();
   }
-  public void move(double mval){
+
+  public void move (double v){
     for (int i = 0; i < modules.length; i++) {
-			modules[i].move(mval);
+			modules[i].move(v);
 		}
   }
+  public void turnAndMove (double m, double t){
+    for (int i = 0; i < modules.length; i++) 
+			modules[i].turnAndMove(m, t);
+  }
+
   public void reset() {
     m_disabled = true;
 		if(debug)

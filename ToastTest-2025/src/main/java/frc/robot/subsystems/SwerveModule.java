@@ -27,9 +27,9 @@ public class SwerveModule {
 	private Motor m_turnMotor=null;
   private Encoder m_turnEncoder=null;
 
-  public static boolean swerveEncoders=false; // false:use REV encoders (ala Waffle) true: use CANcoders
+  public static boolean swerveEncoders=true; // false:use REV encoders (ala Waffle) true: use CANcoders
 
-  public static String chnlnames[] = { "BR", "BL", "FL", "FR" };
+  public static String chnlnames[] = { "FL", "FR", "BL", "BR" };
 
   String name;
 
@@ -147,13 +147,12 @@ public class SwerveModule {
       SmartDashboard.putString(name, s);
     }
     m_driveMotor.set(set_drive);
-    m_turnMotor.set(set_turn);
+   //m_turnMotor.set(set_turn);
   }
 
-  // just apply a voltage to the turn motor
-  public void turnAndDrive(double tval, double dval){
-    turn(tval);
-    move(dval);
+  public void turnAndMove(double m, double t) {
+    move(m);
+    turn(t);
   }
 
   // just apply a voltage to the turn motor
@@ -198,7 +197,10 @@ public class SwerveModule {
   }
 
   public void log (){
-    String s = String.format("Angle %g distance %g \n", Math.toDegrees(getAngle()), getDistance());
+    String s = String.format("AbsAngle %g angle %g distance %g \n", 
+    m_turnEncoder.getAbsolutePosition(),
+    m_turnEncoder.getPosition(), 
+    getDistance());
     SmartDashboard.putString(name, s);
   }
   // public void setInverted(){
