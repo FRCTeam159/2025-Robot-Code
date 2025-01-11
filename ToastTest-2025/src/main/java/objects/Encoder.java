@@ -21,22 +21,29 @@ public class Encoder {
    
     public Encoder(int id) {
         can_encoder = new CANcoder(id);
-        setOffset(0);
+        CANcoderConfiguration config = new CANcoderConfiguration();
+        config.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5; // -0.5 to 0.5 in revolutions (Signed_PlusMinusHalf) 
+        can_encoder.getConfigurator().apply(config);
+        //can_encoder.setPosition(0);
+        offset=0;
+ 
+        //setOffset(0);
     }
     public void setOffset(double d){
         CANcoderConfiguration config = new CANcoderConfiguration();
         offset=d;
-        config.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf; 
-        config.MagnetSensor.MagnetOffset = 2*Math.PI*offset; // in rotations   
+        // config.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5; // -0.5 to 0.5 in revolutions (Signed_PlusMinusHalf) 
+        config.MagnetSensor.MagnetOffset = offset; // in rotations   
         can_encoder.getConfigurator().apply(config);
+        //can_encoder.setPosition(0);
     }
    
     public double getPosition() {// return rotations
-        StatusSignal<Angle> val = can_encoder.getPosition();
-        return val.getValueAsDouble(); 
+        StatusSignal<Angle> val = can_encoder.getPosition(true);
+        return val.getValueAsDouble();
     }
     public double getAbsolutePosition() {// return rotations
-        StatusSignal<Angle> val = can_encoder.getAbsolutePosition();
+        StatusSignal<Angle> val = can_encoder.getAbsolutePosition(true);
         return val.getValueAsDouble(); 
     }
     public AngularVelocity getRate() { // return rotations/s

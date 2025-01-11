@@ -70,7 +70,6 @@ public class SwerveModule {
   }
 
   public void setOffset(double offset){
-    if(m_turnEncoder!=null)
       m_turnEncoder.setOffset(offset);
   }
   public void enable(){

@@ -77,33 +77,32 @@ public class Drivetrain extends SubsystemBase {
 
   private int cnt=0;
 
-  public boolean useOffsets=true;
+  public boolean useOffsets=false;
  
   public Drivetrain() {
   }
 
-  public void setOffsets(boolean useOffsets){
-    if (!useOffsets) {
-      m_frontLeft.setOffset(0);
-      m_frontRight.setOffset(0);
-      m_backRight.setOffset(0);
-      m_backLeft.setOffset(0);
-    }
-    else{
-     m_frontLeft.setOffset(kFrontLeftOffset);
+  public void setOffsets(boolean useOffsets) {
+    if (useOffsets) {
+      m_frontLeft.setOffset(kFrontLeftOffset);
       m_frontRight.setOffset(kFrontLeftOffset);
       m_backRight.setOffset(kFrontLeftOffset);
       m_backLeft.setOffset(kFrontLeftOffset);
-    }
+    } 
+    //else {
+    //   m_frontLeft.setOffset(0);
+    //   m_frontRight.setOffset(0);
+    //   m_backRight.setOffset(0);
+    //   m_backLeft.setOffset(0);
+    // }
   }
 
-  public void clearOffsets(){
-    m_frontLeft.setOffset(0);
-    m_frontRight.setOffset(0);
-    m_backRight.setOffset(0);
-    m_backLeft.setOffset(0);
-
-  }
+  // public void clearOffsets(){
+  //   m_frontLeft.setOffset(0);
+  //   m_frontRight.setOffset(0);
+  //   m_backRight.setOffset(0);
+  //   m_backLeft.setOffset(0);
+  // }
 
   public void init(){
     setOffsets(useOffsets);
