@@ -61,15 +61,15 @@ public class Motor {
     public void setVoltage(double v) {
         rev_motor.setVoltage(v);
     }
-    public void setConfig(boolean i, double d){
+    public void setConfig(boolean isInverted, double d){
         m_dpr=d;
         SparkMaxConfig config = new SparkMaxConfig();
         config
-            .inverted(i);
+            .inverted(isInverted);
         //    .idleMode(IdleMode.kBrake);
         config.encoder
             .positionConversionFactor(d)
-            .velocityConversionFactor(d);
+            .velocityConversionFactor(d/60);
         //config.closedLoop
          //   .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
         //    .pid(1.0, 0.0, 0.0);

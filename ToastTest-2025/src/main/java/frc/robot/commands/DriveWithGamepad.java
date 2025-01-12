@@ -8,6 +8,7 @@ import frc.robot.subsystems.Drivetrain;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class DriveWithGamepad extends Command {
@@ -15,11 +16,11 @@ public class DriveWithGamepad extends Command {
   private final Drivetrain m_drive;
   private final XboxController m_controller;
 
-  private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(0.5);
-  private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(0.5);
-  private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(0.5);
+  private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(2);
+  private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(2);
+  private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(2);
 
-  boolean movemode = true;
+  boolean movemode = false;
   /**
    * Creates a new ExampleCommand.
    *
@@ -57,11 +58,11 @@ public class DriveWithGamepad extends Command {
             * Drivetrain.kMaxVelocity;
     
     // Get the y speed or sideways/strafe speed. 
-    final var ySpeed = m_yspeedLimiter.calculate(MathUtil.applyDeadband(vy, 0.2))
+    final var ySpeed = -m_yspeedLimiter.calculate(MathUtil.applyDeadband(vy, 0.2))
             * Drivetrain.kMaxVelocity;
 
     // Get the rate of angular rotation. 
-    final var rot = m_rotLimiter.calculate(MathUtil.applyDeadband(vr, 0.2))
+    final var rot = -m_rotLimiter.calculate(MathUtil.applyDeadband(vr, 0.2))
     * Drivetrain.kMaxAngularVelocity;
 
     if (m_drive.disabled()) {

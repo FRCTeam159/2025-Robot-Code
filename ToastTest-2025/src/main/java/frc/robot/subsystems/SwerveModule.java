@@ -17,15 +17,15 @@ import objects.Motor;
 import objects.Encoder;
 
 public class SwerveModule {
-  private static final double kWheelRadius = Units.inchesToMeters(2.0); // 2 inches
-  private double distancePerRotation=2*kWheelRadius*Math.PI;
-
-  private static final double kModuleMaxAngularVelocity = Drivetrain.kMaxAngularVelocity; //degrees per second;
-  private static final double kModuleMaxAngularAcceleration = Drivetrain.kMaxAngularAcceleration;// degrees per second per second
 
   private Motor m_driveMotor=null;
 	private Motor m_turnMotor=null;
   private Encoder m_turnEncoder=null;
+  double m_valueOfPID=0;
+  double m_targetAngle=0;
+
+  int cnt=0;
+
 
   public static boolean swerveEncoders=true; // false:use REV encoders (ala Waffle) true: use CANcoders
 
@@ -34,12 +34,12 @@ public class SwerveModule {
   String name;
 
   // Gains are for example purposes only - must be determined for your own robot!
-  private final PIDController m_drivePIDController = new PIDController(10, 0.0, 0);
+  private final PIDController m_drivePIDController = new PIDController(1, 0.0, 0);
   //private final PIDController m_turningPIDController = new PIDController(3, 0.05, 0);
   private final ProfiledPIDController m_turningPIDController =
-      new ProfiledPIDController(5,0.0,0,
+      new ProfiledPIDController(1,0.0,0,
           new TrapezoidProfile.Constraints(
-              kModuleMaxAngularVelocity, kModuleMaxAngularAcceleration));
+              Drivetrain.kMaxAngularVelocity, Drivetrain.kMaxAngularAcceleration));
 
   private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(0.1, 0.1);
   private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(0.1, 0.1);
@@ -62,11 +62,14 @@ public class SwerveModule {
 
     m_driveMotor=new Motor(driveMotorChannel);
     m_turnMotor=new Motor(turningMotorChannel);
-    m_driveMotor.setConfig(false, distancePerRotation);
     m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
 
     name = chnlnames[i - 1];
    
+  }
+
+  public void setConfig(boolean isInverted, double distancePerRotation) {
+    m_driveMotor.setConfig(isInverted, distancePerRotation);
   }
 
   public void setOffset(double offset){
@@ -94,10 +97,7 @@ public class SwerveModule {
     return 2*Math.PI*getRotations();
   }
   public double getRotations(){
-    if(m_turnEncoder!=null)
-      return m_turnEncoder.getPosition();
-    else
-      return m_turnMotor.getPosition();
+    return m_turnEncoder.getPosition();
   }
   
   public Rotation2d getRotation2d() {
@@ -130,15 +130,16 @@ public class SwerveModule {
     // Calculate the drive output from the drive PID controller.
     final double driveOutput = m_drivePIDController.calculate(m_driveMotor.getVelocity(), state.speedMetersPerSecond);
     final double driveFeedforward = m_driveFeedforward.calculate(state.speedMetersPerSecond);
-    
     double turn_angle=getRotation2d().getRadians(); // rotations in radians
+    m_targetAngle = state.angle.getRadians();
 
-    final double turnOutput = m_turningPIDController.calculate(turn_angle,state.angle.getRadians());
+    final double turnOutput = -m_turningPIDController.calculate(turn_angle,state.angle.getRadians());
     final double turnFeedforward = 0;//m_turnFeedforward.calculate(m_turningPIDController.getSetpoint().velocity);
     //final double turnFeedforward = m_turnFeedforward.calculate(state.angle.getRadians());
+    m_valueOfPID = turnOutput;
 
-    double set_drive=driveOutput+driveFeedforward;
-    double set_turn=turnOutput+turnFeedforward;
+    double set_drive=driveOutput;//+driveFeedforward;
+    double set_turn=turnOutput;//+turnFeedforward;
 
     if(debug){
       String s = String.format("Vel %-2.2f(%-2.2f) -> %-2.2f Angle %-3.3f(%-2.3f) -> %-2.3f\n", 
@@ -146,7 +147,7 @@ public class SwerveModule {
       SmartDashboard.putString(name, s);
     }
     m_driveMotor.set(set_drive);
-   //m_turnMotor.set(set_turn);
+    m_turnMotor.set(set_turn);
   }
 
   public void turnAndMove(double m, double t) {
@@ -196,13 +197,13 @@ public class SwerveModule {
   }
 
   public void log (){
-    String s = String.format("AbsAngle %g angle %g distance %g \n", 
-    m_turnEncoder.getAbsolutePosition(),
-    m_turnEncoder.getPosition(), 
-    getDistance());
+    String s = String.format("angle %g PID %g Target Angle %g\n", 
+    getRotations(),
+    m_valueOfPID,
+    m_targetAngle);
     SmartDashboard.putString(name, s);
+    if(name=="FR" && (cnt%10)==0)
+    System.out.println(s);
+    cnt++;
   }
-  // public void setInverted(){
-  //   m_driveMotor.setInverted();
-  // }
 }
