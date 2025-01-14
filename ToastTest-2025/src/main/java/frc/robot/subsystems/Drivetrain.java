@@ -38,8 +38,8 @@ public class Drivetrain extends SubsystemBase {
   public static final double kTrackRadius = 0.5
       * Math.sqrt(kFrontWheelBase * kFrontWheelBase + kSideWheelBase * kSideWheelBase);
 
-  public static final double kMaxVelocity = 0.25;
-  public static final double kMaxAcceleration = 0.5;
+  public static final double kMaxVelocity = 0.5;
+  public static final double kMaxAcceleration = 1;
   public static final double kMaxAngularVelocity = Math.toRadians(720); // radians/s
   public static final double kMaxAngularAcceleration = Math.toRadians(360); // radians/s/s
 
@@ -73,7 +73,7 @@ public class Drivetrain extends SubsystemBase {
   double last_heading = 0;
   Pose2d m_pose;
   boolean m_resetting = false;
-  public static boolean m_fieldOriented = false;
+  public static boolean m_fieldOriented = true;
   boolean m_disabled = true;
 
   private int cnt = 0;

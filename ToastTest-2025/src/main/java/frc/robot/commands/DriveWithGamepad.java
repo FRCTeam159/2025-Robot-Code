@@ -16,9 +16,9 @@ public class DriveWithGamepad extends Command {
   private final Drivetrain m_drive;
   private final XboxController m_controller;
 
-  private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(2);
-  private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(2);
-  private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(2);
+  private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(1.5);
+  private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(1.5);
+  private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(.5,-10,0);
 
   boolean movemode = false;
   /**
@@ -62,8 +62,9 @@ public class DriveWithGamepad extends Command {
             * Drivetrain.kMaxVelocity;
 
     // Get the rate of angular rotation. 
-    final var rot = -m_rotLimiter.calculate(MathUtil.applyDeadband(vr, 0.2))
-    * Drivetrain.kMaxAngularVelocity;
+   //final var rot = -m_rotLimiter.calculate(MathUtil.applyDeadband(vr, 0.2))*Drivetrain.kMaxAngularVelocity;
+     //final var rot = -MathUtil.applyDeadband(vr, 0.2)* Drivetrain.kMaxAngularVelocity;
+     final var rot = -Math.pow(MathUtil.applyDeadband(vr, .2), 3)* Drivetrain.kMaxAngularVelocity;
 
     if (m_drive.disabled()) {
       m_drive.enable();

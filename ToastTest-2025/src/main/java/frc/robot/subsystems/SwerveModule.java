@@ -37,13 +37,14 @@ public class SwerveModule {
   private final PIDController m_drivePIDController = new PIDController(1, 0.0, 0);
   //private final PIDController m_turningPIDController = new PIDController(3, 0.05, 0);
   private final ProfiledPIDController m_turningPIDController =
-      new ProfiledPIDController(1,0.0,0,
+      new ProfiledPIDController(0.5,0,0,
           new TrapezoidProfile.Constraints(
               Drivetrain.kMaxAngularVelocity, Drivetrain.kMaxAngularAcceleration));
 
-  private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(0.1, 0.1);
+  private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(0.01, 0.25);
   private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(0.1, 0.1);
-
+  //private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(0.01, 0.25 /*Old: 0.25*/);
+ 
   public int m_drive_chnl;
   public int m_turn_chnl;
   
@@ -138,7 +139,7 @@ public class SwerveModule {
     //final double turnFeedforward = m_turnFeedforward.calculate(state.angle.getRadians());
     m_valueOfPID = turnOutput;
 
-    double set_drive=driveOutput;//+driveFeedforward;
+    double set_drive=driveOutput+driveFeedforward;
     double set_turn=turnOutput;//+turnFeedforward;
 
     if(debug){
@@ -202,8 +203,8 @@ public class SwerveModule {
     m_valueOfPID,
     m_targetAngle);
     SmartDashboard.putString(name, s);
-    if(name=="FR" && (cnt%10)==0)
-    System.out.println(s);
+    //if(name=="FR" && (cnt%10)==0)
+    //System.out.println(s);
     cnt++;
   }
 }
