@@ -7,15 +7,11 @@ public class Gyro {
         ADXRS450_Gyro real_gyro=null;
 
      public Gyro() {
-          real_gyro=new ADXRS450_Gyro();
+        real_gyro=new ADXRS450_Gyro();
     }
     
-    static public void setMode(boolean m){
-        is_real=m;
-    }
-
     public void reset(){
-         real_gyro.reset();
+        real_gyro.reset();
     }
     public double getAngle(){
         return -real_gyro.getAngle();
