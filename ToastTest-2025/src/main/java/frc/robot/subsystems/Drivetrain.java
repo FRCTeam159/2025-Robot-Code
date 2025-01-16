@@ -90,13 +90,6 @@ public class Drivetrain extends SubsystemBase {
     m_backLeft.setConfig(true, kDistPerRot);
   }
 
-<<<<<<< HEAD
-  public void clearOffsets(){
-    m_frontLeft.setOffset(0);
-    m_frontRight.setOffset(0);
-    m_backRight.setOffset(0);
-    m_backLeft.setOffset(0);
-=======
   public void setOffsets(boolean useOffsets) {
     if (useOffsets) {
       m_frontLeft.setOffset(kFrontLeftOffset);
@@ -105,7 +98,6 @@ public class Drivetrain extends SubsystemBase {
       m_backLeft.setOffset(kBackLeftOffset);
     }
 
->>>>>>> d44114f096bb0a573c1570a569f2b85943c9d543
   }
 
   public void init() {
