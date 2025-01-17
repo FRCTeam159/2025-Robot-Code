@@ -306,7 +306,10 @@ public class Drivetrain extends SubsystemBase {
 
   @Override
   public void periodic() {
+    boolean fo=m_fieldOriented;
     m_fieldOriented = SmartDashboard.getBoolean("Field Oriented", false);
+    if(m_fieldOriented && !fo)
+      m_gyro.reset();
     updateOdometry();
     log();
   }

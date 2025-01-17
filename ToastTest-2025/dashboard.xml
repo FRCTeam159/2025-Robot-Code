@@ -1,0 +1,45 @@
+<xml version="1.0">
+<dashboard>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.CameraServerViewer">
+		<location x="7" y="183"/>
+		<width>601</width>
+		<height>446</height>
+		<property name="Camera Choice" value=""/>
+	</static-widget>
+	<widget field="Field Oriented" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
+		<location x="0" y="160"/>
+	</widget>
+	<widget field="Auto Selector" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="140"/>
+	</widget>
+	<widget field="FL" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="120"/>
+		<width>310</width>
+	</widget>
+	<widget field="FR" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="100"/>
+		<width>310</width>
+	</widget>
+	<widget field="BL" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="80"/>
+		<width>319</width>
+	</widget>
+	<widget field="BR" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="60"/>
+		<width>325</width>
+	</widget>
+	<widget field="Wheels " type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="40"/>
+		<width>319</width>
+	</widget>
+	<widget field="Gyro" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="296" y="0"/>
+	</widget>
+	<widget field="Pose" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="11" y="7"/>
+		<width>281</width>
+	</widget>
+</dashboard>
+<live-window>
+</live-window>
+</xml>

@@ -80,7 +80,7 @@ public class DriveWithGamepad extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    System.out.println("DriveWithGampad cancelled");
+    System.out.println("DriveWithGampad cancelled");gi
   }
 
   // Returns true when the command should end.
