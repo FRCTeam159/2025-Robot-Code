@@ -21,6 +21,7 @@ public class DriveWithGamepad extends Command {
   private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(.5,-10,0);
 
   boolean movemode = false;
+  public static double pVal = 2;
   /**
    * Creates a new ExampleCommand.
    *
@@ -32,6 +33,7 @@ public class DriveWithGamepad extends Command {
     m_controller = controller;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
+    SmartDashboard.putNumber("Power Value", pVal);
   }
 
   // Called when the command is initially scheduled.
@@ -60,11 +62,15 @@ public class DriveWithGamepad extends Command {
     // Get the y speed or sideways/strafe speed. 
     final var ySpeed = -m_yspeedLimiter.calculate(MathUtil.applyDeadband(vy, 0.2))
             * Drivetrain.kMaxVelocity;
+   
+    pVal = SmartDashboard.getNumber("Power Value", 2);
 
     // Get the rate of angular rotation. 
    //final var rot = -m_rotLimiter.calculate(MathUtil.applyDeadband(vr, 0.2))*Drivetrain.kMaxAngularVelocity;
      //final var rot = -MathUtil.applyDeadband(vr, 0.2)* Drivetrain.kMaxAngularVelocity;
-     final var rot = -Math.pow(MathUtil.applyDeadband(vr, .2), 3)* Drivetrain.kMaxAngularVelocity;
+     double rVal = MathUtil.applyDeadband(vr, .2);
+     double sgn = rVal<0?-1:1;
+     final var rot = -sgn*Math.abs(Math.pow(Math.abs(rVal), pVal) * Drivetrain.kMaxAngularVelocity);
 
     if (m_drive.disabled()) {
       m_drive.enable();
@@ -80,7 +86,7 @@ public class DriveWithGamepad extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    System.out.println("DriveWithGampad cancelled");gi
+    System.out.println("DriveWithGampad cancelled");
   }
 
   // Returns true when the command should end.
