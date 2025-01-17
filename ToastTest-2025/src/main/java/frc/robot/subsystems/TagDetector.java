@@ -23,6 +23,7 @@ import edu.wpi.first.apriltag.AprilTagPoseEstimator;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.CvSource;
 import edu.wpi.first.math.geometry.Transform3d;
+import objects.AprilTag;
 import edu.wpi.first.cscore.CvSink;
 import edu.wpi.first.cscore.UsbCamera;
 
@@ -34,6 +35,12 @@ public class TagDetector extends Thread {
   private UsbCamera intakeCamera;
   public static double maxPoseError = 2;
 
+  public static final double kVertOffset = -0.4;
+  public static final double kHorizOffset = 0.0;
+  public static final int kMinTarget =1;
+  public static final int kMaxTarget =16;
+  public static  int kBestTarget =1;
+
   protected static CvSource ouputStream;
   protected AprilTagDetector wpi_detector;
 
@@ -43,6 +50,9 @@ public class TagDetector extends Thread {
   Drivetrain m_drivetrain;
 
   static boolean m_targeting = false;
+  static boolean showTags = false;
+
+  static AprilTag[] tags = null;
 
   public static double min_decision_margin = 30; // reject tags less than this
 
@@ -61,8 +71,7 @@ public class TagDetector extends Thread {
 
   double targetSize = 0.1524;
 
-  public static boolean showTags =  false;
-  public static boolean autoselect =  false;
+   public static boolean autoselect =  false;
 
   public TagDetector(Drivetrain drivetrain) {
     m_drivetrain = drivetrain;
@@ -96,7 +105,16 @@ public class TagDetector extends Thread {
         long tm = UsbCameraSink.grabFrame(mat);
         if (tm == 0) // bad frame
           continue;
-        
+
+          tags = null;
+
+        if (m_targeting || showTags) {
+          tags = getTags(mat);
+          if (tags != null && tags.length > 1) 
+            Arrays.sort(tags, new SortbyDistance());
+        }
+        if (tags != null)
+        showTags(tags, mat);
         ouputStream.putFrame(mat);
       } catch (Exception ex) {
         System.out.println("TagDetector exception:" + ex);
@@ -104,5 +122,80 @@ public class TagDetector extends Thread {
     }
   }
 
-  
+  void showTags(AprilTag[] tags, Mat mat) {
+    for (int i = 0; i < tags.length; i++) {
+      AprilTag tag = tags[i];
+
+      Point c = tag.center();
+
+      Scalar lns = new Scalar(255.0, 255.0, 0.0);
+      Imgproc.line(mat, tag.tl(), tag.tr(), lns, 2);
+      Imgproc.line(mat, tag.tr(), tag.br(), lns, 2);
+      Imgproc.line(mat, tag.br(), tag.bl(), lns, 2);
+      Imgproc.line(mat, tag.bl(), tag.tl(), lns, 2);
+
+      // Imgproc.rectangle(mat, tl, br, new Scalar(255.0, 255.0, 0.0), 2);
+      Imgproc.drawMarker(mat, c, new Scalar(0, 0, 255), Imgproc.MARKER_CROSS, 35, 2, 8);
+      Point p = new Point(tag.bl().x - 10, tag.bl().y - 10);
+      Imgproc.putText(
+          mat, // Matrix obj of the image
+          "[" + tag.getTagId() + "]", // Text to be added
+          p, // point
+          Imgproc.FONT_HERSHEY_SIMPLEX, // front face
+          1, // front scale
+          new Scalar(255, 0, 0), // Scalar object for color
+          2 // Thickness
+      );
+      // if(i==kBestTarget && m_targeting){
+      //   c.y+=kVertOffset*IMAGE_HEIGHT;
+      //   c.x+=kHorizOffset*IMAGE_WIDTH;
+      //   Imgproc.drawMarker(mat, c, new Scalar(0, 0, 255), Imgproc.MARKER_CROSS, 35, 2, 8);
+      // }
+    }
+  }
+
+  // return an array of tag info structures from an image
+  private AprilTag[] getTags(Mat mat) {
+    AprilTag[] atags = null;
+    Mat graymat = new Mat();
+    Imgproc.cvtColor(mat, graymat, Imgproc.COLOR_RGB2GRAY);
+    AprilTagDetection[] detections = wpi_detector.detect(graymat);
+
+    // reject tags with a poor decision margin or out of expected index range
+    List<AprilTagDetection> list = new ArrayList<AprilTagDetection>();
+    for (int i = 0; i < detections.length; i++) {
+      AprilTagDetection dect = detections[i];
+      int id = dect.getId();
+      if (id < kMinTarget || id > kMaxTarget)
+        continue;
+      if (dect.getDecisionMargin() > min_decision_margin)
+        list.add(dect);
+    }
+
+    int num_tags = list.size();
+    if (num_tags == 0)
+      return null;
+
+    atags = new AprilTag[num_tags];
+    for (int i = 0; i < num_tags; i++) {
+      AprilTagDetection detection = list.get(i);
+      Transform3d pose = wpi_pose_estimator.estimate(detection);
+      atags[i] = new AprilTag(detections[i], pose);
+    }
+    return atags;
+  }
+
+  // Helper class extending Comparator interface
+  // sort by distance (closest on top)
+  class SortbyDistance implements Comparator<AprilTag> {
+    public int compare(AprilTag p1, AprilTag p2) {
+      double d1 = p1.getDistance();
+      double d2 = p2.getDistance();
+      if (d1 < d2)
+        return -1;
+      if (d1 > d2)
+        return 1;
+      return 0;
+    }
+  }
 }
