@@ -50,7 +50,7 @@ public class TagDetector extends Thread {
   Drivetrain m_drivetrain;
 
   static boolean m_targeting = false;
-  static boolean showTags = false;
+  static boolean showTags = true;
 
   static AprilTag[] tags = null;
 
@@ -106,15 +106,20 @@ public class TagDetector extends Thread {
         if (tm == 0) // bad frame
           continue;
 
-          tags = null;
+        tags = null;
 
         if (m_targeting || showTags) {
           tags = getTags(mat);
-          if (tags != null && tags.length > 1) 
+          if (tags != null && tags.length > 0){
             Arrays.sort(tags, new SortbyDistance());
+            System.out.println("number of tags =" + tags.length);
+          }
+          else { 
+            System.out.println("no tags detected");
+          }
         }
         if (tags != null)
-        showTags(tags, mat);
+          showTags(tags, mat);
         ouputStream.putFrame(mat);
       } catch (Exception ex) {
         System.out.println("TagDetector exception:" + ex);
@@ -125,6 +130,7 @@ public class TagDetector extends Thread {
   void showTags(AprilTag[] tags, Mat mat) {
     for (int i = 0; i < tags.length; i++) {
       AprilTag tag = tags[i];
+      System.out.println(i + " " + tag.getTagId());
 
       Point c = tag.center();
 
