@@ -23,6 +23,7 @@ import edu.wpi.first.apriltag.AprilTagPoseEstimator;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.CvSource;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import objects.AprilTag;
 import edu.wpi.first.cscore.CvSink;
 import edu.wpi.first.cscore.UsbCamera;
@@ -68,6 +69,7 @@ public class TagDetector extends Thread {
   public double cy = IMAGE_HEIGHT / 2.0;
   public double fx = cx / Math.tan(0.5 * Math.toRadians(hFOV));
   public double fy = cy / Math.tan(0.5 * Math.toRadians(vFOV));
+  public static AprilTag tag;
 
   double targetSize = 0.1524;
 
@@ -99,6 +101,10 @@ public class TagDetector extends Thread {
 
     ouputStream = CameraServer.putVideo("RobotCamera", IMAGE_WIDTH, IMAGE_HEIGHT);
 
+    SmartDashboard.putNumber("Num tags", 0);
+    SmartDashboard.putNumber("Closest", 0);
+    SmartDashboard.putNumber("Distance", 0);    
+
     while (!Thread.interrupted()) {
       try {
         Thread.sleep(30);
@@ -107,19 +113,22 @@ public class TagDetector extends Thread {
           continue;
 
         tags = null;
+        tag = null;
 
         if (m_targeting || showTags) {
           tags = getTags(mat);
           if (tags != null && tags.length > 0){
             Arrays.sort(tags, new SortbyDistance());
-            System.out.println("number of tags =" + tags.length);
-          }
-          else { 
-            System.out.println("no tags detected");
           }
         }
-        if (tags != null)
+        if (tags != null) {
+          tag = tags[0];
+
+          SmartDashboard.putNumber("Num tags", tags.length);
+          SmartDashboard.putNumber("Closest", tag.getTagId());
+          SmartDashboard.putNumber("Distance", tag.getDistance());
           showTags(tags, mat);
+        }
         ouputStream.putFrame(mat);
       } catch (Exception ex) {
         System.out.println("TagDetector exception:" + ex);
@@ -130,7 +139,6 @@ public class TagDetector extends Thread {
   void showTags(AprilTag[] tags, Mat mat) {
     for (int i = 0; i < tags.length; i++) {
       AprilTag tag = tags[i];
-      System.out.println(i + " " + tag.getTagId());
 
       Point c = tag.center();
 

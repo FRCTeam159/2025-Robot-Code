@@ -1,10 +1,23 @@
 <xml version="1.0">
 <dashboard>
+	<widget field="Distance" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="324" y="57"/>
+	</widget>
+	<widget field="Closest" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="329" y="38"/>
+	</widget>
+	<widget field="Num tags" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="320" y="17"/>
+		<height>22</height>
+	</widget>
+	<widget field="Power Value" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="424" y="5"/>
+	</widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.CameraServerViewer">
-		<location x="7" y="183"/>
-		<width>601</width>
-		<height>446</height>
-		<property name="Camera Choice" value=""/>
+		<location x="12" y="183"/>
+		<width>602</width>
+		<height>444</height>
+		<property name="Camera Choice" value="RobotCamera"/>
 	</static-widget>
 	<widget field="Field Oriented" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
 		<location x="0" y="160"/>
