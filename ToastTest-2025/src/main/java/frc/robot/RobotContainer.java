@@ -8,16 +8,19 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.DriveWithGamepad;
+import frc.robot.subsystems.Autonomous;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.TagDetector;
 
 public class RobotContainer {
   private final XboxController m_controller = new XboxController(0);
   private final Drivetrain m_drivetrain = new Drivetrain();
+  
   private final DriveWithGamepad m_DriveWithGamepad = new DriveWithGamepad(m_drivetrain, m_controller);
 
   private final TagDetector m_Detector= new TagDetector(m_drivetrain);
 
+public final Autonomous m_autonomous = new Autonomous(m_drivetrain, m_Detector);
   public RobotContainer() {
     m_drivetrain.setDefaultCommand(m_DriveWithGamepad);
   }
@@ -34,6 +37,6 @@ public class RobotContainer {
     m_drivetrain.disable();
   }
   public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
+    return m_autonomous.getCommand();
   }
 }
