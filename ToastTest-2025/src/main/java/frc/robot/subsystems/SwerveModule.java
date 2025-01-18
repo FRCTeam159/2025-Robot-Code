@@ -11,7 +11,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import objects.Motor;
 import objects.Encoder;
@@ -23,7 +22,7 @@ public class SwerveModule {
   private Encoder m_turnEncoder=null;
   double m_valueOfPID=0;
   double m_targetAngle=0;
-
+  
   int cnt=0;
 
 
@@ -198,13 +197,15 @@ public class SwerveModule {
   }
 
   public void log (){
-    String s = String.format("angle %g PID %g Target Angle %g\n", 
-    getRotations(),
-    m_valueOfPID,
-    m_targetAngle);
-    SmartDashboard.putString(name, s);
-    //if(name=="FR" && (cnt%10)==0)
-    //System.out.println(s);
-    cnt++;
+    if(debug){
+      String s = String.format("angle %g PID %g Target Angle %g\n", 
+      getRotations(),
+      m_valueOfPID,
+      m_targetAngle);
+      SmartDashboard.putString(name, s);
+      //if(name=="FR" && (cnt%10)==0)
+      //System.out.println(s);
+      cnt++;
+    }
   }
 }

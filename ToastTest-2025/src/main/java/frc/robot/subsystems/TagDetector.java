@@ -73,7 +73,7 @@ public class TagDetector extends Thread {
 
   double targetSize = 0.1524;
 
-   public static boolean autoselect =  false;
+  public static boolean autoselect =  false;
 
   public TagDetector(Drivetrain drivetrain) {
     m_drivetrain = drivetrain;
@@ -101,9 +101,8 @@ public class TagDetector extends Thread {
 
     ouputStream = CameraServer.putVideo("RobotCamera", IMAGE_WIDTH, IMAGE_HEIGHT);
 
-    SmartDashboard.putNumber("Num tags", 0);
-    SmartDashboard.putNumber("Closest", 0);
-    SmartDashboard.putNumber("Distance", 0);    
+    SmartDashboard.putString("Tags", "None Visible");  
+    SmartDashboard.putBoolean("Show Tags", showTags);  
 
     while (!Thread.interrupted()) {
       try {
@@ -115,20 +114,24 @@ public class TagDetector extends Thread {
         tags = null;
         tag = null;
 
+        showTags=SmartDashboard.getBoolean("Show Tags", showTags);  
+
         if (m_targeting || showTags) {
           tags = getTags(mat);
-          if (tags != null && tags.length > 0){
+          if (tags != null && tags.length > 0) {
             Arrays.sort(tags, new SortbyDistance());
           }
+          if (tags != null) {
+            tag = tags[0];
+            String str = String.format(" Number:%d Closest id:%d distance:%-1.2f m\n",
+                tags.length, tag.getTagId(), tag.getDistance());
+            SmartDashboard.putString("Tags", str);
+            if(showTags)
+              showTags(tags, mat);
+          } else
+            SmartDashboard.putString("Tags", "None Visible");
         }
-        if (tags != null) {
-          tag = tags[0];
-
-          SmartDashboard.putNumber("Num tags", tags.length);
-          SmartDashboard.putNumber("Closest", tag.getTagId());
-          SmartDashboard.putNumber("Distance", tag.getDistance());
-          showTags(tags, mat);
-        }
+  
         ouputStream.putFrame(mat);
       } catch (Exception ex) {
         System.out.println("TagDetector exception:" + ex);

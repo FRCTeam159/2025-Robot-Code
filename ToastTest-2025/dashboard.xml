@@ -1,52 +1,25 @@
 <xml version="1.0">
 <dashboard>
-	<widget field="Distance" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="324" y="57"/>
-	</widget>
-	<widget field="Closest" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="329" y="38"/>
-	</widget>
-	<widget field="Num tags" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="320" y="17"/>
-		<height>22</height>
+	<widget field="Tags" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="112" y="39"/>
+		<width>220</width>
 	</widget>
 	<widget field="Power Value" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="424" y="5"/>
+		<location x="396" y="9"/>
+		<width>127</width>
 	</widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.CameraServerViewer">
-		<location x="12" y="183"/>
+		<location x="12" y="84"/>
 		<width>602</width>
 		<height>444</height>
 		<property name="Camera Choice" value="RobotCamera"/>
 	</static-widget>
 	<widget field="Field Oriented" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
-		<location x="0" y="160"/>
-	</widget>
-	<widget field="Auto Selector" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="140"/>
-	</widget>
-	<widget field="FL" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="120"/>
-		<width>310</width>
-	</widget>
-	<widget field="FR" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="100"/>
-		<width>310</width>
-	</widget>
-	<widget field="BL" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="80"/>
-		<width>319</width>
-	</widget>
-	<widget field="BR" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="60"/>
-		<width>325</width>
-	</widget>
-	<widget field="Wheels " type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="40"/>
-		<width>319</width>
+		<location x="15" y="39"/>
 	</widget>
 	<widget field="Gyro" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="296" y="0"/>
+		<location x="298" y="8"/>
+		<width>81</width>
 	</widget>
 	<widget field="Pose" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="11" y="7"/>
