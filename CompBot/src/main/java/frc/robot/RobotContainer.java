@@ -31,14 +31,10 @@ public final Autonomous m_autonomous = new Autonomous(m_drivetrain, m_Detector);
     m_Detector.start();
   }
   public void teleopInit(){
-    m_drivetrain.resetOdometry();
     m_drivetrain.enable();
   }
   public void disabledInit(){
     m_drivetrain.disable();
-  }
-  public void autonomousInit(){
-    m_drivetrain.resetOdometry();
   }
   public Command getAutonomousCommand() {
     return m_autonomous.getCommand();

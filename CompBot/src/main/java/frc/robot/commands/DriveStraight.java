@@ -7,19 +7,21 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drivetrain;
 
+
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class DriveToTag extends Command {
-  /** Creates a new DriveToTag. */
-  Drivetrain m_drive;
-  public DriveToTag(Drivetrain drive) {
+public class DriveStraight extends Command {
+  /** Creates a new DriveStraight. 
+ * @param m_drivetrain */
+Drivetrain m_drive;
+  public DriveStraight(Drivetrain drive) {
+    // Use addRequirements() here to declare subsystem dependencies.
     m_drive = drive;
+    addRequirements(drive);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    System.out.println("Drive to tag");
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override

@@ -31,10 +31,10 @@ public class Drivetrain extends SubsystemBase {
   public static final double kDistPerRot = (Units.inchesToMeters(kWheelRadius) * 2 * Math.PI) / kDriveGearRatio;
   public static final double kRadiansPerRot = Math.PI * 2 / kTurnGearRatio;
   
-  public static final double kRobotLength = Units.inchesToMeters(24); // Waffle side length
+  public static final double kRobotLength = Units.inchesToMeters(24); // compbot side length 29.5"
 
-  public static final double kFrontWheelBase = Units.inchesToMeters(18.5); // distance bewteen front wheels
-  public static final double kSideWheelBase = Units.inchesToMeters(18.5); // distance beteen side wheels
+  public static final double kFrontWheelBase = Units.inchesToMeters(18.5); // distance bewteen front wheels on compbot its 24"
+  public static final double kSideWheelBase = Units.inchesToMeters(18.5); // distance beteen side wheels ^^^
   public static final double kTrackRadius = 0.5
       * Math.sqrt(kFrontWheelBase * kFrontWheelBase + kSideWheelBase * kSideWheelBase);
 
@@ -192,12 +192,10 @@ public class Drivetrain extends SubsystemBase {
     m_gyro.reset();
     m_odometry.resetPosition(getRotation2d(), m_positions, pose);
     last_heading = 0;
-    updateOdometry();
-    System.out.println("gryo angle" + m_gyro.getAngle());
   }
 
   public void resetOdometry() {
-      resetOdometry(new Pose2d(0, 0, new Rotation2d()));
+    resetOdometry(new Pose2d(0, 0, new Rotation2d()));
   }
 
   /**

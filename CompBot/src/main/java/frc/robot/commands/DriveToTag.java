@@ -13,13 +13,12 @@ public class DriveToTag extends Command {
   Drivetrain m_drive;
   public DriveToTag(Drivetrain drive) {
     m_drive = drive;
+    addRequirements(drive);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    System.out.println("Drive to tag");
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override

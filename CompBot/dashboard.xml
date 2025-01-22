@@ -28,9 +28,6 @@
 		<location x="11" y="7"/>
 		<width>219</width>
 	</widget>
-	<widget field="SendableChooser[0]" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
-		<location x="340" y="-1"/>
-	</widget>
 </dashboard>
 <live-window>
 </live-window>
