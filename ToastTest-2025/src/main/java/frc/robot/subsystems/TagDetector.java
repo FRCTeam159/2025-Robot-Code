@@ -73,7 +73,7 @@ public class TagDetector extends Thread {
   public double cy = IMAGE_HEIGHT / 2.0;
   public double fx = cx / Math.tan(0.5 * Math.toRadians(hFOV));
   public double fy = cy / Math.tan(0.5 * Math.toRadians(vFOV));
-  public static AprilTag tag;
+  static AprilTag tag;
 
   double targetSize = 0.1524;
 
@@ -81,6 +81,17 @@ public class TagDetector extends Thread {
 
   public TagDetector(Drivetrain drivetrain) {
     m_drivetrain = drivetrain;
+  }
+
+  public static boolean haveTag(){
+    return tag!=null;
+  }
+
+  public static double tagDistance(){
+    if (tag == null){
+      return 0;
+    }
+    return tag.getDistance();
   }
 
   @Override
@@ -107,6 +118,7 @@ public class TagDetector extends Thread {
 
     SmartDashboard.putString("Tags", "None Visible");  
     SmartDashboard.putBoolean("Show Tags", showTags);  
+    SmartDashboard.putBoolean("EndAtTags", true);  
 
     while (!Thread.interrupted()) {
       try {

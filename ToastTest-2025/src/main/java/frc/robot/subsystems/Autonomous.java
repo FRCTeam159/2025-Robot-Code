@@ -13,6 +13,7 @@ public class Autonomous {
     TagDetector m_Detector;
     public static final int DRIVE_STRAIGHT = 1; 
     public static final int DRIVE_TO_TAG = 2;
+    public static final int AUTO_TEST = 3;
     static SendableChooser<Integer> m_autochooser = new SendableChooser<Integer>();
     double m_target = 1;
 
@@ -21,6 +22,7 @@ public class Autonomous {
         m_Detector = Detector;
         m_autochooser.setDefaultOption("Drive Straight", DRIVE_STRAIGHT);
         m_autochooser.addOption("Drive To Tag", DRIVE_TO_TAG);
+        m_autochooser.addOption("Auto Test", AUTO_TEST);
         SmartDashboard.putData(m_autochooser);
         SmartDashboard.putNumber("target", m_target);
     }
@@ -29,13 +31,20 @@ public class Autonomous {
         m_target = SmartDashboard.getNumber("target", 0);
         int automode = m_autochooser.getSelected();
         switch (automode) {
+            default:
+            return null;
             case DRIVE_STRAIGHT:
                 return new SequentialCommandGroup(new DriveStraight(m_drivetrain, m_target));
             case DRIVE_TO_TAG:
                 return new SequentialCommandGroup(new DriveToTag(m_drivetrain));
+            case AUTO_TEST:
+                return new SequentialCommandGroup(
+                    new DriveStraight(m_drivetrain, m_target),
+                    new DriveToTag(m_drivetrain)
+                );
         }
         
         //driveToTag();
-        return new SequentialCommandGroup(new DriveToTag(m_drivetrain));
+        //return new SequentialCommandGroup(new DriveToTag(m_drivetrain));
     }
 }

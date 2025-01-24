@@ -1,10 +1,17 @@
 <xml version="1.0">
 <dashboard>
+	<widget field="EndAtTags" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
+		<location x="428" y="31"/>
+	</widget>
+	<widget field="target" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="404" y="57"/>
+		<width>91</width>
+	</widget>
 	<widget field="Show Tags" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
-		<location x="23" y="41"/>
+		<location x="314" y="55"/>
 	</widget>
 	<widget field="Tags" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="112" y="39"/>
+		<location x="195" y="31"/>
 		<width>220</width>
 	</widget>
 	<widget field="Power Value" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
@@ -18,7 +25,7 @@
 		<property name="Camera Choice" value="RobotCamera"/>
 	</static-widget>
 	<widget field="Field Oriented" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
-		<location x="464" y="7"/>
+		<location x="31" y="33"/>
 	</widget>
 	<widget field="Gyro" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="245" y="7"/>
@@ -29,7 +36,7 @@
 		<width>219</width>
 	</widget>
 	<widget field="SendableChooser[0]" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
-		<location x="340" y="-1"/>
+		<location x="499" y="-1"/>
 	</widget>
 </dashboard>
 <live-window>
