@@ -6,7 +6,6 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.DriveWithGamepad;
 import frc.robot.subsystems.Autonomous;
 import frc.robot.subsystems.Drivetrain;
@@ -31,13 +30,16 @@ public final Autonomous m_autonomous = new Autonomous(m_drivetrain, m_Detector);
     m_Detector.start();
   }
   public void teleopInit(){
+    m_autonomous.endAuto();
     m_drivetrain.resetOdometry();
     m_drivetrain.enable();
   }
   public void disabledInit(){
+    m_autonomous.endAuto();
     m_drivetrain.disable();
   }
   public void autonomousInit(){
+    m_autonomous.initAuto();
     m_drivetrain.resetOdometry();
   }
   public Command getAutonomousCommand() {

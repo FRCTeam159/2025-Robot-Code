@@ -51,7 +51,7 @@ public class TagDetector extends Thread {
   Drivetrain m_drivetrain;
 
   static boolean m_targeting = false;
-  static boolean showTags = false;
+  static boolean m_showTags = false;
 
   static AprilTag[] tags = null;
 
@@ -64,7 +64,7 @@ public class TagDetector extends Thread {
   // Camera quality
   static int IMAGE_WIDTH = 640;
   static int IMAGE_HEIGHT = 480;
-  static int IMAGE_FPS = 60;
+  static int IMAGE_FPS = 30;
 
   public double hFOV = 40.107;
   public double aspect = ((double) IMAGE_WIDTH) / IMAGE_HEIGHT;
@@ -83,15 +83,29 @@ public class TagDetector extends Thread {
     m_drivetrain = drivetrain;
   }
 
+  public static void setTargeting(boolean b){
+    m_targeting=b;
+  }
+  public static boolean isTargeting(){
+    return m_targeting;
+  }
   public static boolean haveTag(){
-    return tag!=null;
+    if(tag!=null && tag.getDistance()>0.05)
+      return true;
+    return false;
   }
 
+  // return tag distance in meters
   public static double tagDistance(){
-    if (tag == null){
+    if(!haveTag())
       return 0;
-    }
     return tag.getDistance();
+  }
+  // return tag offset in degrees
+  public static double tagOffset(){ 
+    if(!haveTag())
+      return 0;
+    return tag.getYaw();
   }
 
   @Override
@@ -104,7 +118,7 @@ public class TagDetector extends Thread {
 
     wpi_detector = new AprilTagDetector();
     try{
-      wpi_detector.addFamily("tag16h5", 0);
+      //wpi_detector.addFamily("tag16h5", 0);
       wpi_detector.addFamily("tag36h11", 0);
       System.out.println("Tag Families loaded");
     } catch (Exception ex){
@@ -117,8 +131,8 @@ public class TagDetector extends Thread {
     ouputStream = CameraServer.putVideo("RobotCamera", IMAGE_WIDTH, IMAGE_HEIGHT);
 
     SmartDashboard.putString("Tags", "None Visible");  
-    SmartDashboard.putBoolean("Show Tags", showTags);  
-    SmartDashboard.putBoolean("EndAtTags", true);  
+    SmartDashboard.putBoolean("Show Tags", m_showTags);  
+    //SmartDashboard.putBoolean("EndAtTags", true);  
 
     while (!Thread.interrupted()) {
       try {
@@ -130,10 +144,10 @@ public class TagDetector extends Thread {
         tags = null;
         tag = null;
 
-        showTags=SmartDashboard.getBoolean("Show Tags", showTags);
+        m_showTags=SmartDashboard.getBoolean("Show Tags", m_showTags);
         
         // If targeting or showing tags, detect tags
-        if (m_targeting || showTags) {
+        if (m_targeting || m_showTags) {
           tags = getTags(mat);
           if (tags != null && tags.length > 0) {
             Arrays.sort(tags, new SortbyDistance());
@@ -143,7 +157,7 @@ public class TagDetector extends Thread {
             String str = String.format(" Number:%d Closest id:%d distance:%-1.2f m\n",
                 tags.length, tag.getTagId(), tag.getDistance());
             SmartDashboard.putString("Tags", str);
-            if(showTags)
+            if(m_showTags)
               showTags(tags, mat);
           } else
             SmartDashboard.putString("Tags", "None Visible");

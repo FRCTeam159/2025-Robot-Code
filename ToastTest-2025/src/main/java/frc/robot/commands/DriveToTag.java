@@ -9,12 +9,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.TagDetector;
 
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class DriveToTag extends Command {
   /** Creates a new DriveToTag. */
   Drivetrain m_drive;
   PIDController m_PID;
   double m_target=0.5;
+  boolean m_started=false;
 
   public DriveToTag(Drivetrain drive) {
     m_PID = new PIDController(0.1, 0, 0);
@@ -26,7 +26,7 @@ public class DriveToTag extends Command {
   @Override
   public void initialize() {
     System.out.println("Drive to tag");
-
+    m_started=false;
     m_PID.setSetpoint(m_target);
     m_PID.setTolerance(0.01);
   }
@@ -34,10 +34,13 @@ public class DriveToTag extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double s = TagDetector.tagDistance();
-    double d = m_PID.calculate(s, m_target);
-    System.out.println("distance = " + s + " correction = " + d);
-    m_drive.drive(d, 0, 0, false);
+    if(TagDetector.haveTag()){
+      double s = TagDetector.tagDistance();
+      double d = m_PID.calculate(s, m_target);
+      System.out.println("distance = " + s + " correction = " + d);
+      m_drive.drive(d, 0, 0, false);
+      m_started=true;
+    }
   }
 
   // Called once the command ends or is interrupted.
@@ -49,7 +52,7 @@ public class DriveToTag extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (!TagDetector.haveTag()) {
+    if (m_started && !TagDetector.haveTag()) {
       System.out.println("Lost Tags");
       return true;
     }

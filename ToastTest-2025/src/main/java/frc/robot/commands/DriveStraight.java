@@ -5,7 +5,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.TagDetector;
@@ -18,7 +17,8 @@ public class DriveStraight extends Command {
   Drivetrain m_drive;
   PIDController m_PID;
   double m_target=1;
-  boolean m_endAtTag = true;
+  static boolean m_endAtTag = false;
+
 
   public DriveStraight(Drivetrain drive, double t) {
     // Use addRequirements() here to declare subsystem dependencies
@@ -28,13 +28,15 @@ public class DriveStraight extends Command {
     addRequirements(drive);
   }
 
+  static public void setEndAtTag(boolean b){
+    m_endAtTag=b;
+  }
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
    // System.out.println("Drive straight target = " + m_target);
     m_PID.setSetpoint(m_target);
     m_PID.setTolerance(0.05);
-    m_endAtTag = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -55,7 +57,7 @@ public class DriveStraight extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (SmartDashboard.getBoolean("EndAtTags", m_endAtTag)) {
+    if (m_endAtTag) {
       if (TagDetector.haveTag()) {
         System.out.println("April tag detected");
         return true;

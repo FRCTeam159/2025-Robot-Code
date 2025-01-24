@@ -1,7 +1,5 @@
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.derive;
-
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -29,15 +27,17 @@ public class Autonomous {
 
     public SequentialCommandGroup getCommand() {
         m_target = SmartDashboard.getNumber("target", 0);
+        DriveStraight.setEndAtTag(false);
         int automode = m_autochooser.getSelected();
         switch (automode) {
             default:
             return null;
             case DRIVE_STRAIGHT:
-                return new SequentialCommandGroup(new DriveStraight(m_drivetrain, m_target));
+                 return new SequentialCommandGroup(new DriveStraight(m_drivetrain, m_target));
             case DRIVE_TO_TAG:
                 return new SequentialCommandGroup(new DriveToTag(m_drivetrain));
             case AUTO_TEST:
+                DriveStraight.setEndAtTag(true);
                 return new SequentialCommandGroup(
                     new DriveStraight(m_drivetrain, m_target),
                     new DriveToTag(m_drivetrain)
@@ -46,5 +46,13 @@ public class Autonomous {
         
         //driveToTag();
         //return new SequentialCommandGroup(new DriveToTag(m_drivetrain));
+    }
+
+    public void endAuto() {
+        TagDetector.setTargeting(false);
+    }
+
+    public void initAuto() {
+        TagDetector.setTargeting(true);
     }
 }
