@@ -5,6 +5,9 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.networktables.IntegerSubscriber;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.TagDetector;
@@ -19,13 +22,18 @@ public class DriveStraight extends Command {
   double m_target=1;
   static boolean m_endAtTag = false;
 
+  IntegerSubscriber nSub;
+
 
   public DriveStraight(Drivetrain drive, double t) {
+    NetworkTableInstance inst = NetworkTableInstance.getDefault();
+    NetworkTable table = inst.getTable("datatable");
     // Use addRequirements() here to declare subsystem dependencies
     m_PID = new PIDController(0.1, 0, 0);
     m_drive = drive;
     m_target = t;
     addRequirements(drive);
+    nSub = table.getIntegerTopic("NumTags").subscribe(0);
   }
 
   static public void setEndAtTag(boolean b){
@@ -58,7 +66,8 @@ public class DriveStraight extends Command {
   @Override
   public boolean isFinished() {
     if (m_endAtTag) {
-      if (TagDetector.haveTag()) {
+      long n = nSub.get();
+      if (n>0) {
         System.out.println("April tag detected");
         return true;
       }

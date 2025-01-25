@@ -23,6 +23,11 @@ import edu.wpi.first.apriltag.AprilTagPoseEstimator;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.CvSource;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.DoubleTopic;
+import edu.wpi.first.networktables.IntegerPublisher;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import objects.AprilTag;
 import edu.wpi.first.cscore.CvSink;
@@ -75,12 +80,21 @@ public class TagDetector extends Thread {
   public double fy = cy / Math.tan(0.5 * Math.toRadians(vFOV));
   static AprilTag tag = null;
 
+  DoublePublisher xPub;
+  DoublePublisher yPub;
+  IntegerPublisher nPub;
+
   double targetSize = 0.1524;
 
   public static boolean autoselect =  false;
 
   public TagDetector(Drivetrain drivetrain) {
     m_drivetrain = drivetrain;
+    NetworkTableInstance inst = NetworkTableInstance.getDefault();
+    NetworkTable table = inst.getTable("datatable");
+    xPub = table.getDoubleTopic("Distance").publish();
+    yPub = table.getDoubleTopic("Offset").publish();
+    nPub = table.getIntegerTopic("NumTags").publish();
   }
 
   public static void setTargeting(boolean b){
@@ -90,25 +104,7 @@ public class TagDetector extends Thread {
   public static boolean isTargeting(){
     return m_targeting;
   }
-  public static boolean haveTag(){
-    if(tag!=null && tag.getDistance()>0.05)
-      return true;
-    return false;
-  }
-
-  // return tag distance in meters
-  public static double tagDistance(){
-    if(!haveTag())
-      return 0;
-    return tag.getDistance();
-  }
-  // return tag offset in degrees
-  public static double tagOffset(){ 
-    if(!haveTag())
-      return 0;
-    return tag.getYaw();
-  }
-
+ 
   @Override
   public void run() {
     mat = new Mat();
@@ -134,7 +130,9 @@ public class TagDetector extends Thread {
     SmartDashboard.putString("Tags", "None Visible");  
     SmartDashboard.putBoolean("Show Tags", m_showTags);  
     //SmartDashboard.putBoolean("EndAtTags", true);  
-
+    xPub.set(0);
+    yPub.set(0);
+    nPub.set(0);
     while (!Thread.interrupted()) {
       try {
         Thread.sleep(10);
@@ -143,7 +141,7 @@ public class TagDetector extends Thread {
           continue;
 
         tags = null;
-        //tag = null;
+        tag = null;
 
         m_showTags=SmartDashboard.getBoolean("Show Tags", m_showTags);
         
@@ -155,8 +153,11 @@ public class TagDetector extends Thread {
           }
           if (tags != null) {
             tag = tags[0];
+            xPub.set(tag.getDistance());
+            yPub.set(tag.getYaw());
+            nPub.set(tags.length);
             String str = String.format(" Number:%d Closest id:%d distance:%-1.2f offset:%1.2f\n",
-                tags.length, tag.getTagId(), tagDistance(),tagOffset());
+                tags.length, tag.getTagId(), tag.getDistance(),tag.getYaw());
             SmartDashboard.putString("Tags", str);
             if(m_showTags)
               showTags(tags, mat);

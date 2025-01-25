@@ -5,6 +5,10 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.networktables.DoubleSubscriber;
+import edu.wpi.first.networktables.IntegerSubscriber;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.TagDetector;
@@ -16,11 +20,18 @@ public class DriveToTag extends Command {
   PIDController m_rotationPID;
   double m_target=0.5;
   boolean m_started=false;
-
+  DoubleSubscriber xSub;
+  DoubleSubscriber ySub;
+  IntegerSubscriber nSub;
   public DriveToTag(Drivetrain drive) {
     m_drivePID = new PIDController(0.1, 0, 0);
     m_rotationPID = new PIDController(0.005, 0, 0);
+    NetworkTableInstance inst = NetworkTableInstance.getDefault();
+    NetworkTable table = inst.getTable("datatable");
     m_drive = drive;
+    xSub = table.getDoubleTopic("Distance").subscribe(0.0);
+    ySub = table.getDoubleTopic("Offset").subscribe(0.0);
+    nSub = table.getIntegerTopic("NumTags").subscribe(0);
     addRequirements(drive);
   }
 
@@ -38,9 +49,13 @@ public class DriveToTag extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(TagDetector.haveTag()){
-      double d = m_drivePID.calculate(TagDetector.tagDistance(), m_target);
-      double r = m_rotationPID.calculate(TagDetector.tagOffset(), 0);
+    long n = nSub.get();
+    if(n>0){
+      double x = xSub.get();
+      double y = ySub.get();
+      System.out.println("distance = " + x + "Offset = " + y);
+      double d = m_drivePID.calculate(x, m_target);
+      double r = m_rotationPID.calculate(y, 0);
      // System.out.println("distance = " + s + " correction = " + d);
       m_drive.drive(-d, 0, -r, false);
       m_started=true;
@@ -57,7 +72,8 @@ public class DriveToTag extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (m_started && !TagDetector.haveTag()) {
+    long n = nSub.get();
+    if (m_started && n==0) {
       System.out.println("Lost Tags");
       return true;
     }

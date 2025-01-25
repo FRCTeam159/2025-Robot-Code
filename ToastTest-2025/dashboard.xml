@@ -11,8 +11,8 @@
 		<location x="314" y="55"/>
 	</widget>
 	<widget field="Tags" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="195" y="31"/>
-		<width>220</width>
+		<location x="121" y="31"/>
+		<width>294</width>
 	</widget>
 	<widget field="Power Value" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="338" y="7"/>
