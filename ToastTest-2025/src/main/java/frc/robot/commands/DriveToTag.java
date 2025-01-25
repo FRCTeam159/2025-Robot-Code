@@ -12,12 +12,14 @@ import frc.robot.subsystems.TagDetector;
 public class DriveToTag extends Command {
   /** Creates a new DriveToTag. */
   Drivetrain m_drive;
-  PIDController m_PID;
+  PIDController m_drivePID;
+  PIDController m_rotationPID;
   double m_target=0.5;
   boolean m_started=false;
 
   public DriveToTag(Drivetrain drive) {
-    m_PID = new PIDController(0.1, 0, 0);
+    m_drivePID = new PIDController(0.1, 0, 0);
+    m_rotationPID = new PIDController(0.005, 0, 0);
     m_drive = drive;
     addRequirements(drive);
   }
@@ -27,18 +29,20 @@ public class DriveToTag extends Command {
   public void initialize() {
     System.out.println("Drive to tag");
     m_started=false;
-    m_PID.setSetpoint(m_target);
-    m_PID.setTolerance(0.01);
+    m_drivePID.setSetpoint(m_target);
+    m_drivePID.setTolerance(0.01);
+    m_rotationPID.setSetpoint(0);
+    m_rotationPID.setTolerance(0.01);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     if(TagDetector.haveTag()){
-      double s = TagDetector.tagDistance();
-      double d = m_PID.calculate(s, m_target);
-      System.out.println("distance = " + s + " correction = " + d);
-      m_drive.drive(d, 0, 0, false);
+      double d = m_drivePID.calculate(TagDetector.tagDistance(), m_target);
+      double r = m_rotationPID.calculate(TagDetector.tagOffset(), 0);
+     // System.out.println("distance = " + s + " correction = " + d);
+      m_drive.drive(-d, 0, -r, false);
       m_started=true;
     }
   }
@@ -47,6 +51,7 @@ public class DriveToTag extends Command {
   @Override
   public void end(boolean interrupted) {
     System.out.println("DriveToTag.end " + interrupted);
+    TagDetector.setTargeting(false);
   }
 
   // Returns true when the command should end.
@@ -56,7 +61,7 @@ public class DriveToTag extends Command {
       System.out.println("Lost Tags");
       return true;
     }
-    boolean atTarget = m_PID.atSetpoint();
+    boolean atTarget = m_drivePID.atSetpoint();
     if(atTarget)
       System.out.println("DriveToTag Target Reached");
     return atTarget;

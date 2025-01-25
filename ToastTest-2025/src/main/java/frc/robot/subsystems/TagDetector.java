@@ -64,7 +64,7 @@ public class TagDetector extends Thread {
   // Camera quality
   static int IMAGE_WIDTH = 640;
   static int IMAGE_HEIGHT = 480;
-  static int IMAGE_FPS = 30;
+  static int IMAGE_FPS = 60;
 
   public double hFOV = 40.107;
   public double aspect = ((double) IMAGE_WIDTH) / IMAGE_HEIGHT;
@@ -73,7 +73,7 @@ public class TagDetector extends Thread {
   public double cy = IMAGE_HEIGHT / 2.0;
   public double fx = cx / Math.tan(0.5 * Math.toRadians(hFOV));
   public double fy = cy / Math.tan(0.5 * Math.toRadians(vFOV));
-  static AprilTag tag;
+  static AprilTag tag = null;
 
   double targetSize = 0.1524;
 
@@ -85,6 +85,7 @@ public class TagDetector extends Thread {
 
   public static void setTargeting(boolean b){
     m_targeting=b;
+    tag = null;
   }
   public static boolean isTargeting(){
     return m_targeting;
@@ -136,13 +137,13 @@ public class TagDetector extends Thread {
 
     while (!Thread.interrupted()) {
       try {
-        Thread.sleep(20);
+        Thread.sleep(10);
         long tm = UsbCameraSink.grabFrame(mat);
         if (tm == 0) // bad frame
           continue;
 
         tags = null;
-        tag = null;
+        //tag = null;
 
         m_showTags=SmartDashboard.getBoolean("Show Tags", m_showTags);
         
@@ -154,8 +155,8 @@ public class TagDetector extends Thread {
           }
           if (tags != null) {
             tag = tags[0];
-            String str = String.format(" Number:%d Closest id:%d distance:%-1.2f m\n",
-                tags.length, tag.getTagId(), tag.getDistance());
+            String str = String.format(" Number:%d Closest id:%d distance:%-1.2f offset:%1.2f\n",
+                tags.length, tag.getTagId(), tagDistance(),tagOffset());
             SmartDashboard.putString("Tags", str);
             if(m_showTags)
               showTags(tags, mat);
