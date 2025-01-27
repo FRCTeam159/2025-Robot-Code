@@ -23,6 +23,11 @@ import edu.wpi.first.apriltag.AprilTagPoseEstimator;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.CvSource;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.DoubleTopic;
+import edu.wpi.first.networktables.IntegerPublisher;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import objects.AprilTag;
 import edu.wpi.first.cscore.CvSink;
@@ -51,7 +56,7 @@ public class TagDetector extends Thread {
   Drivetrain m_drivetrain;
 
   static boolean m_targeting = false;
-  static boolean showTags = false;
+  static boolean m_showTags = false;
 
   static AprilTag[] tags = null;
 
@@ -73,7 +78,11 @@ public class TagDetector extends Thread {
   public double cy = IMAGE_HEIGHT / 2.0;
   public double fx = cx / Math.tan(0.5 * Math.toRadians(hFOV));
   public double fy = cy / Math.tan(0.5 * Math.toRadians(vFOV));
-  public static AprilTag tag;
+  static AprilTag tag = null;
+
+  DoublePublisher xPub;
+  DoublePublisher yPub;
+  IntegerPublisher nPub;
 
   double targetSize = 0.1524;
 
@@ -81,6 +90,19 @@ public class TagDetector extends Thread {
 
   public TagDetector(Drivetrain drivetrain) {
     m_drivetrain = drivetrain;
+    NetworkTableInstance inst = NetworkTableInstance.getDefault();
+    NetworkTable table = inst.getTable("datatable");
+    xPub = table.getDoubleTopic("Distance").publish();
+    yPub = table.getDoubleTopic("Offset").publish();
+    nPub = table.getIntegerTopic("NumTags").publish();
+  }
+
+  public static void setTargeting(boolean b){
+    m_targeting=b;
+    tag = null;
+  }
+  public static boolean isTargeting(){
+    return m_targeting;
   }
 
   @Override
@@ -93,7 +115,7 @@ public class TagDetector extends Thread {
 
     wpi_detector = new AprilTagDetector();
     try{
-      wpi_detector.addFamily("tag16h5", 0);
+      //wpi_detector.addFamily("tag16h5", 0);
       wpi_detector.addFamily("tag36h11", 0);
       System.out.println("Tag Families loaded");
     } catch (Exception ex){
@@ -106,11 +128,14 @@ public class TagDetector extends Thread {
     ouputStream = CameraServer.putVideo("RobotCamera", IMAGE_WIDTH, IMAGE_HEIGHT);
 
     SmartDashboard.putString("Tags", "None Visible");  
-    SmartDashboard.putBoolean("Show Tags", showTags);  
-
+    SmartDashboard.putBoolean("Show Tags", m_showTags);  
+    //SmartDashboard.putBoolean("EndAtTags", true);  
+    xPub.set(0);
+    yPub.set(0);
+    nPub.set(0);
     while (!Thread.interrupted()) {
       try {
-        Thread.sleep(20);
+        Thread.sleep(10);
         long tm = UsbCameraSink.grabFrame(mat);
         if (tm == 0) // bad frame
           continue;
@@ -118,20 +143,23 @@ public class TagDetector extends Thread {
         tags = null;
         tag = null;
 
-        showTags=SmartDashboard.getBoolean("Show Tags", showTags);
+        m_showTags=SmartDashboard.getBoolean("Show Tags", m_showTags);
         
         // If targeting or showing tags, detect tags
-        if (m_targeting || showTags) {
+        if (m_targeting || m_showTags) {
           tags = getTags(mat);
           if (tags != null && tags.length > 0) {
             Arrays.sort(tags, new SortbyDistance());
           }
           if (tags != null) {
             tag = tags[0];
-            String str = String.format(" Number:%d Closest id:%d distance:%-1.2f m\n",
-                tags.length, tag.getTagId(), tag.getDistance());
+            xPub.set(tag.getDistance());
+            yPub.set(tag.getYaw());
+            nPub.set(tags.length);
+            String str = String.format(" Number:%d Closest id:%d distance:%-1.2f offset:%1.2f\n",
+                tags.length, tag.getTagId(), tag.getDistance(),tag.getYaw());
             SmartDashboard.putString("Tags", str);
-            if(showTags)
+            if(m_showTags)
               showTags(tags, mat);
           } else
             SmartDashboard.putString("Tags", "None Visible");
