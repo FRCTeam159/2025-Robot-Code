@@ -161,9 +161,14 @@ public class TagDetector extends Thread {
             SmartDashboard.putString("Tags", str);
             if(m_showTags)
               showTags(tags, mat);
-          } else
+          } else{
+            nPub.set(0);
+            xPub.set(0);
             SmartDashboard.putString("Tags", "None Visible");
+          }
         }
+        else  
+          nPub.set(0);
   
         ouputStream.putFrame(mat);
       } catch (Exception ex) {

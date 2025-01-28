@@ -4,11 +4,17 @@
 
 package frc.robot;
 
+import static frc.robot.Constants.kArm;
+import static frc.robot.Constants.kClimber;
+import static frc.robot.Constants.kRollers;
+
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.commands.ArmControl;
 import frc.robot.commands.DriveWithGamepad;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Autonomous;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.TagDetector;
 
@@ -20,9 +26,13 @@ public class RobotContainer {
 
   private final TagDetector m_Detector= new TagDetector(m_drivetrain);
 
+  private final Arm m_Arm = new Arm(kArm, kRollers);
+  private final Climber m_Climber = new Climber(kClimber);
+
 public final Autonomous m_autonomous = new Autonomous(m_drivetrain, m_Detector);
   public RobotContainer() {
     m_drivetrain.setDefaultCommand(m_DriveWithGamepad);
+    m_Arm.setDefaultCommand(new ArmControl(m_Arm, m_controller));
   }
 
   public void robotInit() {

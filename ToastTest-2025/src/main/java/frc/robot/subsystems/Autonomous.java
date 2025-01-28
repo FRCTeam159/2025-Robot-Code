@@ -13,7 +13,7 @@ public class Autonomous {
     public static final int DRIVE_TO_TAG = 2;
     public static final int AUTO_TEST = 3;
     static SendableChooser<Integer> m_autochooser = new SendableChooser<Integer>();
-    double m_target = 1;
+    double m_driveStraitTarget = 2;
 
     public Autonomous(Drivetrain drivetrain, TagDetector Detector) {
         m_drivetrain = drivetrain;
@@ -22,24 +22,24 @@ public class Autonomous {
         m_autochooser.addOption("Drive To Tag", DRIVE_TO_TAG);
         m_autochooser.addOption("Auto Test", AUTO_TEST);
         SmartDashboard.putData(m_autochooser);
-        SmartDashboard.putNumber("target", m_target);
+        SmartDashboard.putNumber("target", m_driveStraitTarget);
     }
 
     public SequentialCommandGroup getCommand() {
-        m_target = SmartDashboard.getNumber("target", 0);
+        m_driveStraitTarget = SmartDashboard.getNumber("target", 0);
         DriveStraight.setEndAtTag(false);
         int automode = m_autochooser.getSelected();
         switch (automode) {
             default:
             return null;
             case DRIVE_STRAIGHT:
-                 return new SequentialCommandGroup(new DriveStraight(m_drivetrain, m_target));
+                 return new SequentialCommandGroup(new DriveStraight(m_drivetrain, m_driveStraitTarget));
             case DRIVE_TO_TAG:
                 return new SequentialCommandGroup(new DriveToTag(m_drivetrain));
             case AUTO_TEST:
                 DriveStraight.setEndAtTag(true);
                 return new SequentialCommandGroup(
-                    new DriveStraight(m_drivetrain, m_target),
+                    new DriveStraight(m_drivetrain, m_driveStraitTarget),
                     new DriveToTag(m_drivetrain)
                 );
         }

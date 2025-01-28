@@ -19,7 +19,7 @@ public class DriveToTag extends Command {
   Drivetrain m_drive;
   PIDController m_drivePID;
   PIDController m_rotationPID;
-  double m_target=0.5;
+  double m_target=0.25;
   boolean m_started=false;
   DoubleSubscriber xSub;
   DoubleSubscriber ySub;
@@ -54,7 +54,7 @@ public class DriveToTag extends Command {
     if(n>0){
       double x = xSub.get();
       double y = ySub.get();
-      System.out.println("distance = " + x + "Offset = " + y);
+      //System.out.println("distance = " + x + "Offset = " + y);
       double d = m_drivePID.calculate(x, m_target);
       double r = m_rotationPID.calculate(y, 0);
      // System.out.println("distance = " + s + " correction = " + d);
@@ -68,7 +68,8 @@ public class DriveToTag extends Command {
   public void end(boolean interrupted) {
     System.out.println("DriveToTag.end " + interrupted);
     TagDetector.setTargeting(false);
-  }
+   m_drive.drive(0, 0, 0, false);
+   }
 
   // Returns true when the command should end.
   @Override
