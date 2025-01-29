@@ -7,10 +7,16 @@ package frc.robot;
 /** Add your docs here. */
 public class Constants {
 
-    public static final double kBackRightOffset = -0.169434;
-    public static final double kBackLeftOffset = -0.215332;
-    public static final double kFrontRightOffset = -0.400635;
-    public static final double kFrontLeftOffset = 0.039062;
+    //public static final double kBackRightOffset = -0.169434;
+    //public static final double kBackLeftOffset = -0.215332;
+    //public static final double kFrontRightOffset = -0.400635;
+    //public static final double kFrontLeftOffset = 0.039062;
+
+    public static final double kBackRightOffset = 0.16943359375;
+    public static final double kBackLeftOffset = 0.215087890625;
+    public static final double kFrontRightOffset = 0.400634765625;
+    public static final double kFrontLeftOffset = -0.038818359375;
+
    // can ids for drive train
     public static final int kFl_Drive = 3;
     public static final int kFl_Turn = 8;

@@ -31,10 +31,10 @@ public class Drivetrain extends SubsystemBase {
   public static final double kDistPerRot = (Units.inchesToMeters(kWheelRadius) * 2 * Math.PI) / kDriveGearRatio;
   public static final double kRadiansPerRot = Math.PI * 2 / kTurnGearRatio;
   
-  public static final double kRobotLength = Units.inchesToMeters(24); // compbot side length 29.5"
+  public static final double kRobotLength = Units.inchesToMeters(29.5); // toast side length 24"
 
-  public static final double kFrontWheelBase = Units.inchesToMeters(18.5); // distance bewteen front wheels on compbot its 24"
-  public static final double kSideWheelBase = Units.inchesToMeters(18.5); // distance beteen side wheels ^^^
+  public static final double kFrontWheelBase = Units.inchesToMeters(24); // distance bewteen front wheels on toast its 18.5"
+  public static final double kSideWheelBase = Units.inchesToMeters(24); // distance beteen side wheels ^^^
   public static final double kTrackRadius = 0.5
       * Math.sqrt(kFrontWheelBase * kFrontWheelBase + kSideWheelBase * kSideWheelBase);
 

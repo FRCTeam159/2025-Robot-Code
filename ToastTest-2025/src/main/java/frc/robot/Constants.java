@@ -28,7 +28,11 @@ public class Constants {
     public static final int kBr_Turn = 1;
     public static final int kBr_Encoder = 11;
 
-     public static final int kSpare = 13;
+    public static final int kClimber = 13;
+
+    public static final int kArm = 14;
+    public static final int kRollers = 15;
+
 
 
 
