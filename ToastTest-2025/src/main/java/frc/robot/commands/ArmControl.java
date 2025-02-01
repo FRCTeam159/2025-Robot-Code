@@ -10,7 +10,7 @@ import frc.robot.subsystems.Arm;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ArmControl extends Command {
-public static final double ARM_MOVE_RATE = 0.1;
+public static final double ARM_MOVE_RATE = 0.5;
 Arm m_arm;
 XboxController m_controller;
 /** Creates a new ArmControl. 
@@ -31,19 +31,20 @@ XboxController m_controller;
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-     double left = m_controller.getLeftTriggerAxis();
+    double left = m_controller.getLeftTriggerAxis();
     double right = m_controller.getRightTriggerAxis();
 
     if (m_controller.getAButtonPressed())
       m_arm.goToGround();
     if (m_controller.getYButtonPressed())
       m_arm.goToShelf();
-    //if (m_controller.getBButtonPressed();
+    if (m_controller.getBButtonPressed())
+      m_arm.goToZero();
 
     else if (left > 0)
-      m_arm.adjustAngle(-left * ARM_MOVE_RATE);
+      m_arm.decrement(left * ARM_MOVE_RATE);
     else if (right > 0)
-      m_arm.adjustAngle(right * ARM_MOVE_RATE);
+      m_arm.increment(right * ARM_MOVE_RATE);
   }
 
   // Called once the command ends or is interrupted.

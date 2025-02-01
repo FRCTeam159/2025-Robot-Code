@@ -23,11 +23,15 @@ public class Motor {
     
     double m_dpr=1;
     static boolean m_real=false;
-     public Motor(int id) {
+    public Motor(int id, boolean isBrushed) {
+        rev_motor = new SparkMax(id, isBrushed?MotorType.kBrushed:MotorType.kBrushless);
+        rev_encoder = rev_motor.getEncoder();
+        m_chnl=id;
+    }
+    public Motor(int id) {
         rev_motor = new SparkMax(id, MotorType.kBrushless);
         rev_encoder = rev_motor.getEncoder();
         m_chnl=id;
-
     }
     static public void setMode(boolean m){
         m_real=m;

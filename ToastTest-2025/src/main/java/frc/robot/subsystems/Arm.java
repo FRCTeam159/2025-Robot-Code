@@ -25,7 +25,7 @@ static double groundAngle=200;
 // shelf pos is 132
 // floor pos is 200
 
-private final PIDController m_PID = new PIDController(1, 0, 0);
+private final PIDController m_PID = new PIDController(0.01, 0, 0);
 
 static AHRS m_NAVXgyro=new AHRS(NavXComType.kUSB1);
 
@@ -36,16 +36,18 @@ static final double MAX_ANGLE=200;
 static final double MIN_ANGLE=0;
 
 boolean newAngle = true;
-private double armSetAngle = 0;
+private double armSetAngle = 90;
 
   /** Creates a new Arm. 
    * @param krollers */
   public Arm(int id, int krollers) {
     SmartDashboard.putNumber("NavX",0);
-    m_armPosMotor=new Motor(id);
+    SmartDashboard.putString("Arm", "Inactive");
+    m_armPosMotor=new Motor(id, true);
     m_PID.setTolerance(3);
     m_PID.reset();
     //m_rollermotor = new Motor(krollers);
+    m_armPosMotor.enable();
   }
   public void adjustAngle(double adjustment) {
     setNewTarget(armSetAngle+adjustment);
@@ -65,7 +67,7 @@ private double armSetAngle = 0;
     m_armPosMotor.set(output);
     String s=String.format("A:%-1.1f T:%-1.1f C:%-1.1f\n", current, armSetAngle, output);
     SmartDashboard.putString("Arm", s);
-    System.out.println(s);  
+    //System.out.println(s);  
   }
 
   public void hold(){
@@ -77,23 +79,25 @@ private double armSetAngle = 0;
   public void intake(){
     System.out.println("picking up coral");
   }
-  public void decrament(){
-    System.out.println("incrament arm");
+  public void decrement(double angle){
+    System.out.println("decrament arm by " + angle);
+    adjustAngle(-angle);
   }
-  public void increment(){
-    System.out.println("incrament arm");
+  public void increment(double angle){
+    System.out.println("incrament arm by " + angle);
+    adjustAngle(angle);
   }
   public void goToShelf(){
     System.out.println("going to shelf");
     setNewTarget(shelfAngle);
-
   }
   public void goToGround(){
     System.out.println("going to ground");
     setNewTarget(groundAngle);
   }
-  private void goToPos(double p) {
-      System.out.println("going to " + p);
+  public void goToZero(){
+    System.out.println("going to zero");
+    setNewTarget(0);
   }
 
   @Override

@@ -1,31 +1,11 @@
 <xml version="1.0">
 <dashboard>
-	<widget field="FR" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="19" y="4"/>
+	<widget field="Arm" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="21" y="6"/>
+		<width>167</width>
 	</widget>
-	<widget field="mod5" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="30" y="17"/>
-	</widget>
-	<widget field="FL" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="11" y="30"/>
-	</widget>
-	<widget field="mod2" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="13" y="0"/>
-	</widget>
-	<widget field="BL" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="18" y="9"/>
-	</widget>
-	<widget field="mod7" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="117" y="51"/>
-	</widget>
-	<widget field="BR" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="12" y="5"/>
-	</widget>
-	<widget field="mod3" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="55"/>
-	</widget>
-	<widget field="EndAtTags" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
-		<location x="428" y="31"/>
+	<widget field="NavX" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="194" y="7"/>
 	</widget>
 	<widget field="target" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="404" y="57"/>
@@ -39,7 +19,7 @@
 		<width>294</width>
 	</widget>
 	<widget field="Power Value" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="338" y="7"/>
+		<location x="387" y="8"/>
 		<width>117</width>
 	</widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.CameraServerViewer">
@@ -52,11 +32,11 @@
 		<location x="31" y="33"/>
 	</widget>
 	<widget field="Gyro" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="245" y="7"/>
+		<location x="303" y="9"/>
 		<width>81</width>
 	</widget>
 	<widget field="Pose" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="11" y="7"/>
+		<location x="17" y="57"/>
 		<width>219</width>
 	</widget>
 	<widget field="SendableChooser[0]" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
