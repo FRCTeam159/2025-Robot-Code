@@ -4,20 +4,23 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.DriveToTag;
+import frc.robot.commands.GoToShelf;
 import frc.robot.commands.DriveStraight;
 
 public class Autonomous {
     Drivetrain m_drivetrain;
     TagDetector m_Detector;
+    Arm m_Arm;
     public static final int DRIVE_STRAIGHT = 1; 
     public static final int DRIVE_TO_TAG = 2;
     public static final int AUTO_TEST = 3;
     static SendableChooser<Integer> m_autochooser = new SendableChooser<Integer>();
     double m_driveStraitTarget = 2;
 
-    public Autonomous(Drivetrain drivetrain, TagDetector Detector) {
+    public Autonomous(Drivetrain drivetrain, TagDetector Detector, Arm arm) {
         m_drivetrain = drivetrain;
         m_Detector = Detector;
+        m_Arm = arm;
         m_autochooser.setDefaultOption("Drive Straight", DRIVE_STRAIGHT);
         m_autochooser.addOption("Drive To Tag", DRIVE_TO_TAG);
         m_autochooser.addOption("Auto Test", AUTO_TEST);
@@ -39,6 +42,7 @@ public class Autonomous {
             case AUTO_TEST:
                 DriveStraight.setEndAtTag(true);
                 return new SequentialCommandGroup(
+                    new GoToShelf(m_Arm),
                     new DriveStraight(m_drivetrain, m_driveStraitTarget),
                     new DriveToTag(m_drivetrain)
                 );

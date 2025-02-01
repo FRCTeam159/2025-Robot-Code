@@ -33,7 +33,18 @@ public class Constants {
 
     public static final int kClimber = 15;
 
-
+    /* Toast Code:
+     * kFl_Encoder = 12;
+     * kFr_Encoder = 10;
+     * kBl_Encoder = 9;
+     * kBr_Encoder = 11;
+     * .
+     * Actual:
+     * kFl_Encoder = 12;
+     * kFr_Encoder = 10;
+     * kBl_Encoder = 9;
+     * kBr_Encoder = 11;
+     */
 
 
    

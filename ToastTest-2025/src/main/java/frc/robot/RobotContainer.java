@@ -29,7 +29,7 @@ public class RobotContainer {
   private final Arm m_Arm = new Arm(kArm, kRollers);
   private final Climber m_Climber = new Climber(kClimber);
 
-public final Autonomous m_autonomous = new Autonomous(m_drivetrain, m_Detector);
+public final Autonomous m_autonomous = new Autonomous(m_drivetrain, m_Detector, m_Arm);
   public RobotContainer() {
     m_drivetrain.setDefaultCommand(m_DriveWithGamepad);
     m_Arm.setDefaultCommand(new ArmControl(m_Arm, m_controller));

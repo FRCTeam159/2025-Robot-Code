@@ -11,13 +11,13 @@ import frc.robot.subsystems.Arm;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ArmControl extends Command {
 public static final double ARM_MOVE_RATE = 0.5;
-Arm m_arm;
+Arm m_Arm;
 XboxController m_controller;
 /** Creates a new ArmControl. 
  * @param karm 
  * @param m_controller */
   public ArmControl(Arm arm, XboxController controller) {
-    m_arm = arm;
+    m_Arm = arm;
     m_controller = controller;
     addRequirements(arm);
   }
@@ -35,16 +35,20 @@ XboxController m_controller;
     double right = m_controller.getRightTriggerAxis();
 
     if (m_controller.getAButtonPressed())
-      m_arm.goToGround();
+      m_Arm.goToGround();
     if (m_controller.getYButtonPressed())
-      m_arm.goToShelf();
+      m_Arm.goToShelf();
     if (m_controller.getBButtonPressed())
-      m_arm.goToZero();
+      m_Arm.goToZero();
+    if (m_controller.getLeftBumperButtonPressed())
+      m_Arm.intake();
+    if (m_controller.getRightBumperButtonPressed())
+      m_Arm.eject();
 
     else if (left > 0)
-      m_arm.decrement(left * ARM_MOVE_RATE);
+      m_Arm.decrement(left * ARM_MOVE_RATE);
     else if (right > 0)
-      m_arm.increment(right * ARM_MOVE_RATE);
+      m_Arm.increment(right * ARM_MOVE_RATE);
   }
 
   // Called once the command ends or is interrupted.

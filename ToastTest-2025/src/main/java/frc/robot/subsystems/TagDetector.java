@@ -85,7 +85,7 @@ public class TagDetector extends Thread {
   IntegerPublisher nPub;
 
   double targetSize = 0.1524;
-
+  Mat graymat = new Mat();
   public static boolean autoselect =  false;
 
   public TagDetector(Drivetrain drivetrain) {
@@ -211,7 +211,7 @@ public class TagDetector extends Thread {
   // return an array of tag info structures from an image
   private AprilTag[] getTags(Mat mat) {
     AprilTag[] atags = null;
-    Mat graymat = new Mat();
+    //Mat graymat = new Mat();
     Imgproc.cvtColor(mat, graymat, Imgproc.COLOR_RGB2GRAY);
     AprilTagDetection[] detections = wpi_detector.detect(graymat);
 

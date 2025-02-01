@@ -21,7 +21,7 @@ public class Arm extends SubsystemBase {
 double last_heading = 0;
 static double m_navx_offset=0;//83.1; // observed gyro value when arm is horizontal
 static double shelfAngle=132;
-static double groundAngle=200;
+static double groundAngle=190;
 // shelf pos is 132
 // floor pos is 200
 
@@ -36,7 +36,7 @@ static final double MAX_ANGLE=200;
 static final double MIN_ANGLE=0;
 
 boolean newAngle = true;
-private double armSetAngle = 90;
+private double armSetAngle = 0;
 
   /** Creates a new Arm. 
    * @param krollers */
