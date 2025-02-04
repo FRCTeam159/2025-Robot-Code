@@ -18,14 +18,17 @@ import objects.Motor;
 
 public class Arm extends SubsystemBase {
 
+static boolean toastMode = false;
 double last_heading = 0;
 static double m_navx_offset=0;//83.1; // observed gyro value when arm is horizontal
-static double shelfAngle=132;
+static double shelfAngle=180;
 static double groundAngle=190;
+static public final double kGearRatio = 45;
+public static final double kDegreesPerRot = 360/(kGearRatio);
 // shelf pos is 132
 // floor pos is 200
 
-private final PIDController m_PID = new PIDController(0.01, 0, 0);
+private final PIDController m_PID = new PIDController(0.002, 0, 0);
 
 static AHRS m_NAVXgyro=new AHRS(NavXComType.kUSB1);
 
@@ -43,7 +46,12 @@ private double armSetAngle = 0;
   public Arm(int id, int krollers) {
     SmartDashboard.putNumber("NavX",0);
     SmartDashboard.putString("Arm", "Inactive");
-    m_armPosMotor=new Motor(id, true);
+    if(toastMode)
+      m_armPosMotor=new Motor(id, true);
+    else
+      m_armPosMotor=new Motor(id, false);
+    m_armPosMotor.setConfig(false, kDegreesPerRot);
+    m_armPosMotor.setPosition(0);
     m_PID.setTolerance(3);
     m_PID.reset();
     //m_rollermotor = new Motor(krollers);
@@ -54,8 +62,8 @@ private double armSetAngle = 0;
   }
 
   void setNewTarget(double angle){
-    angle=angle>MAX_ANGLE?MAX_ANGLE:angle;
-    angle=angle<MIN_ANGLE?MIN_ANGLE:angle;
+    //angle=angle>MAX_ANGLE?MAX_ANGLE:angle;
+    //angle=angle<MIN_ANGLE?MIN_ANGLE:angle;
     armSetAngle=angle;
   }
 
@@ -80,11 +88,11 @@ private double armSetAngle = 0;
     System.out.println("picking up coral");
   }
   public void decrement(double angle){
-    System.out.println("decrament arm by " + angle);
+    //System.out.println("decrament arm by " + angle);
     adjustAngle(-angle);
   }
   public void increment(double angle){
-    System.out.println("incrament arm by " + angle);
+    //System.out.println("incrament arm by " + angle);
     adjustAngle(angle);
   }
   public void goToShelf(){
@@ -109,7 +117,11 @@ private double armSetAngle = 0;
   }
 
   public double getAngle() {
-    double angle = m_NAVXgyro.getRoll() + m_navx_offset; // returned values are negative
+    double angle = 0;
+    if (toastMode)
+      angle = m_NAVXgyro.getRoll() + m_navx_offset; // returned values are negative
+    else
+      angle = m_armPosMotor.getPosition();
     angle = unwrap(last_heading, angle);
     last_heading = angle;
     return angle;
