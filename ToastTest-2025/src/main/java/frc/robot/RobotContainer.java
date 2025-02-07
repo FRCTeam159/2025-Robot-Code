@@ -11,6 +11,7 @@ import static frc.robot.Constants.kRollers;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.ArmControl;
+import frc.robot.commands.ClimberControl;
 import frc.robot.commands.DriveWithGamepad;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Autonomous;
@@ -33,6 +34,7 @@ public final Autonomous m_autonomous = new Autonomous(m_drivetrain, m_Detector, 
   public RobotContainer() {
     m_drivetrain.setDefaultCommand(m_DriveWithGamepad);
     m_Arm.setDefaultCommand(new ArmControl(m_Arm, m_controller));
+    m_Climber.setDefaultCommand(new ClimberControl(m_Climber, m_controller));
   }
 
   public void robotInit() {
