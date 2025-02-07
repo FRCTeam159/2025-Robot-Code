@@ -8,6 +8,7 @@ import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DigitalInput;
 
 //import com.kauailabs.navx.frc.AHRS;
 
@@ -18,7 +19,7 @@ import objects.Motor;
 
 public class Arm extends SubsystemBase {
 
-static boolean toastMode = false;
+static boolean useGyro = false;
 double last_heading = 0;
 static double m_navx_offset=0;//83.1; // observed gyro value when arm is horizontal
 static double shelfAngle=180;
@@ -38,6 +39,8 @@ private Motor m_rollermotor=null;
 static final double MAX_ANGLE=200;
 static final double MIN_ANGLE=0;
 
+DigitalInput coralSensor = new DigitalInput(1);
+
 boolean newAngle = true;
 private double armSetAngle = 0;
 
@@ -46,7 +49,7 @@ private double armSetAngle = 0;
   public Arm(int id, int krollers) {
     SmartDashboard.putNumber("NavX",0);
     SmartDashboard.putString("Arm", "Inactive");
-    if(toastMode)
+    if(useGyro)
       m_armPosMotor=new Motor(id, true);
     else
       m_armPosMotor=new Motor(id, false);
@@ -57,6 +60,12 @@ private double armSetAngle = 0;
     //m_rollermotor = new Motor(krollers);
     m_armPosMotor.enable();
   }
+
+public boolean coralAtIntake(){
+    //return !noteSensor1.get();
+    return coralSensor.get();
+  }
+
   public void adjustAngle(double adjustment) {
     setNewTarget(armSetAngle+adjustment);
   }
@@ -110,15 +119,13 @@ private double armSetAngle = 0;
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("NavX",getAngle());
+     SmartDashboard.putBoolean("Sensor1", coralAtIntake());
     setAngle();
-    //System.out.println("NavX Gyro " + getAngle());
-    // This method will be called once per scheduler run
-  }
+   }
 
   public double getAngle() {
     double angle = 0;
-    if (toastMode)
+    if (useGyro)
       angle = m_NAVXgyro.getRoll() + m_navx_offset; // returned values are negative
     else
       angle = m_armPosMotor.getPosition();
