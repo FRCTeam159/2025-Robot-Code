@@ -1,51 +1,54 @@
 <xml version="1.0">
 <dashboard>
-	<widget field="Sensor1" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
-		<location x="437" y="34"/>
+	<widget field="Gyro" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="270" y="20"/>
+		<width>129</width>
 	</widget>
-	<widget field="Arm" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="21" y="6"/>
-		<width>167</width>
+	<widget field="Climber" type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="259" y="0"/>
 	</widget>
-	<widget field="NavX" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="194" y="7"/>
+	<widget field="Tags" type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="32" y="40"/>
 	</widget>
-	<widget field="target" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="404" y="57"/>
-		<width>91</width>
+	<widget field="Arm" type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="35" y="20"/>
+	</widget>
+	<widget field="Pose" type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="32" y="0"/>
+		<width>226</width>
+	</widget>
+	<widget field="CoralDetected" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="36" y="67"/>
+	</widget>
+	<widget field="UpperLimit:" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="180" y="40"/>
+		<height>13</height>
+	</widget>
+	<widget field="BottomLimit:" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="180" y="67"/>
 	</widget>
 	<widget field="Show Tags" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
-		<location x="314" y="55"/>
-	</widget>
-	<widget field="Tags" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="121" y="31"/>
-		<width>294</width>
+		<location x="438" y="19"/>
 	</widget>
 	<widget field="Power Value" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="387" y="8"/>
-		<width>117</width>
+		<location x="400" y="40"/>
+		<width>108</width>
 	</widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.CameraServerViewer">
-		<location x="12" y="84"/>
-		<width>602</width>
-		<height>444</height>
+		<location x="10" y="90"/>
+		<width>592</width>
+		<height>433</height>
 		<property name="Camera Choice" value="RobotCamera"/>
 	</static-widget>
 	<widget field="Field Oriented" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
-		<location x="31" y="33"/>
-	</widget>
-	<widget field="Gyro" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="303" y="9"/>
-		<width>81</width>
-	</widget>
-	<widget field="Pose" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="17" y="57"/>
-		<width>219</width>
+		<location x="425" y="0"/>
 	</widget>
 	<widget field="SendableChooser[0]" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
-		<location x="499" y="-1"/>
+		<location x="510" y="0"/>
 	</widget>
 </dashboard>
 <live-window>
 </live-window>
+	<hidden field="NavX"/>
+	<hidden field="target"/>
 </xml>

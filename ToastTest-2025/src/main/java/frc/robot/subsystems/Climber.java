@@ -12,50 +12,75 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import objects.Motor;
-
+import edu.wpi.first.wpilibj.DigitalOutput;
 
 public class Climber extends SubsystemBase {
-  /** Creates a new Climber. 
-   * @param kclimber */
+  /**
+   * Creates a new Climber.
+   * 
+   * @param kclimber
+   */
 
-static double lowValue=0;
-static double highValue=6;//Inches
-private double m_setPoint=0;
+  static double lowValue = 0;
+  static double highValue = 3;// Inches
+  private double m_setPoint = 0;
+  static public final double kWheelDiameter = 0.25;
+  static public final double kGearRatio = 45;
+  static public final double kInchesPerRot = (Math.PI * kWheelDiameter) / kGearRatio;
+  boolean m_raising = false;
+  boolean m_lowering = false;
+  boolean m_atUpperTarget = false;
+  boolean m_atLowerTarget = false;
+  DigitalOutput m_climbState = new DigitalOutput(3);
 
-SparkLimitSwitch m_upperLimit;
+  SparkLimitSwitch m_upperLimit;
 
-
-  private final PIDController m_PID = new PIDController(0.004, 0, 0);
+  private final PIDController m_PID = new PIDController(0.1, 0, 0);
 
   private Motor m_ClimberMotor;
+
   public Climber(int kclimber) {
-    m_ClimberMotor = new Motor (kClimber);
-    m_PID.setTolerance(3);
+    SmartDashboard.putString("Climber", "Inactive");
+    m_ClimberMotor = new Motor(kClimber);
+    m_ClimberMotor.setConfig(false, kInchesPerRot);
+    m_ClimberMotor.setPosition(0);
+    m_PID.setTolerance(0.2);
     m_ClimberMotor.setUpperLimit();
     m_ClimberMotor.setLowerLimit();
+    m_climbState.set(false);
   }
-  public void raise(){
-    //Raises the climber claw
+
+  public void raise() {
+    // Raises the climber claw
     System.out.println("Raising the Climber");
+    setTargetHeight(highValue);
+    reset();
+    m_raising = true;
+    m_climbState.set(false);
   }
-  public void lower(){
-    //Lowers the climber claw
+
+  public void lower() {
+    // Lowers the climber claw
     System.out.println("Lowering the Climber");
+    setTargetHeight(lowValue);
+    reset();
+    m_lowering = true;
+    m_climbState.set(false);
   }
 
-void setTargetHeight(double d) {
-  m_setPoint = d;
-}
+  void setTargetHeight(double d) {
+    m_setPoint = d;
+  }
 
-void setHeight() {
+  void setHeight() {
     m_PID.setSetpoint(m_setPoint);
     double current = getHeight();
     double output = m_PID.calculate(current);
-    
-    //m_ClimberMotor.set(output);
-    //String s=String.format("A:%-1.1f T:%-1.1f C:%-1.1f\n", current, armSetAngle, output);
-    //SmartDashboard.putString("Arm", s);
-    //System.out.println(s);  
+
+    m_ClimberMotor.set(output);
+    String s=String.format("A:%-1.1f T:%-1.1f C:%-1.1f\n", current, m_setPoint, output);
+    SmartDashboard.putString("Climber", s);
+    // System.out.println(s);
   }
 
   public double getHeight() {
@@ -63,10 +88,35 @@ void setHeight() {
     return height;
   }
 
+  public boolean atUpperTarget() {
+    return m_PID.atSetpoint();// || m_ClimberMotor.atUpperLimit();
+  }
+
+  public boolean atLowerTarget() {
+    return m_PID.atSetpoint();// || m_ClimberMotor.atLowerLimit();
+  }
+
+  public void reset() {
+    m_atUpperTarget = false;
+    m_atLowerTarget = false;
+    m_raising = false;
+    m_lowering = false;
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putBoolean("UpperLimit:", m_ClimberMotor.atTopLimit());
-    SmartDashboard.putBoolean("BottomLimit:", m_ClimberMotor.atBottomLimit());
+    setHeight();
+    if (m_raising && atUpperTarget()) {
+      m_atUpperTarget = true;
+      m_raising = false;
+      m_climbState.set(true);
+    }
+    if (m_lowering && atLowerTarget()) {
+      m_atLowerTarget = true;
+      m_lowering = false;
+    }
+    SmartDashboard.putBoolean("UpperTarget", m_atUpperTarget);
+    SmartDashboard.putBoolean("LowerTarget", m_atLowerTarget);
   }
 }

@@ -25,11 +25,11 @@ public class Autonomous {
         m_autochooser.addOption("Drive To Tag", DRIVE_TO_TAG);
         m_autochooser.addOption("Auto Test", AUTO_TEST);
         SmartDashboard.putData(m_autochooser);
-        SmartDashboard.putNumber("target", m_driveStraitTarget);
+        //SmartDashboard.putNumber("target", m_driveStraitTarget);
     }
 
     public SequentialCommandGroup getCommand() {
-        m_driveStraitTarget = SmartDashboard.getNumber("target", 0);
+        //m_driveStraitTarget = SmartDashboard.getNumber("target", 0);
         DriveStraight.setEndAtTag(false);
         int automode = m_autochooser.getSelected();
         switch (automode) {

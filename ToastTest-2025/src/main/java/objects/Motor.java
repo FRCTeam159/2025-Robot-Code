@@ -43,11 +43,11 @@ public class Motor {
     public void setLowerLimit() {
         m_lowerLimit=rev_motor.getReverseLimitSwitch();
     }
-    public boolean atTopLimit(){
-        return m_upperLimit.isPressed();
+    public boolean atUpperLimit(){
+        return m_upperLimit==null?false:m_upperLimit.isPressed();
     }
-    public boolean atBottomLimit(){
-        return m_lowerLimit.isPressed();
+    public boolean atLowerLimit(){
+        return m_lowerLimit==null?false:m_lowerLimit.isPressed();
     }
     static public void setMode(boolean m){
         m_real=m;
