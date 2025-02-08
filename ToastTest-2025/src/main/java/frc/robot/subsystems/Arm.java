@@ -19,7 +19,7 @@ import objects.Motor;
 
 public class Arm extends SubsystemBase {
 
-static boolean useGyro = false;
+static boolean useGyro = true;
 double last_heading = 0;
 static double m_navx_offset=0;//83.1; // observed gyro value when arm is horizontal
 static double shelfAngle=180;

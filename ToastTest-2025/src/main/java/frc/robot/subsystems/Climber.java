@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import static frc.robot.Constants.kClimber;
 
+import com.revrobotics.spark.SparkLimitSwitch;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -20,6 +22,8 @@ static double lowValue=0;
 static double highValue=6;//Inches
 private double m_setPoint=0;
 
+SparkLimitSwitch m_upperLimit;
+
 
   private final PIDController m_PID = new PIDController(0.004, 0, 0);
 
@@ -27,7 +31,8 @@ private double m_setPoint=0;
   public Climber(int kclimber) {
     m_ClimberMotor = new Motor (kClimber);
     m_PID.setTolerance(3);
-    
+    m_ClimberMotor.setUpperLimit();
+    m_ClimberMotor.setLowerLimit();
   }
   public void raise(){
     //Raises the climber claw
@@ -47,7 +52,7 @@ void setHeight() {
     double current = getHeight();
     double output = m_PID.calculate(current);
     
-    m_ClimberMotor.set(output);
+    //m_ClimberMotor.set(output);
     //String s=String.format("A:%-1.1f T:%-1.1f C:%-1.1f\n", current, armSetAngle, output);
     //SmartDashboard.putString("Arm", s);
     //System.out.println(s);  
@@ -61,5 +66,7 @@ void setHeight() {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putBoolean("UpperLimit:", m_ClimberMotor.atTopLimit());
+    SmartDashboard.putBoolean("BottomLimit:", m_ClimberMotor.atBottomLimit());
   }
 }
