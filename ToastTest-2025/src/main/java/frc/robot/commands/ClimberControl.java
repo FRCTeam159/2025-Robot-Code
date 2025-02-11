@@ -35,11 +35,19 @@ public class ClimberControl extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    //System.out.println("Climber Commands Executing");
-    if (m_controller.getStartButtonPressed())
-    m_climber.raise();
-    else if (m_controller.getBackButtonPressed())
-    m_climber.lower();
+    // System.out.println("Climber Commands Executing");
+    if (m_controller.getStartButtonPressed()) {
+      if (m_climber.raising())
+        m_climber.stop();
+      else
+        m_climber.raise();
+    } else if (m_controller.getBackButtonPressed()) {
+      if (m_climber.lowering())
+        m_climber.stop();
+      else
+        m_climber.lower();
+    }
+
   }
 
   // Called once the command ends or is interrupted.

@@ -12,6 +12,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import objects.Motor;
+import pabeles.concurrency.ConcurrencyOps.Reset;
 import edu.wpi.first.wpilibj.DigitalOutput;
 
 public class Climber extends SubsystemBase {
@@ -24,9 +25,9 @@ public class Climber extends SubsystemBase {
   static double lowValue = 0;
   static double highValue = 3;// Inches
   private double m_setPoint = 0;
-  static public final double kWheelDiameter = 0.25;
-  static public final double kGearRatio = 45;
-  static public final double kInchesPerRot = (Math.PI * kWheelDiameter) / kGearRatio;
+  static public final double kRotToIn = 0.1;
+  static public final double kGearRatio = 4;
+  static public final double kInchesPerRot = kRotToIn / kGearRatio;
   boolean m_raising = false;
   boolean m_lowering = false;
   boolean m_atUpperTarget = false;
@@ -35,14 +36,14 @@ public class Climber extends SubsystemBase {
 
   SparkLimitSwitch m_upperLimit;
 
-  private final PIDController m_PID = new PIDController(0.1, 0, 0);
+  private final PIDController m_PID = new PIDController(0.2, 0, 0);
 
   private Motor m_ClimberMotor;
 
   public Climber(int kclimber) {
     SmartDashboard.putString("Climber", "Inactive");
     m_ClimberMotor = new Motor(kClimber);
-    m_ClimberMotor.setConfig(false, kInchesPerRot);
+    m_ClimberMotor.setConfig(false, true, kInchesPerRot);
     m_ClimberMotor.setPosition(0);
     m_PID.setTolerance(0.2);
     m_ClimberMotor.setUpperLimit();
@@ -59,6 +60,14 @@ public class Climber extends SubsystemBase {
     m_climbState.set(false);
   }
 
+  public boolean raising() {
+    return m_raising;
+  }
+
+  public boolean lowering() {
+    return m_lowering;
+  }
+
   public void lower() {
     // Lowers the climber claw
     System.out.println("Lowering the Climber");
@@ -66,6 +75,11 @@ public class Climber extends SubsystemBase {
     reset();
     m_lowering = true;
     m_climbState.set(false);
+  }
+
+  public void stop() {
+    setTargetHeight(getHeight());
+    reset();
   }
 
   void setTargetHeight(double d) {
@@ -78,7 +92,7 @@ public class Climber extends SubsystemBase {
     double output = m_PID.calculate(current);
 
     m_ClimberMotor.set(output);
-    String s=String.format("A:%-1.1f T:%-1.1f C:%-1.1f\n", current, m_setPoint, output);
+    String s = String.format("A:%-1.1f T:%-1.1f C:%-1.1f\n", current, m_setPoint, output);
     SmartDashboard.putString("Climber", s);
     // System.out.println(s);
   }
@@ -107,14 +121,22 @@ public class Climber extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     setHeight();
-    if (m_raising && atUpperTarget()) {
-      m_atUpperTarget = true;
-      m_raising = false;
-      m_climbState.set(true);
+    if (m_raising) {
+      if (m_ClimberMotor.atUpperLimit())
+        stop();
+      else if (atUpperTarget()) {
+        m_atUpperTarget = true;
+        m_raising = false;
+        m_climbState.set(true);
+      }
     }
-    if (m_lowering && atLowerTarget()) {
-      m_atLowerTarget = true;
-      m_lowering = false;
+    if (m_lowering) {
+      if (m_ClimberMotor.atLowerLimit())
+        stop();
+      else if (atLowerTarget()) {
+        m_atLowerTarget = true;
+        m_lowering = false;
+      }
     }
     SmartDashboard.putBoolean("UpperTarget", m_atUpperTarget);
     SmartDashboard.putBoolean("LowerTarget", m_atLowerTarget);

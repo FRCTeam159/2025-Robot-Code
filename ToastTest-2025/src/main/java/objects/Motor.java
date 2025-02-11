@@ -7,6 +7,7 @@ package objects;
 
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -81,12 +82,12 @@ public class Motor {
     public void setVoltage(double v) {
         rev_motor.setVoltage(v);
     }
-    public void setConfig(boolean isInverted, double d){
+    public void setConfig(boolean isInverted,boolean isBreak, double d){
         m_dpr=d;
         SparkMaxConfig config = new SparkMaxConfig();
         config
-            .inverted(isInverted);
-        //    .idleMode(IdleMode.kBrake);
+            .inverted(isInverted)
+            .idleMode(isBreak?IdleMode.kBrake:IdleMode.kCoast);
         config.encoder
             .positionConversionFactor(d)
             .velocityConversionFactor(d/60);
@@ -95,5 +96,8 @@ public class Motor {
         //    .pid(1.0, 0.0, 0.0);
         
         rev_motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    }
+    public void setConfig(boolean isInverted, double d){
+        setConfig(isInverted , false, d);
     }
 }

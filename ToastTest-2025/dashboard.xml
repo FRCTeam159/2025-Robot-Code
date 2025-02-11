@@ -1,11 +1,18 @@
 <xml version="1.0">
 <dashboard>
+	<widget field="UpperTarget" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="180" y="57"/>
+	</widget>
+	<widget field="LowerTarget" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="180" y="40"/>
+		<width>68</width>
+	</widget>
 	<widget field="Gyro" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
-		<location x="270" y="20"/>
+		<location x="261" y="0"/>
 		<width>129</width>
 	</widget>
 	<widget field="Climber" type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
-		<location x="259" y="0"/>
+		<location x="250" y="20"/>
 	</widget>
 	<widget field="Tags" type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
 		<location x="32" y="40"/>
@@ -19,13 +26,6 @@
 	</widget>
 	<widget field="CoralDetected" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
 		<location x="36" y="67"/>
-	</widget>
-	<widget field="UpperLimit:" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
-		<location x="180" y="40"/>
-		<height>13</height>
-	</widget>
-	<widget field="BottomLimit:" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
-		<location x="180" y="67"/>
 	</widget>
 	<widget field="Show Tags" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
 		<location x="438" y="19"/>
@@ -50,5 +50,6 @@
 <live-window>
 </live-window>
 	<hidden field="NavX"/>
+	<hidden field="BottomLimit:"/>
 	<hidden field="target"/>
 </xml>
