@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import javax.management.relation.RoleResult;
+
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 
@@ -16,11 +18,11 @@ import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import objects.Motor;
 
 public class Arm extends SubsystemBase {
 
-  static boolean useGyro = true;
   double last_heading = 0;
   static double m_navx_offset = 0;// 83.1; // observed gyro value when arm is horizontal
   static double shelfAngle = 180;
@@ -39,6 +41,10 @@ public class Arm extends SubsystemBase {
 
   static final double MAX_ANGLE = 200;
   static final double MIN_ANGLE = 0;
+  boolean m_intake = false;
+  boolean m_eject = false;
+  double intakeValue = 0.2;
+  double ejectValue = -0.2;
 
   DigitalInput m_coralSensor = new DigitalInput(1);
   DigitalOutput m_coralState = new DigitalOutput(2);
@@ -52,18 +58,26 @@ public class Arm extends SubsystemBase {
    * @param krollers
    */
   public Arm(int id, int krollers) {
-    //SmartDashboard.putNumber("NavX", 0);
+    // SmartDashboard.putNumber("NavX", 0);
     SmartDashboard.putString("Arm", "Inactive");
-    if (useGyro)
-      m_armPosMotor = new Motor(id, true);
-    else
-      m_armPosMotor = new Motor(id, false);
-    m_armPosMotor.setConfig(false, kDegreesPerRot);
-    m_armPosMotor.setPosition(0);
-    m_PID.setTolerance(3);
-    m_PID.reset();
-    // m_rollermotor = new Motor(krollers);
-    m_armPosMotor.enable();
+    if (Constants.testMode == Constants.test.ROLLERS) {
+      m_rollermotor = new Motor(id, false);
+      m_rollermotor.setConfig(false, 1);
+      m_rollermotor.setPosition(0);
+      m_rollermotor.enable();
+    } else {
+
+      if (Constants.testMode == Constants.test.ARMGYRO)
+        m_armPosMotor = new Motor(id, true);
+      else
+        m_armPosMotor = new Motor(id, false);
+      m_armPosMotor.setConfig(false, kDegreesPerRot);
+      m_armPosMotor.setPosition(0);
+      m_PID.setTolerance(3);
+      m_PID.reset();
+      // m_rollermotor = new Motor(krollers);
+      m_armPosMotor.enable();
+    }
   }
 
   public boolean coralAtIntake() {
@@ -97,11 +111,35 @@ public class Arm extends SubsystemBase {
   }
 
   public void eject() {
+    m_eject = true;
     System.out.println("outputting coral");
   }
 
   public void intake() {
+    m_intake = true;
     System.out.println("picking up coral");
+  }
+
+  public boolean rollersOn() {
+    return m_intake || m_eject;
+  }
+
+  public void stopRollers() {
+    m_intake = false;
+    m_eject = false;
+  }
+
+  public void setRollers() {
+    double rollerSpeed;
+    if (m_intake)
+      rollerSpeed = intakeValue;
+    else if (m_eject)
+      rollerSpeed = ejectValue;
+    else
+      rollerSpeed = 0;
+    m_rollermotor.setVoltage(rollerSpeed);
+    String s = String.format("Eject:%b Intake:%b Speed:%1.2f", m_eject, m_intake, rollerSpeed);
+    SmartDashboard.putString("Arm", s);
   }
 
   public void decrement(double angle) {
@@ -134,12 +172,15 @@ public class Arm extends SubsystemBase {
     //
     SmartDashboard.putBoolean("CoralDetected", coralAtIntake());
     m_coralState.set(coralAtIntake());
-    setAngle();
+    if (Constants.testMode == Constants.test.ROLLERS)
+      setRollers();
+    else
+      setAngle();
   }
 
   public double getAngle() {
     double angle = 0;
-    if (useGyro)
+    if (Constants.testMode == Constants.test.ARMGYRO)
       angle = m_NAVXgyro.getRoll() + m_navx_offset; // returned values are negative
     else
       angle = m_armPosMotor.getPosition();
