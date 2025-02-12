@@ -12,13 +12,14 @@
 		<width>129</width>
 	</widget>
 	<widget field="Climber" type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
-		<location x="250" y="20"/>
+		<location x="272" y="22"/>
 	</widget>
 	<widget field="Tags" type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
 		<location x="32" y="40"/>
 	</widget>
 	<widget field="Arm" type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
 		<location x="35" y="20"/>
+		<width>236</width>
 	</widget>
 	<widget field="Pose" type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
 		<location x="32" y="0"/>
@@ -49,7 +50,4 @@
 </dashboard>
 <live-window>
 </live-window>
-	<hidden field="NavX"/>
-	<hidden field="BottomLimit:"/>
-	<hidden field="target"/>
 </xml>

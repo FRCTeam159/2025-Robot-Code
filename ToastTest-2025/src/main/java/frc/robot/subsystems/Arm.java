@@ -37,14 +37,15 @@ public class Arm extends SubsystemBase {
   static AHRS m_NAVXgyro = new AHRS(NavXComType.kUSB1);
 
   private Motor m_armPosMotor = null;
-  private Motor m_rollermotor = null;
+  private Motor m_topRollerMotor = null;
+  private Motor m_bottomRollerMotor = null;
 
   static final double MAX_ANGLE = 200;
   static final double MIN_ANGLE = 0;
   boolean m_intake = false;
   boolean m_eject = false;
-  double intakeValue = 0.2;
-  double ejectValue = -0.2;
+  double intakeValue = 2;
+  double ejectValue = -2;
 
   DigitalInput m_coralSensor = new DigitalInput(1);
   DigitalOutput m_coralState = new DigitalOutput(2);
@@ -57,20 +58,26 @@ public class Arm extends SubsystemBase {
    * 
    * @param krollers
    */
-  public Arm(int id, int krollers) {
+  public Arm(int armId, int bottomRollers, int topRollers) {
     // SmartDashboard.putNumber("NavX", 0);
     SmartDashboard.putString("Arm", "Inactive");
-    if (Constants.testMode == Constants.test.ROLLERS) {
-      m_rollermotor = new Motor(id, false);
-      m_rollermotor.setConfig(false, 1);
-      m_rollermotor.setPosition(0);
-      m_rollermotor.enable();
+    if ((Constants.testMode == Constants.test.ONEROLLER) || (Constants.testMode == Constants.test.TWOROLLERS)) {
+      m_topRollerMotor = new Motor(topRollers, false);
+      m_topRollerMotor.setConfig(false, 1);
+      m_topRollerMotor.setPosition(0);
+      m_topRollerMotor.enable();
+      if (Constants.testMode == Constants.test.TWOROLLERS) {
+        m_bottomRollerMotor = new Motor(bottomRollers, false);
+        m_bottomRollerMotor.setConfig(false, 1);
+        m_bottomRollerMotor.setPosition(0);
+        m_bottomRollerMotor.enable();
+      }
     } else {
 
       if (Constants.testMode == Constants.test.ARMGYRO)
-        m_armPosMotor = new Motor(id, true);
+        m_armPosMotor = new Motor(armId, true);
       else
-        m_armPosMotor = new Motor(id, false);
+        m_armPosMotor = new Motor(armId, false);
       m_armPosMotor.setConfig(false, kDegreesPerRot);
       m_armPosMotor.setPosition(0);
       m_PID.setTolerance(3);
@@ -137,7 +144,9 @@ public class Arm extends SubsystemBase {
       rollerSpeed = ejectValue;
     else
       rollerSpeed = 0;
-    m_rollermotor.setVoltage(rollerSpeed);
+    m_topRollerMotor.setVoltage(rollerSpeed);
+    if (Constants.testMode == Constants.test.TWOROLLERS) 
+      m_bottomRollerMotor.setVoltage(-rollerSpeed);
     String s = String.format("Eject:%b Intake:%b Speed:%1.2f", m_eject, m_intake, rollerSpeed);
     SmartDashboard.putString("Arm", s);
   }
@@ -172,7 +181,7 @@ public class Arm extends SubsystemBase {
     //
     SmartDashboard.putBoolean("CoralDetected", coralAtIntake());
     m_coralState.set(coralAtIntake());
-    if (Constants.testMode == Constants.test.ROLLERS)
+    if (Constants.testMode == Constants.test.ONEROLLER || Constants.testMode == Constants.test.TWOROLLERS)
       setRollers();
     else
       setAngle();

@@ -8,10 +8,10 @@ package frc.robot;
 public class Constants {
 
     public enum test {
-        CLIMBER, ROLLERS, ARMGYRO, ARMMOTOR
+        CLIMBER, ONEROLLER, TWOROLLERS, ARMGYRO, ARMMOTOR
     }
 
-    public static test testMode = test.ROLLERS;
+    public static test testMode = test.TWOROLLERS;
 
     public static final double kBackRightOffset = -0.169434;
     public static final double kBackLeftOffset = -0.215332;
@@ -35,9 +35,10 @@ public class Constants {
     public static final int kBr_Encoder = 11;
 
     public static final int kArm = 13; // 13
-    public static final int kRollers = 13;
+    public static final int kTopRollers = 13; // 14
+    public static final int kBottomRollers = 15; // 15
 
-    public static final int mTest = 13; // 15
+    public static final int mTest = 13; // 16
 
     /*
      * Toast Code:

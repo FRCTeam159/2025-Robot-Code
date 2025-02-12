@@ -4,111 +4,177 @@
 
 package frc.robot.subsystems;
 
+import javax.management.relation.RoleResult;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DigitalOutput;
 
+//import com.kauailabs.navx.frc.AHRS;
+
+import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import objects.Motor;
 
 public class Arm extends SubsystemBase {
 
-double last_heading = 0;
-static double shelfAngle=132;
-static double groundAngle=200;
-static public final double kGearRatio = 45;
-public static final double kDegreesPerRot = 360/(kGearRatio);
-// shelf pos is 132
-// floor pos is 200
+  double last_heading = 0;
+  static double m_navx_offset = 0;// 83.1; // observed gyro value when arm is horizontal
+  static double shelfAngle = 180;
+  static double groundAngle = 190;
+  static public final double kGearRatio = 45;
+  public static final double kDegreesPerRot = 360 / (kGearRatio);
+  // shelf pos is 132
+  // floor pos is 200
 
-private final PIDController m_PID = new PIDController(0.004, 0, 0);
+  private final PIDController m_PID = new PIDController(0.002, 0, 0);
 
-private Motor m_armPosMotor=null;
-private Motor m_rollermotor=null;
+  private Motor m_armPosMotor = null;
+  private Motor m_topRollerMotor = null;
+  private Motor m_bottomRollerMotor = null;
 
-static final double MAX_ANGLE=200;
-static final double MIN_ANGLE=0;
+  static final double MAX_ANGLE = 200;
+  static final double MIN_ANGLE = 0;
+  boolean m_intake = false;
+  boolean m_eject = false;
+  double intakeValue = 2;
+  double ejectValue = -2;
 
-DigitalInput coralSensor = new DigitalInput(1);
+  DigitalInput m_coralSensor = new DigitalInput(1);
+  DigitalOutput m_coralState = new DigitalOutput(2);
 
-boolean newAngle = true;
-private double armSetAngle = 0;
+  boolean newAngle = true;
+  private double armSetAngle = 0;
 
-  public Arm(int id, int krollers) {
+  /**
+   * Creates a new Arm.
+   * 
+   * @param krollers
+   */
+  public Arm(int armId, int bottomRollers, int topRollers) {
+    // SmartDashboard.putNumber("NavX", 0);
     SmartDashboard.putString("Arm", "Inactive");
-    m_armPosMotor=new Motor(id, false);
+    m_topRollerMotor = new Motor(topRollers, false);
+    m_topRollerMotor.setConfig(false, 1);
+    m_topRollerMotor.setPosition(0);
+    m_topRollerMotor.enable();
+
+    m_bottomRollerMotor = new Motor(bottomRollers, false);
+    m_bottomRollerMotor.setConfig(false, 1);
+    m_bottomRollerMotor.setPosition(0);
+    m_bottomRollerMotor.enable();
+
+    m_armPosMotor = new Motor(armId, false);
     m_armPosMotor.setConfig(false, kDegreesPerRot);
     m_armPosMotor.setPosition(0);
     m_PID.setTolerance(3);
     m_PID.reset();
-    //m_rollermotor = new Motor(krollers);
+    // m_rollermotor = new Motor(krollers);
     m_armPosMotor.enable();
   }
 
-public boolean coralAtIntake(){
-    return coralSensor.get();
+  public boolean coralAtIntake() {
+    // return !noteSensor1.get();
+    return m_coralSensor.get();
   }
 
   public void adjustAngle(double adjustment) {
-    setNewTarget(armSetAngle+adjustment);
+    setNewTarget(armSetAngle + adjustment);
   }
 
-  void setNewTarget(double angle){
-    //angle=angle>MAX_ANGLE?MAX_ANGLE:angle;
-    //angle=angle<MIN_ANGLE?MIN_ANGLE:angle;
-    armSetAngle=angle;
+  void setNewTarget(double angle) {
+    // angle=angle>MAX_ANGLE?MAX_ANGLE:angle;
+    // angle=angle<MIN_ANGLE?MIN_ANGLE:angle;
+    armSetAngle = angle;
   }
 
   void setAngle() {
     m_PID.setSetpoint(armSetAngle);
     double current = getAngle();
     double output = m_PID.calculate(current);
-    
+
     m_armPosMotor.set(output);
-    String s=String.format("A:%-1.1f T:%-1.1f C:%-1.1f\n", current, armSetAngle, output);
+    String s = String.format("A:%-1.1f T:%-1.1f C:%-1.1f\n", current, armSetAngle, output);
     SmartDashboard.putString("Arm", s);
-    //System.out.println(s);  
+    // System.out.println(s);
   }
 
-  public void hold(){
+  public void hold() {
     System.out.println("have coral");
   }
-  public void eject(){
+
+  public void eject() {
+    m_eject = true;
     System.out.println("outputting coral");
   }
-  public void intake(){
+
+  public void intake() {
+    m_intake = true;
     System.out.println("picking up coral");
   }
-  public void decrement(double angle){
-    //System.out.println("decrament arm by " + angle);
+
+  public boolean rollersOn() {
+    return m_intake || m_eject;
+  }
+
+  public void stopRollers() {
+    m_intake = false;
+    m_eject = false;
+  }
+
+  public void setRollers() {
+    double rollerSpeed;
+    if (m_intake)
+      rollerSpeed = intakeValue;
+    else if (m_eject)
+      rollerSpeed = ejectValue;
+    else
+      rollerSpeed = 0;
+    m_topRollerMotor.setVoltage(rollerSpeed);
+    m_bottomRollerMotor.setVoltage(-rollerSpeed);
+    String s = String.format("Eject:%b Intake:%b Speed:%1.2f", m_eject, m_intake, rollerSpeed);
+    SmartDashboard.putString("Arm", s);
+  }
+
+  public void decrement(double angle) {
+    // System.out.println("decrament arm by " + angle);
     adjustAngle(-angle);
   }
-  public void increment(double angle){
-    //System.out.println("incrament arm by " + angle);
+
+  public void increment(double angle) {
+    // System.out.println("incrament arm by " + angle);
     adjustAngle(angle);
   }
-  public void goToShelf(){
+
+  public void goToShelf() {
     System.out.println("going to shelf");
     setNewTarget(shelfAngle);
   }
-  public void goToGround(){
+
+  public void goToGround() {
     System.out.println("going to ground");
     setNewTarget(groundAngle);
   }
-  public void goToZero(){
+
+  public void goToZero() {
     System.out.println("going to zero");
     setNewTarget(0);
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putBoolean("Sensor1", coralAtIntake());
+    //
+    SmartDashboard.putBoolean("CoralDetected", coralAtIntake());
+    m_coralState.set(coralAtIntake());
+    setRollers();
     setAngle();
   }
 
   public double getAngle() {
-    double angle = m_armPosMotor.getPosition();
+    double angle = 0;
+    angle = m_armPosMotor.getPosition();
     angle = unwrap(last_heading, angle);
     last_heading = angle;
     return angle;

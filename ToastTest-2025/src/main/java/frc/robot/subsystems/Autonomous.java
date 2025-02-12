@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.DriveToTag;
+import frc.robot.commands.Eject;
 import frc.robot.commands.GoToShelf;
 import frc.robot.commands.DriveStraight;
 
@@ -44,7 +45,8 @@ public class Autonomous {
                 return new SequentialCommandGroup(
                     new GoToShelf(m_Arm),
                     new DriveStraight(m_drivetrain, m_driveStraitTarget),
-                    new DriveToTag(m_drivetrain)
+                    new DriveToTag(m_drivetrain),
+                    new Eject(m_Arm)
                 );
         }
         
