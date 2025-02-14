@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import objects.Motor;
+import frc.robot.objects.Motor;
 
 public class Arm extends SubsystemBase {
 
@@ -44,7 +44,7 @@ public class Arm extends SubsystemBase {
   static final double MIN_ANGLE = 0;
   boolean m_intake = false;
   boolean m_eject = false;
-  double intakeValue = 2;
+  double intakeValue = 4;
   double ejectValue = -2;
 
   DigitalInput m_coralSensor = new DigitalInput(1);

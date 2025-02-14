@@ -1,5 +1,5 @@
 
-package objects;
+package frc.robot.objects;
 
 import org.opencv.core.Point;
 import edu.wpi.first.math.geometry.Transform3d;

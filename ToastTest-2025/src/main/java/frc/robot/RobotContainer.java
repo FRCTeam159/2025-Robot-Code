@@ -19,10 +19,12 @@ import frc.robot.subsystems.Autonomous;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.TagDetector;
+import frc.robot.utils.PlotServer;
 
 public class RobotContainer {
   private final XboxController m_controller = new XboxController(0);
   private final Drivetrain m_drivetrain = new Drivetrain();
+  private frc.robot.utils.PlotServer m_plotter = new PlotServer();
 
   private final DriveWithGamepad m_DriveWithGamepad = new DriveWithGamepad(m_drivetrain, m_controller);
 
@@ -46,6 +48,7 @@ public class RobotContainer {
   }
 
   public void robotInit() {
+    m_plotter.start();
     m_drivetrain.init();
     m_drivetrain.reset();
     m_Detector.start();

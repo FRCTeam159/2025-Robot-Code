@@ -12,7 +12,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import objects.Motor;
+import frc.robot.objects.Motor;
 import pabeles.concurrency.ConcurrencyOps.Reset;
 import edu.wpi.first.wpilibj.DigitalOutput;
 

@@ -12,8 +12,8 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import objects.Motor;
-import objects.Encoder;
+import frc.robot.objects.Motor;
+import frc.robot.objects.Encoder;
 
 public class SwerveModule {
 

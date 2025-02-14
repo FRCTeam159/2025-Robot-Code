@@ -1,4 +1,4 @@
-package objects;
+package frc.robot.objects;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 
