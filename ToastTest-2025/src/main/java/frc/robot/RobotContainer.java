@@ -24,8 +24,7 @@ import frc.robot.utils.PlotServer;
 public class RobotContainer {
   private final XboxController m_controller = new XboxController(0);
   private final Drivetrain m_drivetrain = new Drivetrain();
-  private frc.robot.utils.PlotServer m_plotter = new PlotServer();
-
+  
   private final DriveWithGamepad m_DriveWithGamepad = new DriveWithGamepad(m_drivetrain, m_controller);
 
   private final TagDetector m_Detector = new TagDetector(m_drivetrain);
@@ -48,7 +47,6 @@ public class RobotContainer {
   }
 
   public void robotInit() {
-    m_plotter.start();
     m_drivetrain.init();
     m_drivetrain.reset();
     m_Detector.start();

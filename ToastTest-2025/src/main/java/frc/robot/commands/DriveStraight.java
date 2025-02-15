@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.IntegerSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -44,15 +45,16 @@ public class DriveStraight extends Command {
   public void initialize() {
    // System.out.println("Drive straight target = " + m_target);
     m_PID.setSetpoint(m_target);
-    m_PID.setTolerance(0.05);
+    m_PID.setTolerance(0.02);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double s = m_drive.getDistance();
+    Pose2d p = m_drive.getPose();
+    double s = p.getTranslation().getX();
     double d = m_PID.calculate(s, m_target);
-    //System.out.println("distance = " + s + " correction = " + d);
+    System.out.println("distance = " + s + " correction = " + d);
     m_drive.drive(d, 0, 0, false);
    }
 

@@ -31,14 +31,15 @@ import frc.robot.utils.PlotUtils;
 // =================================================
 public class DrivePath extends Command {
 
-  double scale = 1; // Old: 1
+  double Xscale = 0.4; // Old: 1
+  double Rscale = 1.2;
 
   ArrayList<PathData> pathdata = new ArrayList<PathData>();
 
-  final HolonomicDriveController m_hcontroller = new HolonomicDriveController(new PIDController(0.1, 0, 0),
-      new PIDController(0.1, 0, 0),
-      new ProfiledPIDController(0.1, 0, 0,
-          new TrapezoidProfile.Constraints(Drivetrain.kMaxAngularVelocity, Drivetrain.kMaxAngularAcceleration)));
+  final HolonomicDriveController m_hcontroller = new HolonomicDriveController(new PIDController(3, 0, 0),
+      new PIDController(2, 0, 0),
+      new ProfiledPIDController(0.5, 0, 0,
+          new TrapezoidProfile.Constraints(Drivetrain.kMaxAngularVelocity * Rscale, Drivetrain.kMaxAngularAcceleration)));
 
   Timer m_timer = new Timer();
   Drivetrain m_drive;
@@ -54,7 +55,7 @@ public class DrivePath extends Command {
   int states;
   int intervals;
   double yPath = 0;
-  double xPath = 2;
+  double xPath = 1;
   double rPath = 0;
   static boolean m_endAtTag = false;
 
@@ -78,7 +79,7 @@ public class DrivePath extends Command {
   // =================================================
   @Override
   public void initialize() {
-    m_drive.resetPose(new Pose2d());
+    //m_drive.resetPose(new Pose2d());
     plot_type = frc.robot.utils.PlotUtils.PLOT_LOCATION;
 
     PlotUtils.initPlot();
@@ -121,7 +122,7 @@ public class DrivePath extends Command {
     if (debug) {
       Pose2d p = m_drive.getPose();
       System.out.format(
-          "%-1.3f X a:%-1.1f t:%-1.1f c:%-1.1f Y a:%-1.1f t:%-1.1f c:%-1.1f R a:%-3.1f t:%-3.1f c:%-2.1f \n", elapsed,
+          "%-1.3f X a:%-1.2f t:%-1.2f c:%-1.2f Y a:%-1.1f t:%-1.1f c:%-1.1f R a:%-3.1f t:%-3.1f c:%-2.1f \n", elapsed,
           p.getTranslation().getX(), reference.poseMeters.getX(), speeds.vxMetersPerSecond,
           p.getTranslation().getY(), reference.poseMeters.getY(), speeds.vyMetersPerSecond,
           p.getRotation().getDegrees(), reference.poseMeters.getRotation().getDegrees(),
@@ -178,8 +179,8 @@ public class DrivePath extends Command {
     List<Pose2d> points = new ArrayList<Pose2d>();
     points.add(new Pose2d()); // start at 0,0
     points.add(new Pose2d(xPath, yPath, Rotation2d.fromDegrees(rPath)));
-    TrajectoryConfig config = new TrajectoryConfig(scale * Drivetrain.kMaxVelocity,
-        scale * Drivetrain.kMaxAcceleration);
+    TrajectoryConfig config = new TrajectoryConfig(Xscale * Drivetrain.kMaxVelocity,
+        Xscale * Drivetrain.kMaxAcceleration);
     config.setReversed(false);
     return TrajectoryGenerator.generateTrajectory(points, config);
   }

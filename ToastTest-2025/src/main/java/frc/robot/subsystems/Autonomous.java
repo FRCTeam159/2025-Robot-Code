@@ -18,7 +18,7 @@ public class Autonomous {
     public static final int AUTO_TEST = 3;
     public static final int DRIVE_PATH = 4;
     static SendableChooser<Integer> m_autochooser = new SendableChooser<Integer>();
-    double m_driveStraitTarget = 2;
+    double m_driveStraitTarget = 1.5;
 
     public Autonomous(Drivetrain drivetrain, TagDetector Detector, Arm arm) {
         m_drivetrain = drivetrain;
@@ -45,7 +45,7 @@ public class Autonomous {
             case DRIVE_TO_TAG:
                 return new SequentialCommandGroup(new DriveToTag(m_drivetrain));
             case DRIVE_PATH:
-                return new SequentialCommandGroup(new DrivePath(m_drivetrain, 1));
+                return new SequentialCommandGroup(new DrivePath(m_drivetrain, m_driveStraitTarget));
             case AUTO_TEST:
                 DriveStraight.setEndAtTag(true);
                 return new SequentialCommandGroup(
