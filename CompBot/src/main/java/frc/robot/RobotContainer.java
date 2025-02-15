@@ -6,7 +6,7 @@ package frc.robot;
 
 import static frc.robot.Constants.kArm;
 import static frc.robot.Constants.kBottomRollers;
-import static frc.robot.Constants.mTest;
+import static frc.robot.Constants.kClimber;
 import static frc.robot.Constants.kTopRollers;
 
 import edu.wpi.first.wpilibj.XboxController;
@@ -34,10 +34,10 @@ public class RobotContainer {
   public final Autonomous m_autonomous = new Autonomous(m_drivetrain, m_Detector, m_Arm);
 
   public RobotContainer() {
-    m_Climber = new Climber(mTest);
-    m_Climber.setDefaultCommand(new ClimberControl(m_Climber, m_controller));
+    // m_Climber = new Climber(kClimber);
+    // m_Climber.setDefaultCommand(new ClimberControl(m_Climber, m_controller));
     m_drivetrain.setDefaultCommand(m_DriveWithGamepad);
-    m_Arm = new Arm(mTest, kBottomRollers, kTopRollers);
+    m_Arm = new Arm(kArm, kBottomRollers, kTopRollers);
     m_Arm.setDefaultCommand(new ArmControl(m_Arm, m_controller));
   }
 

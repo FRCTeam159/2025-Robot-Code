@@ -40,10 +40,18 @@ XboxController m_controller;
       m_Arm.goToShelf();
     if (m_controller.getBButtonPressed())
       m_Arm.goToZero();
-    if (m_controller.getLeftBumperButtonPressed())
-      m_Arm.intake();
-    if (m_controller.getRightBumperButtonPressed())
-      m_Arm.eject();
+      if (m_controller.getLeftBumperButtonPressed()) {
+        if (m_Arm.rollersOn())
+          m_Arm.stopRollers();
+        else
+          m_Arm.intake();
+      }
+      if (m_controller.getRightBumperButtonPressed()) {
+        if (m_Arm.rollersOn())
+          m_Arm.stopRollers();
+        else
+          m_Arm.eject();
+      }
 
     else if (left > 0)
       m_Arm.decrement(left * ARM_MOVE_RATE);

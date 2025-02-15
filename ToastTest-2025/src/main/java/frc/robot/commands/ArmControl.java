@@ -10,7 +10,7 @@ import frc.robot.subsystems.Arm;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ArmControl extends Command {
-  public static final double ARM_MOVE_RATE = 0.01;
+  public static final double ARM_MOVE_RATE = 0.1;
   Arm m_Arm;
   XboxController m_controller;
 
@@ -44,6 +44,8 @@ public class ArmControl extends Command {
       m_Arm.goToShelf();
     if (m_controller.getBButtonPressed())
       m_Arm.goToZero();
+    if (m_controller.getXButtonPressed())
+      m_Arm.goToTest();
     if (m_controller.getLeftBumperButtonPressed()) {
       if (m_Arm.rollersOn())
         m_Arm.stopRollers();

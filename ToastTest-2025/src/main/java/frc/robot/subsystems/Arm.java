@@ -27,12 +27,13 @@ public class Arm extends SubsystemBase {
   static double m_navx_offset = 0;// 83.1; // observed gyro value when arm is horizontal
   static double shelfAngle = 180;
   static double groundAngle = 190;
-  static public final double kGearRatio = 45;
+  static double testAngle = 90;
+  static public final double kGearRatio = 80*12.0/14.0;
   public static final double kDegreesPerRot = 360 / (kGearRatio);
   // shelf pos is 132
   // floor pos is 200
 
-  private final PIDController m_PID = new PIDController(0.002, 0, 0);
+  private final PIDController m_PID = new PIDController(0.015, 0, 0);
 
   static AHRS m_NAVXgyro = new AHRS(NavXComType.kUSB1);
 
@@ -44,7 +45,7 @@ public class Arm extends SubsystemBase {
   static final double MIN_ANGLE = 0;
   boolean m_intake = false;
   boolean m_eject = false;
-  double intakeValue = 4;
+  double intakeValue = 2;
   double ejectValue = -2;
 
   DigitalInput m_coralSensor = new DigitalInput(1);
@@ -78,9 +79,9 @@ public class Arm extends SubsystemBase {
         m_armPosMotor = new Motor(armId, true);
       else
         m_armPosMotor = new Motor(armId, false);
-      m_armPosMotor.setConfig(false, kDegreesPerRot);
+      m_armPosMotor.setConfig(true, kDegreesPerRot);
       m_armPosMotor.setPosition(0);
-      m_PID.setTolerance(3);
+      m_PID.setTolerance(1);
       m_PID.reset();
       // m_rollermotor = new Motor(krollers);
       m_armPosMotor.enable();
@@ -164,6 +165,11 @@ public class Arm extends SubsystemBase {
   public void goToShelf() {
     System.out.println("going to shelf");
     setNewTarget(shelfAngle);
+  }
+
+  public void goToTest() {
+    System.out.println("going to test");
+    setNewTarget(testAngle);
   }
 
   public void goToGround() {

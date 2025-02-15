@@ -4,7 +4,7 @@
 
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.mTest;
+import static frc.robot.Constants.kClimber;
 
 import com.revrobotics.spark.SparkLimitSwitch;
 
@@ -12,7 +12,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import objects.Motor;
+import frc.robot.objects.Motor;
 import pabeles.concurrency.ConcurrencyOps.Reset;
 import edu.wpi.first.wpilibj.DigitalOutput;
 
@@ -43,7 +43,7 @@ public class Climber extends SubsystemBase {
 
   public Climber(int kclimber) {
     SmartDashboard.putString("Climber", "Inactive");
-    m_ClimberMotor = new Motor(mTest);
+    m_ClimberMotor = new Motor(kClimber);
     m_ClimberMotor.setConfig(false, true, kInchesPerRot);
     m_ClimberMotor.setPosition(0);
     m_PID.setTolerance(0.2);

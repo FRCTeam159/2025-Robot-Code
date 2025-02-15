@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import objects.Motor;
+import frc.robot.objects.Motor;
 
 public class Arm extends SubsystemBase {
 
@@ -24,12 +24,12 @@ public class Arm extends SubsystemBase {
   static double m_navx_offset = 0;// 83.1; // observed gyro value when arm is horizontal
   static double shelfAngle = 180;
   static double groundAngle = 190;
-  static public final double kGearRatio = 45;
+  static public final double kGearRatio = 80*12.0/14.0;
   public static final double kDegreesPerRot = 360 / (kGearRatio);
   // shelf pos is 132
   // floor pos is 200
 
-  private final PIDController m_PID = new PIDController(0.002, 0, 0);
+  private final PIDController m_PID = new PIDController(0.001, 0, 0);
 
   private Motor m_armPosMotor = null;
   private Motor m_topRollerMotor = null;
