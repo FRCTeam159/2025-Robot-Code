@@ -39,7 +39,7 @@ XboxController m_controller;
     if (m_controller.getYButtonPressed())
       m_Arm.goToShelf();
     if (m_controller.getBButtonPressed())
-      m_Arm.goToZero();
+      m_Arm.goToStart();
       if (m_controller.getLeftBumperButtonPressed()) {
         if (m_Arm.rollersOn())
           m_Arm.stopRollers();

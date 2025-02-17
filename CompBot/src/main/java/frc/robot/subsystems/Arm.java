@@ -18,13 +18,12 @@ import frc.robot.objects.Motor;
 public class Arm extends SubsystemBase {
 
   double last_heading = 0;
-  static double m_navx_offset = 0;// 83.1; // observed gyro value when arm is horizontal
-  static double shelfAngle = 180;
-  static double groundAngle = 190;
+  static double shelfAngle = 140;
+  static double groundAngle = 195;
   static double testAngle = 90;
   static boolean use_trap_pid=true;
 
-  static public final double kGearRatio = 80*12.0/14.0;
+  static public final double kGearRatio = 80*38.0/22.0;
   public static final double kDegreesPerRot = 360 / (kGearRatio);
   // shelf pos is 132
   // floor pos is 200
@@ -35,12 +34,13 @@ public class Arm extends SubsystemBase {
   private Motor m_topRollerMotor = null;
   private Motor m_bottomRollerMotor = null;
 
-  static final double MAX_ANGLE = 200;
-  static final double MIN_ANGLE = 0;
+  static final double START_ANGLE = 0;
+  static final double MAX_ANGLE = 200-START_ANGLE;
+  static final double MIN_ANGLE = START_ANGLE;
   boolean m_intake = false;
   boolean m_eject = false;
-  double intakeValue = 2;
-  double ejectValue = -2;
+  double intakeValue = 3;
+  double ejectValue = -3;
 
   DigitalInput m_coralSensor = new DigitalInput(1);
   DigitalOutput m_coralState = new DigitalOutput(2);
@@ -55,7 +55,7 @@ public class Arm extends SubsystemBase {
    */
   public Arm(int armId, int bottomRollers, int topRollers) {
     if(use_trap_pid){
-      m_tPID=new ProfiledPIDController(0.01, 0, 0,
+      m_tPID=new ProfiledPIDController(0.015, 0, 0,
         new TrapezoidProfile.Constraints(100,100));
       m_tPID.setTolerance(1);
       m_tPID.reset(0);
@@ -80,9 +80,7 @@ public class Arm extends SubsystemBase {
     m_armPosMotor = new Motor(armId, false);
     m_armPosMotor.setConfig(false, kDegreesPerRot);
     m_armPosMotor.setPosition(0);
-    m_PID.setTolerance(3);
-    m_PID.reset();
-    // m_rollermotor = new Motor(krollers);
+     // m_rollermotor = new Motor(krollers);
     m_armPosMotor.enable();
   }
 
@@ -172,17 +170,17 @@ public class Arm extends SubsystemBase {
 
   public void goToShelf() {
     System.out.println("going to shelf");
-    setNewTarget(shelfAngle);
+    setNewTarget(shelfAngle-START_ANGLE);
   }
 
   public void goToGround() {
     System.out.println("going to ground");
-    setNewTarget(groundAngle);
+    setNewTarget(groundAngle-START_ANGLE);
   }
 
-  public void goToZero() {
+  public void goToStart() {
     System.out.println("going to zero");
-    setNewTarget(0);
+    setNewTarget(START_ANGLE);
   }
 
   @Override
