@@ -11,7 +11,7 @@ public class Constants {
         CLIMBER, ONEROLLER, TWOROLLERS, ARMGYRO, ARMMOTOR
     }
 
-    public static test testMode = test.ARMMOTOR;
+    public static test testMode = test.ARMGYRO;
 
     public static final double kBackRightOffset = -0.169434;
     public static final double kBackLeftOffset = -0.215332;
@@ -36,7 +36,7 @@ public class Constants {
 
     public static final int kArm = 13; // 13
     public static final int kTopRollers = 13; // 14
-    public static final int kBottomRollers = 15; // 15
+    public static final int kBottomRollers = 13; // 15
 
     public static final int mTest = 13; // 16
 

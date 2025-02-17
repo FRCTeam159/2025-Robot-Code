@@ -10,7 +10,7 @@ import frc.robot.subsystems.Arm;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ArmControl extends Command {
-  public static final double ARM_MOVE_RATE = 0.1;
+  public static final double ARM_MOVE_RATE = 0.5;
   Arm m_Arm;
   XboxController m_controller;
 

@@ -4,18 +4,17 @@
 
 package frc.robot.subsystems;
 
-import javax.management.relation.RoleResult;
-
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DigitalOutput;
 
 //import com.kauailabs.navx.frc.AHRS;
 
-import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -28,13 +27,15 @@ public class Arm extends SubsystemBase {
   static double shelfAngle = 180;
   static double groundAngle = 190;
   static double testAngle = 90;
+  static boolean use_trap_pid=true;
+
   static public final double kGearRatio = 80*12.0/14.0;
   public static final double kDegreesPerRot = 360 / (kGearRatio);
   // shelf pos is 132
   // floor pos is 200
 
-  private final PIDController m_PID = new PIDController(0.015, 0, 0);
-
+  private PIDController m_PID;
+  private ProfiledPIDController m_tPID;
   static AHRS m_NAVXgyro = new AHRS(NavXComType.kUSB1);
 
   private Motor m_armPosMotor = null;
@@ -60,6 +61,17 @@ public class Arm extends SubsystemBase {
    * @param krollers
    */
   public Arm(int armId, int bottomRollers, int topRollers) {
+    if(use_trap_pid){
+      m_tPID=new ProfiledPIDController(0.01, 0, 0,
+        new TrapezoidProfile.Constraints(100,100));
+      m_tPID.setTolerance(1);
+      m_tPID.reset(0);
+    }
+    else{
+      m_PID = new PIDController(0.005, 0, 0);
+      m_PID.setTolerance(1);
+      m_PID.reset();
+    }
     // SmartDashboard.putNumber("NavX", 0);
     SmartDashboard.putString("Arm", "Inactive");
     if ((Constants.testMode == Constants.test.ONEROLLER) || (Constants.testMode == Constants.test.TWOROLLERS)) {
@@ -74,15 +86,15 @@ public class Arm extends SubsystemBase {
         m_bottomRollerMotor.enable();
       }
     } else {
-
-      if (Constants.testMode == Constants.test.ARMGYRO)
+      if (Constants.testMode == Constants.test.ARMGYRO){
         m_armPosMotor = new Motor(armId, true);
-      else
+        m_armPosMotor.setConfig(false, kDegreesPerRot);
+      }
+      else{
         m_armPosMotor = new Motor(armId, false);
-      m_armPosMotor.setConfig(true, kDegreesPerRot);
+        m_armPosMotor.setConfig(true, kDegreesPerRot);
+      }
       m_armPosMotor.setPosition(0);
-      m_PID.setTolerance(1);
-      m_PID.reset();
       // m_rollermotor = new Motor(krollers);
       m_armPosMotor.enable();
     }
@@ -98,16 +110,27 @@ public class Arm extends SubsystemBase {
   }
 
   void setNewTarget(double angle) {
-    // angle=angle>MAX_ANGLE?MAX_ANGLE:angle;
-    // angle=angle<MIN_ANGLE?MIN_ANGLE:angle;
+    angle=angle>MAX_ANGLE?MAX_ANGLE:angle;
+    angle=angle<MIN_ANGLE?MIN_ANGLE:angle;
     armSetAngle = angle;
+    setPID(angle);
   }
 
+  void setPID(double a){
+    if(use_trap_pid)
+      m_tPID.setGoal(a);
+    else
+      m_PID.setSetpoint(a);
+  }
+  double getPID(double c){
+    if(use_trap_pid)
+      return m_tPID.calculate(c);
+    else
+      return m_PID.calculate(c);
+  }
   void setAngle() {
-    m_PID.setSetpoint(armSetAngle);
     double current = getAngle();
-    double output = m_PID.calculate(current);
-
+    double output = getPID(current);
     m_armPosMotor.set(output);
     String s = String.format("A:%-1.1f T:%-1.1f C:%-1.1f\n", current, armSetAngle, output);
     SmartDashboard.putString("Arm", s);
