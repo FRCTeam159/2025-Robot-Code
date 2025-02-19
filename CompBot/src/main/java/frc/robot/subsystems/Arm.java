@@ -180,7 +180,7 @@ public class Arm extends SubsystemBase {
 
   public void goToStart() {
     System.out.println("going to zero");
-    setNewTarget(START_ANGLE);
+    setNewTarget(0);
   }
 
   @Override

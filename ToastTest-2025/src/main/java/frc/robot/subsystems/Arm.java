@@ -23,11 +23,11 @@ import frc.robot.objects.Motor;
 public class Arm extends SubsystemBase {
 
   double last_heading = 0;
-  static double m_navx_offset = 0;// 83.1; // observed gyro value when arm is horizontal
+  static double m_navx_offset = 90; // observed gyro value when arm is horizontal
   static double shelfAngle = 180;
   static double groundAngle = 190;
   static double testAngle = 90;
-  static boolean use_trap_pid=true;
+  static boolean use_trap_pid=false;
 
   static public final double kGearRatio = 80*12.0/14.0;
   public static final double kDegreesPerRot = 360 / (kGearRatio);
@@ -42,8 +42,9 @@ public class Arm extends SubsystemBase {
   private Motor m_topRollerMotor = null;
   private Motor m_bottomRollerMotor = null;
 
-  static final double MAX_ANGLE = 200;
-  static final double MIN_ANGLE = 0;
+  static final double START_ANGLE = 0;
+  static final double MAX_ANGLE = 200-START_ANGLE;
+  static final double MIN_ANGLE = START_ANGLE;
   boolean m_intake = false;
   boolean m_eject = false;
   double intakeValue = 2;
@@ -68,7 +69,7 @@ public class Arm extends SubsystemBase {
       m_tPID.reset(0);
     }
     else{
-      m_PID = new PIDController(0.005, 0, 0);
+      m_PID = new PIDController(0.001, 0, 0);
       m_PID.setTolerance(1);
       m_PID.reset();
     }
@@ -88,7 +89,7 @@ public class Arm extends SubsystemBase {
     } else {
       if (Constants.testMode == Constants.test.ARMGYRO){
         m_armPosMotor = new Motor(armId, true);
-        m_armPosMotor.setConfig(false, kDegreesPerRot);
+        m_armPosMotor.setConfig(true, kDegreesPerRot);
       }
       else{
         m_armPosMotor = new Motor(armId, false);
@@ -132,7 +133,7 @@ public class Arm extends SubsystemBase {
     double current = getAngle();
     double output = getPID(current);
     m_armPosMotor.set(output);
-    String s = String.format("A:%-1.1f T:%-1.1f C:%-1.1f\n", current, armSetAngle, output);
+    String s = String.format("A:%-1.1f T:%-1.1f C:%-1.1f\n", current + START_ANGLE, armSetAngle, output);
     SmartDashboard.putString("Arm", s);
     // System.out.println(s);
   }
@@ -187,7 +188,7 @@ public class Arm extends SubsystemBase {
 
   public void goToShelf() {
     System.out.println("going to shelf");
-    setNewTarget(shelfAngle);
+    setNewTarget(shelfAngle - START_ANGLE);
   }
 
   public void goToTest() {
@@ -197,7 +198,7 @@ public class Arm extends SubsystemBase {
 
   public void goToGround() {
     System.out.println("going to ground");
-    setNewTarget(groundAngle);
+    setNewTarget(groundAngle - START_ANGLE);
   }
 
   public void goToZero() {
@@ -219,7 +220,7 @@ public class Arm extends SubsystemBase {
   public double getAngle() {
     double angle = 0;
     if (Constants.testMode == Constants.test.ARMGYRO)
-      angle = m_NAVXgyro.getRoll() + m_navx_offset; // returned values are negative
+      angle = -m_NAVXgyro.getRoll() + m_navx_offset; // returned values are negative
     else
       angle = m_armPosMotor.getPosition();
     angle = unwrap(last_heading, angle);
