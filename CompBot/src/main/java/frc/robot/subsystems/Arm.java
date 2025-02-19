@@ -55,13 +55,13 @@ public class Arm extends SubsystemBase {
    */
   public Arm(int armId, int bottomRollers, int topRollers) {
     if(use_trap_pid){
-      m_tPID=new ProfiledPIDController(0.015, 0, 0,
-        new TrapezoidProfile.Constraints(100,100));
+      m_tPID=new ProfiledPIDController(0.01, 0, 0,
+        new TrapezoidProfile.Constraints(300,200));
       m_tPID.setTolerance(1);
       m_tPID.reset(0);
     }
     else{
-      m_PID = new PIDController(0.005, 0, 0);
+      m_PID = new PIDController(0.007, 0, 0);
       m_PID.setTolerance(1);
       m_PID.reset();
     }
@@ -116,7 +116,7 @@ public class Arm extends SubsystemBase {
     double current = getAngle();
     double output = getPID(current);
     m_armPosMotor.set(output);
-    String s = String.format("A:%-1.1f T:%-1.1f C:%-1.1f\n", current, armSetAngle, output);
+    String s = String.format("A:%-1.1f T:%-1.1f C:%-1.1f\n", current + START_ANGLE, armSetAngle, output);
     SmartDashboard.putString("Arm", s);
     // System.out.println(s);
   }

@@ -38,7 +38,7 @@ public class DriveToTag extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    System.out.println("Drive to tag");
+    System.out.println("Starting drive to tag");
     m_started=false;
     m_drivePID.setSetpoint(m_target);
     m_drivePID.setTolerance(0.01);
@@ -53,7 +53,7 @@ public class DriveToTag extends Command {
     if(n>0){
       double x = xSub.get();
       double y = ySub.get();
-      System.out.println("distance = " + x + "Offset = " + y);
+      //System.out.println("distance = " + x + " Offset = " + y);
       double d = m_drivePID.calculate(x, m_target);
       double r = m_rotationPID.calculate(y, 0);
      // System.out.println("distance = " + s + " correction = " + d);

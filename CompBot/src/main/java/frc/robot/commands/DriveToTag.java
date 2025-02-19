@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.TagDetector;
 
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class DriveToTag extends Command {
   /** Creates a new DriveToTag. */
   Drivetrain m_drive;
@@ -39,7 +38,7 @@ public class DriveToTag extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    System.out.println("Drive to tag");
+    System.out.println("Starting drive to tag");
     m_started=false;
     m_drivePID.setSetpoint(m_target);
     m_drivePID.setTolerance(0.01);
@@ -54,7 +53,7 @@ public class DriveToTag extends Command {
     if(n>0){
       double x = xSub.get();
       double y = ySub.get();
-      //System.out.println("distance = " + x + "Offset = " + y);
+      //System.out.println("distance = " + x + " Offset = " + y);
       double d = m_drivePID.calculate(x, m_target);
       double r = m_rotationPID.calculate(y, 0);
      // System.out.println("distance = " + s + " correction = " + d);
@@ -68,7 +67,6 @@ public class DriveToTag extends Command {
   public void end(boolean interrupted) {
     System.out.println("DriveToTag.end " + interrupted);
     TagDetector.setTargeting(false);
-   m_drive.drive(0, 0, 0, false);
    }
 
   // Returns true when the command should end.

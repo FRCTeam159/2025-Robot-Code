@@ -50,7 +50,7 @@ public class Autonomous {
                 DriveStraight.setEndAtTag(true);
                 return new SequentialCommandGroup(
                     new GoToShelf(m_Arm),
-                    new DriveStraight(m_drivetrain, m_driveStraitTarget),
+                    new DrivePath(m_drivetrain, m_driveStraitTarget),
                     new DriveToTag(m_drivetrain),
                     new Eject(m_Arm)
                 );

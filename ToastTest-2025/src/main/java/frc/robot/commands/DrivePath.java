@@ -31,8 +31,8 @@ import frc.robot.utils.PlotUtils;
 // =================================================
 public class DrivePath extends Command {
 
-  double Xscale = 0.4; // Old: 1
-  double Rscale = 1.2;
+  double Xscale = 0.6; // Old: 1
+  double Rscale = 1.4;
 
   ArrayList<PathData> pathdata = new ArrayList<PathData>();
 
@@ -46,7 +46,7 @@ public class DrivePath extends Command {
   static public boolean plot_trajectory_motion = false;
   static public boolean plot_trajectory_dynamics = false;
 
-  static boolean debug = true;
+  static boolean debug = false;
 
   Trajectory m_trajectory;
   boolean using_pathplanner = false;
@@ -79,6 +79,7 @@ public class DrivePath extends Command {
   // =================================================
   @Override
   public void initialize() {
+    System.out.println("Starting drive path");
     //m_drive.resetPose(new Pose2d());
     plot_type = frc.robot.utils.PlotUtils.PLOT_LOCATION;
 

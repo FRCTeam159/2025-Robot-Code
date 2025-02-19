@@ -19,6 +19,7 @@ import frc.robot.subsystems.Autonomous;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.TagDetector;
+import frc.robot.utils.PlotServer;
 
 public class RobotContainer {
   private final XboxController m_controller = new XboxController(0);

@@ -27,7 +27,7 @@ public class Arm extends SubsystemBase {
   static double shelfAngle = 180;
   static double groundAngle = 190;
   static double testAngle = 90;
-  static boolean use_trap_pid=false;
+  static boolean use_trap_pid=true;
 
   static public final double kGearRatio = 80*12.0/14.0;
   public static final double kDegreesPerRot = 360 / (kGearRatio);
@@ -64,12 +64,12 @@ public class Arm extends SubsystemBase {
   public Arm(int armId, int bottomRollers, int topRollers) {
     if(use_trap_pid){
       m_tPID=new ProfiledPIDController(0.01, 0, 0,
-        new TrapezoidProfile.Constraints(100,100));
+        new TrapezoidProfile.Constraints(300,200));
       m_tPID.setTolerance(1);
       m_tPID.reset(0);
     }
     else{
-      m_PID = new PIDController(0.001, 0, 0);
+      m_PID = new PIDController(0.007, 0, 0);
       m_PID.setTolerance(1);
       m_PID.reset();
     }
@@ -89,7 +89,7 @@ public class Arm extends SubsystemBase {
     } else {
       if (Constants.testMode == Constants.test.ARMGYRO){
         m_armPosMotor = new Motor(armId, true);
-        m_armPosMotor.setConfig(true, kDegreesPerRot);
+        m_armPosMotor.setConfig(false, kDegreesPerRot);
       }
       else{
         m_armPosMotor = new Motor(armId, false);
