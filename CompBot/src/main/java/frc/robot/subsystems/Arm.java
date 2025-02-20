@@ -18,8 +18,8 @@ import frc.robot.objects.Motor;
 public class Arm extends SubsystemBase {
 
   double last_heading = 0;
-  static double shelfAngle = 140;
-  static double groundAngle = 195;
+  static double shelfAngle = 130;
+  static double groundAngle = 185;
   static double testAngle = 90;
   static boolean use_trap_pid=true;
 
@@ -34,9 +34,9 @@ public class Arm extends SubsystemBase {
   private Motor m_topRollerMotor = null;
   private Motor m_bottomRollerMotor = null;
 
-  static final double START_ANGLE = 0;
+  static final double START_ANGLE = 80;
   static final double MAX_ANGLE = 200-START_ANGLE;
-  static final double MIN_ANGLE = START_ANGLE;
+  static final double MIN_ANGLE = 0;
   boolean m_intake = false;
   boolean m_eject = false;
   double intakeValue = 3;
@@ -112,11 +112,15 @@ public class Arm extends SubsystemBase {
     else
       return m_PID.calculate(c);
   }
+
+  public void enable(){
+    m_armPosMotor.enable();
+  }
   void setAngle() {
     double current = getAngle();
     double output = getPID(current);
     m_armPosMotor.set(output);
-    String s = String.format("A:%-1.1f T:%-1.1f C:%-1.1f\n", current + START_ANGLE, armSetAngle, output);
+    String s = String.format("A:%-1.1f T:%-1.1f C:%-1.1f\n", current, armSetAngle, output);
     SmartDashboard.putString("Arm", s);
     // System.out.println(s);
   }

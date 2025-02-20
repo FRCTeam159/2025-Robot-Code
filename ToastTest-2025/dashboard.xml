@@ -1,10 +1,11 @@
 <xml version="1.0">
 <dashboard>
 	<widget field="UpperTarget" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
-		<location x="180" y="57"/>
+		<location x="321" y="46"/>
+		<height>13</height>
 	</widget>
 	<widget field="LowerTarget" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
-		<location x="180" y="40"/>
+		<location x="320" y="66"/>
 		<width>68</width>
 	</widget>
 	<widget field="Gyro" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
@@ -15,7 +16,8 @@
 		<location x="272" y="22"/>
 	</widget>
 	<widget field="Tags" type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
-		<location x="32" y="40"/>
+		<location x="29" y="43"/>
+		<width>285</width>
 	</widget>
 	<widget field="Arm" type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
 		<location x="35" y="20"/>

@@ -11,7 +11,7 @@ public class Constants {
         CLIMBER, ONEROLLER, TWOROLLERS, ARMGYRO, ARMMOTOR
     }
 
-    public static test testMode = test.ARMGYRO;
+    public static test testMode = test.ONEROLLER;
 
     public static final double kBackRightOffset = -0.169434;
     public static final double kBackLeftOffset = -0.215332;
@@ -40,18 +40,5 @@ public class Constants {
 
     public static final int mTest = 13; // 16
 
-    /*
-     * Toast Code:
-     * kFl_Encoder = 12;
-     * kFr_Encoder = 10;
-     * kBl_Encoder = 9;
-     * kBr_Encoder = 11;
-     * .
-     * Actual:
-     * kFl_Encoder = 12;
-     * kFr_Encoder = 10;
-     * kBl_Encoder = 9;
-     * kBr_Encoder = 11;
-     */
 
 }

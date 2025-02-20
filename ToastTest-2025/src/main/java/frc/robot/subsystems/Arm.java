@@ -10,8 +10,10 @@ import com.studica.frc.AHRS.NavXComType;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.networktables.FloatSubscriber;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DigitalOutput;
+import edu.wpi.first.wpilibj.Timer;
 
 //import com.kauailabs.navx.frc.AHRS;
 
@@ -56,23 +58,18 @@ public class Arm extends SubsystemBase {
   boolean newAngle = true;
   private double armSetAngle = 0;
 
+  private Timer m_timer = new Timer();
+  boolean m_sensorDetected = false;
+
   /**
    * Creates a new Arm.
    * 
    * @param krollers
    */
   public Arm(int armId, int bottomRollers, int topRollers) {
-    if(use_trap_pid){
-      m_tPID=new ProfiledPIDController(0.01, 0, 0,
-        new TrapezoidProfile.Constraints(300,200));
-      m_tPID.setTolerance(1);
-      m_tPID.reset(0);
-    }
-    else{
-      m_PID = new PIDController(0.007, 0, 0);
-      m_PID.setTolerance(1);
-      m_PID.reset();
-    }
+
+    m_timer.start();
+  
     // SmartDashboard.putNumber("NavX", 0);
     SmartDashboard.putString("Arm", "Inactive");
     if ((Constants.testMode == Constants.test.ONEROLLER) || (Constants.testMode == Constants.test.TWOROLLERS)) {
@@ -87,6 +84,17 @@ public class Arm extends SubsystemBase {
         m_bottomRollerMotor.enable();
       }
     } else {
+      if(use_trap_pid){
+        m_tPID=new ProfiledPIDController(0.01, 0, 0,
+          new TrapezoidProfile.Constraints(300,200));
+        m_tPID.setTolerance(1);
+        m_tPID.reset(0);
+      }
+      else{
+        m_PID = new PIDController(0.007, 0, 0);
+        m_PID.setTolerance(1);
+        m_PID.reset();
+      }
       if (Constants.testMode == Constants.test.ARMGYRO){
         m_armPosMotor = new Motor(armId, true);
         m_armPosMotor.setConfig(false, kDegreesPerRot);
@@ -96,7 +104,6 @@ public class Arm extends SubsystemBase {
         m_armPosMotor.setConfig(true, kDegreesPerRot);
       }
       m_armPosMotor.setPosition(0);
-      // m_rollermotor = new Motor(krollers);
       m_armPosMotor.enable();
     }
   }
@@ -162,11 +169,28 @@ public class Arm extends SubsystemBase {
   }
 
   public void setRollers() {
-    double rollerSpeed;
-    if (m_intake)
-      rollerSpeed = intakeValue;
-    else if (m_eject)
+    double rollerSpeed = 0;
+    boolean sensorActive = coralAtIntake();
+    // if (m_sensorDetected = false){
+    //   m_sensorDetected = true;
+    //   m_timer.reset();
+    // }
+    if (m_intake){
+      if (sensorActive){
+        // if (m_timer.get() > 2){
+        stopRollers();
+        //m_sensorDetected = false;
+        //}
+      }
+      else
+        rollerSpeed = intakeValue;
+    }
+    else if (m_eject){
       rollerSpeed = ejectValue;
+      m_timer.reset();
+      if (sensorActive == false && m_timer.get() >= 2)
+        stopRollers();
+    }
     else
       rollerSpeed = 0;
     m_topRollerMotor.setVoltage(rollerSpeed);
