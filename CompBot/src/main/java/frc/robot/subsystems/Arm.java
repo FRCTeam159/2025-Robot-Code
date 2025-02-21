@@ -18,8 +18,8 @@ import frc.robot.objects.Motor;
 public class Arm extends SubsystemBase {
 
   double last_heading = 0;
-  static double shelfAngle = 130;
-  static double groundAngle = 185;
+  static double shelfAngle = 140;
+  static double groundAngle = 212;
   static double testAngle = 90;
   static boolean use_trap_pid=true;
 
@@ -78,7 +78,7 @@ public class Arm extends SubsystemBase {
     m_bottomRollerMotor.enable();
 
     m_armPosMotor = new Motor(armId, false);
-    m_armPosMotor.setConfig(false, kDegreesPerRot);
+    m_armPosMotor.setConfig(false, true, kDegreesPerRot);
     m_armPosMotor.setPosition(0);
      // m_rollermotor = new Motor(krollers);
     m_armPosMotor.enable();

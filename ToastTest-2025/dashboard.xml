@@ -29,6 +29,7 @@
 	</widget>
 	<widget field="CoralDetected" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
 		<location x="36" y="67"/>
+		<width>267</width>
 	</widget>
 	<widget field="Show Tags" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
 		<location x="438" y="19"/>

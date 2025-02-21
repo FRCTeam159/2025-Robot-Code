@@ -31,7 +31,7 @@ public class RobotContainer {
   private Arm m_Arm = null;
   private Climber m_Climber = null;
 
-  public final Autonomous m_autonomous = new Autonomous(m_drivetrain, m_Detector, m_Arm);
+  public final Autonomous m_autonomous;
 
   public RobotContainer() {
     // m_Climber = new Climber(kClimber);
@@ -39,6 +39,8 @@ public class RobotContainer {
     m_drivetrain.setDefaultCommand(m_DriveWithGamepad);
     m_Arm = new Arm(kArm, kBottomRollers, kTopRollers);
     m_Arm.setDefaultCommand(new ArmControl(m_Arm, m_controller));
+   m_autonomous = new Autonomous(m_drivetrain, m_Detector, m_Arm);
+ 
   }
 
   public void robotInit() {

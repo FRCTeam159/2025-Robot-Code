@@ -18,7 +18,7 @@ public class Autonomous {
     public static final int AUTO_TEST = 3;
     public static final int DRIVE_PATH = 4;
     static SendableChooser<Integer> m_autochooser = new SendableChooser<Integer>();
-    double m_driveStraitTarget = 1.5;
+    double m_driveStraitTarget = 1;
 
     public Autonomous(Drivetrain drivetrain, TagDetector Detector, Arm arm) {
         m_drivetrain = drivetrain;
@@ -42,6 +42,7 @@ public class Autonomous {
             return null;
             case DRIVE_STRAIGHT:
                  return new SequentialCommandGroup(new DriveStraight(m_drivetrain, m_driveStraitTarget));
+                 //return new SequentialCommandGroup(new Eject(m_Arm));
             case DRIVE_TO_TAG:
                 return new SequentialCommandGroup(new DriveToTag(m_drivetrain));
             case DRIVE_PATH:

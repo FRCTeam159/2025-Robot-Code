@@ -43,7 +43,7 @@ public class Eject extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (m_Timer.get() > 4){
+    if (m_Timer.get() > 1){
       return true;
     }
     return false;

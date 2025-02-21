@@ -18,7 +18,7 @@ public class DriveToTag extends Command {
   Drivetrain m_drive;
   PIDController m_drivePID;
   PIDController m_rotationPID;
-  double m_target=0.25;
+  double m_target=0.45;
   boolean m_started=false;
   DoubleSubscriber xSub;
   DoubleSubscriber ySub;
@@ -41,9 +41,9 @@ public class DriveToTag extends Command {
     System.out.println("Starting drive to tag");
     m_started=false;
     m_drivePID.setSetpoint(m_target);
-    m_drivePID.setTolerance(0.01);
+    m_drivePID.setTolerance(0.1);
     m_rotationPID.setSetpoint(0);
-    m_rotationPID.setTolerance(0.01);
+    m_rotationPID.setTolerance(10);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
