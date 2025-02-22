@@ -18,8 +18,8 @@ import frc.robot.objects.Motor;
 public class Arm extends SubsystemBase {
 
   double last_heading = 0;
-  static double shelfAngle = 140;
-  static double groundAngle = 212;
+  static double shelfAngle = 145;
+  static double groundAngle = 205;
   static double testAngle = 90;
   static boolean use_trap_pid=true;
 
@@ -34,7 +34,7 @@ public class Arm extends SubsystemBase {
   private Motor m_topRollerMotor = null;
   private Motor m_bottomRollerMotor = null;
 
-  static final double START_ANGLE = 80;
+  static final double START_ANGLE = 90;
   static final double MAX_ANGLE = 200-START_ANGLE;
   static final double MIN_ANGLE = 0;
   boolean m_intake = false;
@@ -56,7 +56,7 @@ public class Arm extends SubsystemBase {
   public Arm(int armId, int bottomRollers, int topRollers) {
     if(use_trap_pid){
       m_tPID=new ProfiledPIDController(0.01, 0, 0,
-        new TrapezoidProfile.Constraints(300,200));
+        new TrapezoidProfile.Constraints(200,100));
       m_tPID.setTolerance(1);
       m_tPID.reset(0);
     }
@@ -94,8 +94,8 @@ public class Arm extends SubsystemBase {
   }
 
   void setNewTarget(double angle) {
-    angle=angle>MAX_ANGLE?MAX_ANGLE:angle;
-    angle=angle<MIN_ANGLE?MIN_ANGLE:angle;
+    // angle=angle>MAX_ANGLE?MAX_ANGLE:angle;
+    // angle=angle<MIN_ANGLE?MIN_ANGLE:angle;
     armSetAngle = angle;
     setPID(angle);
   }
@@ -120,7 +120,7 @@ public class Arm extends SubsystemBase {
     double current = getAngle();
     double output = getPID(current);
     m_armPosMotor.set(output);
-    String s = String.format("A:%-1.1f T:%-1.1f C:%-1.1f\n", current, armSetAngle, output);
+    String s = String.format("A:%-1.1f T:%-1.1f C:%-1.1f\n", current + START_ANGLE, armSetAngle + START_ANGLE, output);
     SmartDashboard.putString("Arm", s);
     // System.out.println(s);
   }
@@ -184,7 +184,7 @@ public class Arm extends SubsystemBase {
 
   public void goToStart() {
     System.out.println("going to zero");
-    setNewTarget(0);
+    setNewTarget(-10/*for counteracting slack when going back to 90*/);
   }
 
   @Override

@@ -58,8 +58,6 @@ public class TagDetector extends Thread {
   static boolean m_targeting = false;
   static boolean m_showTags = false;
 
-  static AprilTag[] tags = null;
-
   public static double min_decision_margin = 30; // reject tags less than this
 
   static int count = 0;
@@ -79,6 +77,7 @@ public class TagDetector extends Thread {
   public double fx = cx / Math.tan(0.5 * Math.toRadians(hFOV));
   public double fy = cy / Math.tan(0.5 * Math.toRadians(vFOV));
   static AprilTag tag = null;
+  static AprilTag[] tags = null;
 
   DoublePublisher xPub;
   DoublePublisher yPub;

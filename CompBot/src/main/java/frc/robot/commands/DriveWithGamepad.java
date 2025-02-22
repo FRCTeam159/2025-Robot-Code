@@ -56,6 +56,11 @@ public class DriveWithGamepad extends Command {
     double vx=m_controller.getLeftY();
     double vy=m_controller.getLeftX();
     double vr=m_controller.getRightX();
+    boolean fo = m_drive.getFieldOriented();
+    if (m_controller.getRightStickButtonPressed()){
+      m_drive.setFieldOriented(!fo); 
+    }
+
     final var xSpeed = -m_xspeedLimiter.calculate(MathUtil.applyDeadband(vx, 0.2))
             * Drivetrain.kMaxVelocity;
     
@@ -94,4 +99,5 @@ public class DriveWithGamepad extends Command {
   public boolean isFinished() {
     return false;
   }
+
 }
