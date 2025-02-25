@@ -20,6 +20,8 @@ public class DriveWithGamepad extends Command {
   private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(1.5);
   private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(.5,-10,0);
 
+  boolean percisionDriving = false;
+
   boolean movemode = false;
   public static double pVal = 3;
   /**
@@ -81,6 +83,15 @@ public class DriveWithGamepad extends Command {
     } else {
       m_drive.drive(xSpeed, ySpeed, rot, m_drive.isFieldOriented());
     }
+
+    if(m_controller.getXButtonPressed()) {
+      if(percisionDriving == false)
+      percisionDriving = true;
+      else
+      percisionDriving = false;
+      System.out.println(percisionDriving);
+    }
+
   }
 
   // Called once the command ends or is interrupted.

@@ -48,6 +48,7 @@ public class RobotContainer {
     m_drivetrain.init();
     m_Arm.enable();
     m_Detector.start();
+
   }
 
   public void teleopInit() {

@@ -18,7 +18,7 @@ import frc.robot.objects.Motor;
 public class Arm extends SubsystemBase {
 
   double last_heading = 0;
-  static double shelfAngle = 145;
+  static double shelfAngle = 140;
   static double groundAngle = 205;
   static double testAngle = 90;
   static boolean use_trap_pid=true;
