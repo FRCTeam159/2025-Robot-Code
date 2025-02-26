@@ -96,7 +96,7 @@ void setHeight() {
     m_ClimberMotor.set(output);
     String s = String.format("A:%-1.1f T:%-1.1f C:%-1.1f\n", current, m_setPoint, output);
     SmartDashboard.putString("Climber", s);
-    // System.out.println(s);
+    System.out.println(s);
   }
 
   public double getHeight() {
@@ -140,6 +140,7 @@ void setHeight() {
       m_lowering = false;
       }
     }
+    System.out.println ("Climber Motor Intitialized");
     SmartDashboard.putBoolean("UpperTarget", m_atUpperTarget);
     SmartDashboard.putBoolean("LowerTarget", m_atLowerTarget);
   }

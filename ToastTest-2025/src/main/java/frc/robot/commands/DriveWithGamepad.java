@@ -20,8 +20,6 @@ public class DriveWithGamepad extends Command {
   private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(1.5);
   private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(.5,-10,0);
 
-  boolean percisionDriving = false;
-
   boolean movemode = false;
   public static double pVal = 3;
   /**
@@ -58,6 +56,8 @@ public class DriveWithGamepad extends Command {
     double vx=m_controller.getLeftY();
     double vy=m_controller.getLeftX();
     double vr=m_controller.getRightX();
+    boolean fo = m_drive.getFieldOriented();
+
     final var xSpeed = -m_xspeedLimiter.calculate(MathUtil.applyDeadband(vx, 0.2))
             * Drivetrain.kMaxVelocity;
     
@@ -72,7 +72,7 @@ public class DriveWithGamepad extends Command {
      //final var rot = -MathUtil.applyDeadband(vr, 0.2)* Drivetrain.kMaxAngularVelocity;
      double rVal = MathUtil.applyDeadband(vr, .2);
      double sgn = rVal<0?-1:1;
-     final var rot = -sgn*Math.abs(Math.pow(Math.abs(rVal), pVal) * Drivetrain.kMaxAngularVelocity);
+     var rot = -sgn*Math.abs(Math.pow(Math.abs(rVal), pVal) * Drivetrain.kMaxAngularVelocity);
 
     if (m_drive.disabled()) {
       m_drive.enable();
@@ -84,14 +84,17 @@ public class DriveWithGamepad extends Command {
       m_drive.drive(xSpeed, ySpeed, rot, m_drive.isFieldOriented());
     }
 
-    if(m_controller.getXButtonPressed()) {
-      if(percisionDriving == false)
-      percisionDriving = true;
-      else
-      percisionDriving = false;
-      System.out.println(percisionDriving);
+    if(m_controller.getPOV() == 0){
+      m_drive.setSlowDriving(true);
+      
+    }
+    else if(m_controller.getPOV() == 180){
+      m_drive.setSlowDriving(false);
     }
 
+    if (m_controller.getRightStickButtonPressed()){
+      m_drive.setFieldOriented(!m_drive.getFieldOriented()); 
+    }
   }
 
   // Called once the command ends or is interrupted.

@@ -43,7 +43,7 @@ Drivetrain m_drive;
   @Override
   public void initialize() {
    // System.out.println("Drive straight target =15 " + m_target);
-    m_PID.setSetpoint(-m_target);
+    m_PID.setSetpoint(m_target);
     m_PID.setTolerance(0.05);
   }
 
@@ -51,7 +51,7 @@ Drivetrain m_drive;
   @Override
   public void execute() {
     double s = m_drive.getDistance();
-    double d = m_PID.calculate(s, -m_target);
+    double d = m_PID.calculate(s, m_target);
     //System.out.println("distance = " + s + " correction = " + d);
     m_drive.drive(d, 0, 0, false);
    }

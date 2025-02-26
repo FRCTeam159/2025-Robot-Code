@@ -27,6 +27,11 @@ public class Drivetrain extends SubsystemBase {
   static public boolean debug = false;
   static public boolean debug_angles = false;
 
+  boolean m_percisionDriving = false;
+
+  double m_driveScale = 1;
+  double m_turnScale = 1;
+
   public static final double kWheelRadius = 2;
   public static final double kDistPerRot = (Units.inchesToMeters(kWheelRadius) * 2 * Math.PI) / kDriveGearRatio;
   public static final double kRadiansPerRot = Math.PI * 2 / kTurnGearRatio;
@@ -136,6 +141,19 @@ public class Drivetrain extends SubsystemBase {
 
   }
 
+  public void setSlowDriving(boolean B){
+    m_percisionDriving = B;
+    System.out.println("slowDriving = " + m_percisionDriving);
+    if (m_percisionDriving){
+      m_driveScale = 0.25;
+      m_turnScale = 0.06;
+    }
+    else {
+      m_driveScale = 1;
+      m_turnScale = 1;
+    }
+  }
+
   public boolean isFieldOriented() {
     return m_fieldOriented;
   }
@@ -215,15 +233,15 @@ public class Drivetrain extends SubsystemBase {
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
     SwerveModuleState[] swerveModuleStates = m_kinematics.toSwerveModuleStates(
         fieldRelative
-            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, getRotation2d())
-            : new ChassisSpeeds(xSpeed, ySpeed, rot));
+            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed * m_driveScale, ySpeed * m_driveScale, rot * m_turnScale, getRotation2d())
+            : new ChassisSpeeds(xSpeed * m_driveScale, ySpeed * m_driveScale, rot * m_turnScale));
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, kMaxVelocity);
     for (int i = 0; i < modules.length; i++)
       modules[i].setDesiredState(swerveModuleStates[i]);
 
     // modules[0].setDesiredState(swerveModuleStates[0]);
 
-    updateOdometry();
+    //updateOdometry();
   }
 
   public void move(double v) {
@@ -321,10 +339,11 @@ public class Drivetrain extends SubsystemBase {
 
   @Override
   public void periodic() {
-    boolean fo=m_fieldOriented;
-    m_fieldOriented = SmartDashboard.getBoolean("Field Oriented", false);
-    if(m_fieldOriented && !fo)
-      m_gyro.reset();
+    //boolean fo=m_fieldOriented;
+    SmartDashboard.putBoolean("Field Oriented", m_fieldOriented);
+    SmartDashboard.putBoolean("PrecisionDriving", m_percisionDriving);
+    //if(m_fieldOriented && !fo)
+    //  m_gyro.reset();
     updateOdometry();
     log();
   }

@@ -37,7 +37,7 @@ public class Climber extends SubsystemBase {
 
   SparkLimitSwitch m_upperLimit;
 
-  private final PIDController m_PID = new PIDController(0.2, 0, 0);
+  private final PIDController m_PID = new PIDController(0.01, 0, 0);
 
   private Motor m_ClimberMotor;
 
@@ -95,7 +95,7 @@ public class Climber extends SubsystemBase {
     m_ClimberMotor.set(output);
     String s = String.format("A:%-1.1f T:%-1.1f C:%-1.1f\n", current, m_setPoint, output);
     SmartDashboard.putString("Climber", s);
-    // System.out.println(s);
+    System.out.println(s);
   }
 
   public double getHeight() {
