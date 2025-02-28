@@ -19,6 +19,7 @@ import frc.robot.subsystems.Autonomous;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.TagDetector;
+//import balls.rightBall
 
 public class RobotContainer {
   private final XboxController m_controller = new XboxController(0);
@@ -34,8 +35,8 @@ public class RobotContainer {
   public final Autonomous m_autonomous;
 
   public RobotContainer() {
-    // m_Climber = new Climber(kClimber);
-    // m_Climber.setDefaultCommand(new ClimberControl(m_Climber, m_controller));
+    m_Climber = new Climber(kClimber);
+    m_Climber.setDefaultCommand(new ClimberControl(m_Climber, m_controller));
     m_drivetrain.setDefaultCommand(m_DriveWithGamepad);
     m_Arm = new Arm(kArm, kBottomRollers, kTopRollers);
     m_Arm.setDefaultCommand(new ArmControl(m_Arm, m_controller));

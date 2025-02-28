@@ -14,13 +14,14 @@ import edu.wpi.first.networktables.FloatSubscriber;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.Timer;
-
+// import balls
 //import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.objects.Motor;
+import frc.robot.utils.Averager;
 
 public class Arm extends SubsystemBase {
 
@@ -53,13 +54,15 @@ public class Arm extends SubsystemBase {
   double ejectValue = -2;
 
   DigitalInput m_coralSensor = new DigitalInput(1);
-  DigitalOutput m_coralState = new DigitalOutput(2);
+  //DigitalOutput m_coralState = new DigitalOutput(2);
 
   boolean newAngle = true;
   private double armSetAngle = 0;
 
   private Timer m_timer = new Timer();
-  boolean m_sensorDetected = false;
+
+  double m_coralAtIntake=0;
+  Averager sensor1_averager = new Averager(5);
 
   /**
    * Creates a new Arm.
@@ -108,9 +111,11 @@ public class Arm extends SubsystemBase {
     }
   }
 
-  public boolean coralAtIntake() {
+  public double coralAtIntake() {
     // return !noteSensor1.get();
-    return m_coralSensor.get();
+    double val= m_coralSensor.get()?1.2:0.25;
+    m_coralAtIntake = sensor1_averager.getAve(val);
+    return m_coralAtIntake;
   }
 
   public void adjustAngle(double adjustment) {
@@ -170,13 +175,13 @@ public class Arm extends SubsystemBase {
 
   public void setRollers() {
     double rollerSpeed = 0;
-    boolean sensorActive = coralAtIntake();
+    double sensorActive = coralAtIntake();
     // if (m_sensorDetected = false){
     //   m_sensorDetected = true;
     //   m_timer.reset();
     // }
     if (m_intake){
-      if (sensorActive){
+      if (sensorActive > 0.5){
         // if (m_timer.get() > 2){
         stopRollers();
         //m_sensorDetected = false;
@@ -188,7 +193,7 @@ public class Arm extends SubsystemBase {
     else if (m_eject){
       rollerSpeed = ejectValue;
       m_timer.reset();
-      if (sensorActive == false && m_timer.get() >= 2)
+      if (sensorActive < 0.5 && m_timer.get() >= 2)
         stopRollers();
     }
     else
@@ -233,8 +238,9 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
     //
-    SmartDashboard.putBoolean("CoralDetected", coralAtIntake());
-    m_coralState.set(coralAtIntake());
+    double coral = coralAtIntake();
+    SmartDashboard.putNumber("CoralDetected", coral);
+    //m_coralState.set(coral);
     if (Constants.testMode == Constants.test.ONEROLLER || Constants.testMode == Constants.test.TWOROLLERS)
       setRollers();
     else
