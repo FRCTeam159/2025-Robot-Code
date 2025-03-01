@@ -48,12 +48,17 @@ public class Arm extends SubsystemBase {
   boolean newAngle = true;
   private double armSetAngle = 0;
 
+  boolean coralTest = false;
+
   /**
    * Creates a new Arm.
    * 
    * @param krollers
    */
   public Arm(int armId, int bottomRollers, int topRollers) {
+
+    SmartDashboard.putBoolean("CoralLightTest", coralTest);
+
     if(use_trap_pid){
       m_tPID=new ProfiledPIDController(0.01, 0, 0,
         new TrapezoidProfile.Constraints(200,100));
@@ -190,8 +195,9 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
     //
-    SmartDashboard.putBoolean("CoralDetected", coralAtIntake());
-    m_coralState.set(coralAtIntake());
+    coralTest = SmartDashboard.getBoolean("CoralLightTest", coralTest);
+    //SmartDashboard.putBoolean("CoralDetected", coralAtIntake());
+    m_coralState.set(!coralTest);
     setRollers();
     setAngle();
   }

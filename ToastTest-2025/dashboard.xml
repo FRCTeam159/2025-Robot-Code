@@ -1,25 +1,32 @@
 <xml version="1.0">
 <dashboard>
-	<widget field="LowerTarget" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="321" y="64"/>
-		<width>148</width>
-		<height>19</height>
+	<widget field="ClimbLightTest" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
+		<location x="42" y="62"/>
 	</widget>
-	<widget field="UpperTarget" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="321" y="44"/>
+	<widget field="CoralLightTest" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
+		<location x="424" y="74"/>
+	</widget>
+	<widget field="LowerTarget" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="319" y="70"/>
+	</widget>
+	<widget field="UpperTarget" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="318" y="48"/>
+	</widget>
+	<widget field="UpperLimit" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="450" y="40"/>
+	</widget>
+	<widget field="LowerLimit" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="451" y="57"/>
 	</widget>
 	<widget field="Climber" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="270" y="22"/>
-	</widget>
-	<widget field="CoralDetected" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="19" y="70"/>
-		<width>106</width>
+		<width>143</width>
 	</widget>
 	<widget field="PrecisionDriving" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
-		<location x="146" y="72"/>
+		<location x="142" y="76"/>
 	</widget>
 	<widget field="Field Oriented" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
-		<location x="237" y="73"/>
+		<location x="225" y="77"/>
 	</widget>
 	<widget field="Gyro" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
 		<location x="268" y="2"/>

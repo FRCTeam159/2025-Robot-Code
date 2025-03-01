@@ -9,6 +9,8 @@ import static frc.robot.Constants.kClimber;
 import com.revrobotics.spark.SparkLimitSwitch;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -23,8 +25,8 @@ public class Climber extends SubsystemBase {
    * @param kclimber
    */
 
-  static double lowValue = -15;
-  static double highValue = 15;// Rotations
+  static double lowValue = -4.2;
+  static double highValue = 0;// Rotations
   private double m_setPoint = 0;
   static public final double kRotToIn = 0.1;
   static public final double kGearRatio = 4;
@@ -33,20 +35,36 @@ public class Climber extends SubsystemBase {
   boolean m_lowering = false;
   boolean m_atUpperTarget = false;
   boolean m_atLowerTarget = false;
+
+  static boolean use_trap_pid=false;
+
   DigitalOutput m_climbState = new DigitalOutput(3);
 
-  SparkLimitSwitch m_upperLimit;
+  private PIDController m_PID;
 
-  private final PIDController m_PID = new PIDController(0.01, 0, 0);
+  ProfiledPIDController m_tPID;
 
   private Motor m_ClimberMotor;
 
   public Climber(int kclimber) {
+ 
+    if(use_trap_pid){
+      m_tPID=new ProfiledPIDController(0.2, 0, 0,
+        new TrapezoidProfile.Constraints(20,10));
+      m_tPID.setTolerance(.1);
+      m_tPID.reset(0);
+    }
+    else{
+      m_PID = new PIDController(0.15, 0, 0);
+      m_PID.setTolerance(.1);
+      m_PID.reset();
+    }
+
+    
     SmartDashboard.putString("Climber", "Inactive");
     m_ClimberMotor = new Motor(kClimber);
     m_ClimberMotor.setConfig(false, true, kInchesPerRot);
     m_ClimberMotor.setPosition(0);
-    m_PID.setTolerance(0.2);
     m_ClimberMotor.setUpperLimit();
     m_ClimberMotor.setLowerLimit();
     m_climbState.set(false);
@@ -85,18 +103,20 @@ public class Climber extends SubsystemBase {
 
 void setTargetHeight(double d) {
   m_setPoint = d;
+  setPID(d);
 }
 
 void setHeight() {
-    m_PID.setSetpoint(m_setPoint);
+   // m_PID.setSetpoint(m_setPoint);
     double current = getHeight();
-    double output = m_PID.calculate(current);
+    //double output = m_PID.calculate(current);
+    double output = getPID(current);
 
     
     m_ClimberMotor.set(output);
-    String s = String.format("A:%-1.1f T:%-1.1f C:%-1.1f\n", current, m_setPoint, output);
+    String s = String.format("A:%-1.1f T:%-1.1f C:%-1.2f\n", current, m_setPoint, output);
     SmartDashboard.putString("Climber", s);
-    System.out.println(s);
+    //System.out.println(s);
   }
 
   public double getHeight() {
@@ -105,11 +125,24 @@ void setHeight() {
   }
 
   public boolean atUpperTarget() {
-    return m_PID.atSetpoint();// || m_ClimberMotor.atUpperLimit();
+    return m_PID.atSetpoint() || m_ClimberMotor.atUpperLimit();
   }
 
   public boolean atLowerTarget() {
-    return m_PID.atSetpoint();// || m_ClimberMotor.atLowerLimit();
+    return m_PID.atSetpoint()||m_ClimberMotor.atLowerLimit();
+  }
+
+  void setPID(double a){
+    if(use_trap_pid)
+      m_tPID.setGoal(a);
+    else
+      m_PID.setSetpoint(a);
+  }
+  double getPID(double c){
+    if(use_trap_pid)
+      return m_tPID.calculate(c);
+    else
+      return m_PID.calculate(c);
   }
 
   public void reset() {
@@ -127,21 +160,26 @@ void setHeight() {
       if (m_ClimberMotor.atUpperLimit())
         stop();
       else if (atUpperTarget()) {
-      m_atUpperTarget = true;
-      m_raising = false;
-      m_climbState.set(true);
-    }
+        m_atUpperTarget = true;
+        m_raising = false;
+        m_climbState.set(true); //true
+      }
     }
     if (m_lowering) {
       if (m_ClimberMotor.atLowerLimit())
         stop();
       else if (atLowerTarget()) {
-      m_atLowerTarget = true;
-      m_lowering = false;
+        m_atLowerTarget = true;
+        m_lowering = false;
       }
     }
-    System.out.println ("Climber Motor Intitialized");
+    //System.out.println ("Climber Motor Intitialized");
     SmartDashboard.putBoolean("UpperTarget", m_atUpperTarget);
     SmartDashboard.putBoolean("LowerTarget", m_atLowerTarget);
+    SmartDashboard.putBoolean("UpperLimit", m_ClimberMotor.atUpperLimit());
+    SmartDashboard.putBoolean("LowerLimit", m_ClimberMotor.atLowerLimit());
+
+    // climbTest = SmartDashboard.getBoolean("ClimbLightTest", climbTest);
+    m_climbState.set(m_atLowerTarget);
   }
 }
