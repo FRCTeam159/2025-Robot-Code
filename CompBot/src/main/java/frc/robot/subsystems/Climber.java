@@ -36,7 +36,7 @@ public class Climber extends SubsystemBase {
   boolean m_atUpperTarget = false;
   boolean m_atLowerTarget = false;
 
-  static boolean use_trap_pid=false;
+  static boolean usingTrapPID=false;
 
   DigitalOutput m_climbState = new DigitalOutput(3);
 
@@ -48,7 +48,7 @@ public class Climber extends SubsystemBase {
 
   public Climber(int kclimber) {
  
-    if(use_trap_pid){
+    if(usingTrapPID){
       m_tPID=new ProfiledPIDController(0.2, 0, 0,
         new TrapezoidProfile.Constraints(20,10));
       m_tPID.setTolerance(.1);
@@ -124,22 +124,29 @@ void setHeight() {
     return height;
   }
 
+  public boolean atSetpoint() {
+    if (usingTrapPID)
+      return m_tPID.atSetpoint();
+    else
+      return m_PID.atSetpoint();
+  }
+
   public boolean atUpperTarget() {
-    return m_PID.atSetpoint() || m_ClimberMotor.atUpperLimit();
+    return atSetpoint() || m_ClimberMotor.atUpperLimit();
   }
 
   public boolean atLowerTarget() {
-    return m_PID.atSetpoint()||m_ClimberMotor.atLowerLimit();
+    return atSetpoint()||m_ClimberMotor.atLowerLimit();
   }
 
   void setPID(double a){
-    if(use_trap_pid)
+    if(usingTrapPID)
       m_tPID.setGoal(a);
     else
       m_PID.setSetpoint(a);
   }
   double getPID(double c){
-    if(use_trap_pid)
+    if(usingTrapPID)
       return m_tPID.calculate(c);
     else
       return m_PID.calculate(c);

@@ -26,8 +26,9 @@ public class Drivetrain extends SubsystemBase {
 
   static public boolean debug = false;
   static public boolean debug_angles = false;
-
-  boolean m_percisionDriving = false;
+  static double m_drivePrecisionScale = 0.25;
+  static double m_turnPrecisionScale = 0.06;
+  boolean m_precisionDriving = false;
 
   double m_driveScale = 1;
   double m_turnScale = 1;
@@ -45,6 +46,8 @@ public class Drivetrain extends SubsystemBase {
 
   public static final double kMaxVelocity = 0.5;
   public static final double kMaxAcceleration = 1;
+
+
   public static final double kMaxAngularVelocity = Math.toRadians(720); // radians/s
   public static final double kMaxAngularAcceleration = Math.toRadians(360); // radians/s/s
 
@@ -142,11 +145,11 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void setSlowDriving(boolean B){
-    m_percisionDriving = B;
-    System.out.println("slowDriving = " + m_percisionDriving);
-    if (m_percisionDriving){
-      m_driveScale = 0.25;
-      m_turnScale = 0.06;
+    m_precisionDriving = B;
+    System.out.println("slowDriving = " + m_precisionDriving);
+    if (m_precisionDriving){
+      m_driveScale = m_drivePrecisionScale;
+      m_turnScale = m_turnPrecisionScale;
     }
     else {
       m_driveScale = 1;
@@ -341,7 +344,7 @@ public class Drivetrain extends SubsystemBase {
   public void periodic() {
     //boolean fo=m_fieldOriented;
     SmartDashboard.putBoolean("Field Oriented", m_fieldOriented);
-    SmartDashboard.putBoolean("PrecisionDriving", m_percisionDriving);
+    SmartDashboard.putBoolean("PrecisionDriving", m_precisionDriving);
     //if(m_fieldOriented && !fo)
     //  m_gyro.reset();
     updateOdometry();
