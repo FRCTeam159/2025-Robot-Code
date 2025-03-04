@@ -18,8 +18,8 @@ import frc.robot.objects.Motor;
 public class Arm extends SubsystemBase {
 
   double last_heading = 0;
-  static double shelfAngle = 140;
-  static double groundAngle = 205;
+  static double shelfAngle = 145;
+  static double groundAngle = 210;
   static double testAngle = 90;
   static boolean use_trap_pid=true;
 
@@ -39,7 +39,7 @@ public class Arm extends SubsystemBase {
   static final double MIN_ANGLE = 0;
   boolean m_intake = false;
   boolean m_eject = false;
-  double intakeValue = 3;
+  double intakeValue = 5;
   double ejectValue = -3;
 
   DigitalInput m_coralSensor = new DigitalInput(1);
