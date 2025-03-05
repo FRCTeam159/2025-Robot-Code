@@ -1,40 +1,35 @@
 <xml version="1.0">
 <dashboard>
-	<widget field="ClimbLightTest" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
-		<location x="42" y="62"/>
+	<widget field="Rollers" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="27" y="69"/>
+		<width>199</width>
 	</widget>
-	<widget field="CoralLightTest" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
-		<location x="424" y="74"/>
+	<widget field="PotValue" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="26" y="91"/>
 	</widget>
 	<widget field="LowerTarget" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
-		<location x="319" y="70"/>
+		<location x="400" y="48"/>
 	</widget>
 	<widget field="UpperTarget" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
-		<location x="318" y="48"/>
-	</widget>
-	<widget field="UpperLimit" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
-		<location x="450" y="40"/>
-	</widget>
-	<widget field="LowerLimit" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
-		<location x="451" y="57"/>
+		<location x="402" y="67"/>
 	</widget>
 	<widget field="Climber" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="270" y="22"/>
+		<location x="287" y="25"/>
 		<width>143</width>
 	</widget>
 	<widget field="PrecisionDriving" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
-		<location x="142" y="76"/>
+		<location x="301" y="67"/>
 	</widget>
 	<widget field="Field Oriented" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
-		<location x="225" y="77"/>
+		<location x="299" y="50"/>
 	</widget>
 	<widget field="Gyro" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
 		<location x="268" y="2"/>
-		<width>129</width>
+		<width>83</width>
 	</widget>
 	<widget field="Tags" type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
 		<location x="29" y="43"/>
-		<width>285</width>
+		<width>180</width>
 	</widget>
 	<widget field="Arm" type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
 		<location x="33" y="23"/>
@@ -46,22 +41,25 @@
 		<height>21</height>
 	</widget>
 	<widget field="Show Tags" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
-		<location x="438" y="19"/>
+		<location x="222" y="47"/>
 	</widget>
 	<widget field="Power Value" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="401" y="1"/>
-		<width>108</width>
+		<location x="373" y="0"/>
+		<width>113</width>
 	</widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.CameraServerViewer">
-		<location x="11" y="95"/>
+		<location x="13" y="118"/>
 		<width>592</width>
 		<height>433</height>
 		<property name="Camera Choice" value="RobotCamera"/>
 	</static-widget>
 	<widget field="SendableChooser[0]" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
-		<location x="512" y="-11"/>
+		<location x="492" y="-7"/>
 	</widget>
 </dashboard>
 <live-window>
 </live-window>
+	<hidden field="Lowering"/>
+	<hidden field="Raising"/>
+	<hidden field="CoralLightTest"/>
 </xml>

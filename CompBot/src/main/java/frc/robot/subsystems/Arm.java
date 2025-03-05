@@ -8,12 +8,16 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DigitalOutput;
-
+import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.Timer;
+// import balls
 //import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.objects.Motor;
+import frc.robot.utils.Averager;
 
 public class Arm extends SubsystemBase {
 
@@ -30,6 +34,7 @@ public class Arm extends SubsystemBase {
 
   private PIDController m_PID;
   private ProfiledPIDController m_tPID;
+  AnalogInput potentiometerInput = new AnalogInput(1);
   private Motor m_armPosMotor = null;
   private Motor m_topRollerMotor = null;
   private Motor m_bottomRollerMotor = null;
@@ -48,17 +53,12 @@ public class Arm extends SubsystemBase {
   boolean newAngle = true;
   private double armSetAngle = 0;
 
-  boolean coralTest = false;
-
   /**
    * Creates a new Arm.
    * 
    * @param krollers
    */
   public Arm(int armId, int bottomRollers, int topRollers) {
-
-    SmartDashboard.putBoolean("CoralLightTest", coralTest);
-
     if(use_trap_pid){
       m_tPID=new ProfiledPIDController(0.01, 0, 0,
         new TrapezoidProfile.Constraints(200,100));
@@ -125,7 +125,7 @@ public class Arm extends SubsystemBase {
     double current = getAngle();
     double output = getPID(current);
     m_armPosMotor.set(output);
-    String s = String.format("A:%-1.1f T:%-1.1f C:%-1.1f\n", current + START_ANGLE, armSetAngle + START_ANGLE, output);
+    String s = String.format("A:%-1.1f T:%-1.1f C:%-1.1f\n", current, armSetAngle, output);
     SmartDashboard.putString("Arm", s);
     // System.out.println(s);
   }
@@ -164,7 +164,7 @@ public class Arm extends SubsystemBase {
     m_topRollerMotor.setVoltage(rollerSpeed);
     m_bottomRollerMotor.setVoltage(-rollerSpeed);
     String s = String.format("Eject:%b Intake:%b Speed:%1.2f", m_eject, m_intake, rollerSpeed);
-    SmartDashboard.putString("Arm", s);
+    SmartDashboard.putString("Rollers", s);
   }
 
   public void decrement(double angle) {
@@ -195,16 +195,28 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
     //
-    coralTest = SmartDashboard.getBoolean("CoralLightTest", coralTest);
     //SmartDashboard.putBoolean("CoralDetected", coralAtIntake());
-    m_coralState.set(!coralTest);
+    SmartDashboard.putNumber("PotValue", getPotentiometerValue());
     setRollers();
     setAngle();
   }
 
+//3.08 start/90
+//3.405 ground 
+  public double getPotentiometerValue() {
+    double pStart = 3.08;
+    double pGround = 3.405;
+    double m = (0-120)/(pStart-pGround); //max and min of the arm 90 and 210 over the max and min of the POT to find the slope a equation
+    double b = 0-(m * pStart);
+    double voltage = potentiometerInput.getVoltage();
+    double x = voltage;
+    
+    return x * m + b;
+  }
+
   public double getAngle() {
     double angle = 0;
-    angle = m_armPosMotor.getPosition();
+    angle = getPotentiometerValue(); //m_armPosMotor.getPosition();
     angle = unwrap(last_heading, angle);
     last_heading = angle;
     return angle;

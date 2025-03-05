@@ -13,6 +13,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.networktables.FloatSubscriber;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DigitalOutput;
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Timer;
 // import balls
 //import com.kauailabs.navx.frc.AHRS;
@@ -40,6 +41,7 @@ public class Arm extends SubsystemBase {
   private PIDController m_PID;
   private ProfiledPIDController m_tPID;
   static AHRS m_NAVXgyro = new AHRS(NavXComType.kUSB1);
+  static AnalogInput potentiometerInput = new AnalogInput(4);
 
   private Motor m_armPosMotor = null;
   private Motor m_topRollerMotor = null;
@@ -240,6 +242,7 @@ public class Arm extends SubsystemBase {
     //
     double coral = coralAtIntake();
     SmartDashboard.putNumber("CoralDetected", coral);
+    SmartDashboard.putNumber("Pot Value", getPotentiometerValue());
     //m_coralState.set(coral);
     if (Constants.testMode == Constants.test.ONEROLLER || Constants.testMode == Constants.test.TWOROLLERS)
       setRollers();
@@ -262,5 +265,11 @@ public class Arm extends SubsystemBase {
     double d = new_angle - previous_angle;
     d = d >= 180 ? d - 360 : (d <= -180 ? d + 360 : d);
     return previous_angle + d;
+  }
+
+  public double getPotentiometerValue() {
+      double voltage = potentiometerInput.getVoltage();
+      double scaledValue = (voltage / 5) * 100;
+      return scaledValue;
   }
 }

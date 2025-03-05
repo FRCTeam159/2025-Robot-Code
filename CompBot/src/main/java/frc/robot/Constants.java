@@ -13,12 +13,12 @@ public class Constants {
     public static final int kFl_Drive = 3;
     public static final int kFl_Turn = 8;
     public static final int kFl_Encoder = 12;
-    public static final double kFrontLeftOffset = -0.092285;
+    public static final double kFrontLeftOffset = -0.159180;
 
     public static final int kFr_Drive = 7;
     public static final int kFr_Turn = 6;
     public static final int kFr_Encoder = 10;
-    public static final double kFrontRightOffset = -0.403809;
+    public static final double kFrontRightOffset = -0.423096;
  
     public static final int kBl_Drive = 2;
     public static final int kBl_Turn = 4;

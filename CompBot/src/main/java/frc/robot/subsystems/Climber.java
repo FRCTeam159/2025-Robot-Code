@@ -172,7 +172,7 @@ public class Climber extends SubsystemBase {
     SmartDashboard.putBoolean("UpperTarget", m_atUpperTarget);
     SmartDashboard.putBoolean("LowerTarget", m_atLowerTarget);
 
-    SmartDashboard.putBoolean("Raising", m_raising);
-    SmartDashboard.putBoolean("Lowering", m_lowering);
+    //SmartDashboard.putBoolean("Raising", m_raising);
+    //SmartDashboard.putBoolean("Lowering", m_lowering);
   }
 }
