@@ -30,7 +30,7 @@ public class Arm extends SubsystemBase {
   static double m_navx_offset = 90; // observed gyro value when arm is horizontal
   static double shelfAngle = 180;
   static double groundAngle = 190;
-  static double testAngle = 90;
+  static double startAngle = 90;
   static boolean use_trap_pid=true;
 
   static public final double kGearRatio = 80*12.0/14.0;
@@ -41,13 +41,13 @@ public class Arm extends SubsystemBase {
   private PIDController m_PID;
   private ProfiledPIDController m_tPID;
   static AHRS m_NAVXgyro = new AHRS(NavXComType.kUSB1);
-  static AnalogInput potentiometerInput = new AnalogInput(4);
+  static AnalogInput potentiometerInput = new AnalogInput(1);
 
   private Motor m_armPosMotor = null;
   private Motor m_topRollerMotor = null;
   private Motor m_bottomRollerMotor = null;
 
-  static final double START_ANGLE = 0;
+  static final double START_ANGLE = 90;
   static final double MAX_ANGLE = 200-START_ANGLE;
   static final double MIN_ANGLE = START_ANGLE;
   boolean m_intake = false;
@@ -56,6 +56,7 @@ public class Arm extends SubsystemBase {
   double ejectValue = -2;
 
   DigitalInput m_coralSensor = new DigitalInput(1);
+  DigitalInput m_coralSensor2 = new DigitalInput(0);
   //DigitalOutput m_coralState = new DigitalOutput(2);
 
   boolean newAngle = true;
@@ -64,7 +65,10 @@ public class Arm extends SubsystemBase {
   private Timer m_timer = new Timer();
 
   double m_coralAtIntake=0;
+  double m_coralAtIntake2=0;
   Averager sensor1_averager = new Averager(5);
+  Averager sensor2_averager = new Averager(5);
+  boolean usePOT = false;
 
   /**
    * Creates a new Arm.
@@ -113,11 +117,25 @@ public class Arm extends SubsystemBase {
     }
   }
 
-  public double coralAtIntake() {
+  public boolean coralAtIntake1() {
     // return !noteSensor1.get();
-    double val= m_coralSensor.get()?1.2:0.25;
+    double val= m_coralSensor.get()?1:0.0;
     m_coralAtIntake = sensor1_averager.getAve(val);
-    return m_coralAtIntake;
+    return m_coralAtIntake>0.5?false:true;
+  }
+
+  public boolean coralAtIntake2() {
+    // return !noteSensor1.get();
+    double val2= m_coralSensor2.get()?1:0.0;
+    m_coralAtIntake2 = sensor2_averager.getAve(val2);
+    return m_coralAtIntake2>0.5?false:true;
+  }
+
+  public boolean coralAtIntake() {
+    if (coralAtIntake1() || coralAtIntake2())
+      return true;
+    else  
+      return false;
   }
 
   public void adjustAngle(double adjustment) {
@@ -177,13 +195,12 @@ public class Arm extends SubsystemBase {
 
   public void setRollers() {
     double rollerSpeed = 0;
-    double sensorActive = coralAtIntake();
     // if (m_sensorDetected = false){
     //   m_sensorDetected = true;
     //   m_timer.reset();
     // }
     if (m_intake){
-      if (sensorActive > 0.5){
+      if (coralAtIntake()){
         // if (m_timer.get() > 2){
         stopRollers();
         //m_sensorDetected = false;
@@ -195,7 +212,7 @@ public class Arm extends SubsystemBase {
     else if (m_eject){
       rollerSpeed = ejectValue;
       m_timer.reset();
-      if (sensorActive < 0.5 && m_timer.get() >= 2)
+      if (!coralAtIntake() && m_timer.get() >= 2)
         stopRollers();
     }
     else
@@ -224,7 +241,7 @@ public class Arm extends SubsystemBase {
 
   public void goToTest() {
     System.out.println("going to test");
-    setNewTarget(testAngle);
+    setNewTarget(startAngle);
   }
 
   public void goToGround() {
@@ -240,8 +257,8 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
     //
-    double coral = coralAtIntake();
-    SmartDashboard.putNumber("CoralDetected", coral);
+    boolean coral = coralAtIntake();
+    SmartDashboard.putBoolean("CoralDetected", coral);
     SmartDashboard.putNumber("Pot Value", getPotentiometerValue());
     //m_coralState.set(coral);
     if (Constants.testMode == Constants.test.ONEROLLER || Constants.testMode == Constants.test.TWOROLLERS)
@@ -250,14 +267,30 @@ public class Arm extends SubsystemBase {
       setAngle();
   }
 
+//3.08 start/90
+//3.405 ground 
+  public double getPotentiometerValue() {
+    double pStart = 3.08;
+    double pGround = 3.405;
+    double m = (startAngle-groundAngle)/(pStart-pGround); //max and min of the arm 90 and 210 over the max and min of the POT to find the slope a equation
+    double b = 0-(m * pStart);
+    double voltage = potentiometerInput.getVoltage();
+    double x = voltage * m + b;
+    
+    return x - START_ANGLE;
+  }
+
   public double getAngle() {
     double angle = 0;
     if (Constants.testMode == Constants.test.ARMGYRO)
       angle = -m_NAVXgyro.getRoll() + m_navx_offset; // returned values are negative
+    else if (usePOT)
+      angle = getPotentiometerValue();
     else
       angle = m_armPosMotor.getPosition();
     angle = unwrap(last_heading, angle);
     last_heading = angle;
+    System.out.println(getPotentiometerValue() + " " + m_armPosMotor.getPosition());
     return angle;
   }
 
@@ -265,11 +298,5 @@ public class Arm extends SubsystemBase {
     double d = new_angle - previous_angle;
     d = d >= 180 ? d - 360 : (d <= -180 ? d + 360 : d);
     return previous_angle + d;
-  }
-
-  public double getPotentiometerValue() {
-      double voltage = potentiometerInput.getVoltage();
-      double scaledValue = (voltage / 5) * 100;
-      return scaledValue;
   }
 }

@@ -24,7 +24,7 @@ public class Arm extends SubsystemBase {
   double last_heading = 0;
   static double shelfAngle = 145;
   static double groundAngle = 210;
-  static double testAngle = 90;
+  static double startAngle = 90;
   static boolean use_trap_pid=true;
 
   static public final double kGearRatio = 80*38.0/22.0;
@@ -48,10 +48,16 @@ public class Arm extends SubsystemBase {
   double ejectValue = -3;
 
   DigitalInput m_coralSensor = new DigitalInput(1);
+  DigitalInput m_coralSensor2 = new DigitalInput(0);
   DigitalOutput m_coralState = new DigitalOutput(2);
 
   boolean newAngle = true;
   private double armSetAngle = 0;
+  double m_coralAtIntake=0;
+  double m_coralAtIntake2=0;
+  Averager sensor1_averager = new Averager(5);
+  Averager sensor2_averager = new Averager(5);
+  boolean usePOT = false;
 
   /**
    * Creates a new Arm.
@@ -87,11 +93,27 @@ public class Arm extends SubsystemBase {
     m_armPosMotor.setPosition(0);
      // m_rollermotor = new Motor(krollers);
     m_armPosMotor.enable();
+    }
+
+  public boolean coralAtIntake1() {
+    // return !noteSensor1.get();
+    double val= m_coralSensor.get()?1:0.0;
+    m_coralAtIntake = sensor1_averager.getAve(val);
+    return m_coralAtIntake>0.5?false:true;
+  }
+
+  public boolean coralAtIntake2() {
+    // return !noteSensor1.get();
+    double val2= m_coralSensor2.get()?1:0.0;
+    m_coralAtIntake2 = sensor2_averager.getAve(val2);
+    return m_coralAtIntake2>0.5?false:true;
   }
 
   public boolean coralAtIntake() {
-    // return !noteSensor1.get();
-    return m_coralSensor.get();
+    if (coralAtIntake1() || coralAtIntake2())
+      return true;
+    else  
+      return false;
   }
 
   public void adjustAngle(double adjustment) {
@@ -125,7 +147,7 @@ public class Arm extends SubsystemBase {
     double current = getAngle();
     double output = getPID(current);
     m_armPosMotor.set(output);
-    String s = String.format("A:%-1.1f T:%-1.1f C:%-1.1f\n", current, armSetAngle, output);
+    String s = String.format("A:%-1.1f T:%-1.1f C:%-1.1f\n", current + START_ANGLE, armSetAngle + START_ANGLE, output);
     SmartDashboard.putString("Arm", s);
     // System.out.println(s);
   }
@@ -154,9 +176,17 @@ public class Arm extends SubsystemBase {
   }
 
   public void setRollers() {
-    double rollerSpeed;
-    if (m_intake)
-      rollerSpeed = intakeValue;
+    double rollerSpeed = 0;
+    if (m_intake){
+      if (coralAtIntake()){
+        // if (m_timer.get() > 2){
+        stopRollers();
+        //m_sensorDetected = false;
+        //}
+      }
+      else
+        rollerSpeed = intakeValue;
+    }
     else if (m_eject)
       rollerSpeed = ejectValue;
     else
@@ -195,8 +225,10 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
     //
-    //SmartDashboard.putBoolean("CoralDetected", coralAtIntake());
-    SmartDashboard.putNumber("PotValue", getPotentiometerValue());
+    boolean coral = coralAtIntake();
+    SmartDashboard.putBoolean("CoralDetected", coral);
+    SmartDashboard.putNumber("Pot Value", getPotentiometerValue());
+    //m_coralState.set(coral);
     setRollers();
     setAngle();
   }
@@ -206,19 +238,23 @@ public class Arm extends SubsystemBase {
   public double getPotentiometerValue() {
     double pStart = 3.08;
     double pGround = 3.405;
-    double m = (0-120)/(pStart-pGround); //max and min of the arm 90 and 210 over the max and min of the POT to find the slope a equation
+    double m = (startAngle-groundAngle)/(pStart-pGround); //max and min of the arm 90 and 210 over the max and min of the POT to find the slope a equation
     double b = 0-(m * pStart);
     double voltage = potentiometerInput.getVoltage();
-    double x = voltage;
+    double x = voltage * m + b;
     
-    return x * m + b;
+    return x - START_ANGLE;
   }
 
   public double getAngle() {
     double angle = 0;
-    angle = getPotentiometerValue(); //m_armPosMotor.getPosition();
+    if (usePOT)
+      angle = getPotentiometerValue(); 
+    else
+      angle = m_armPosMotor.getPosition();
     angle = unwrap(last_heading, angle);
     last_heading = angle;
+    System.out.println(getPotentiometerValue() + " " + m_armPosMotor.getPosition());
     return angle;
   }
 
