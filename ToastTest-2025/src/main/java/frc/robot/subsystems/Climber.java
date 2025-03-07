@@ -48,11 +48,12 @@ public class Climber extends SubsystemBase {
   public Climber(int kclimber) {
     SmartDashboard.putString("Climber", "Inactive");
     m_ClimberMotor = new Motor(mTest);
+    m_ClimberMotor.setUpperLimit(true);
+    m_ClimberMotor.setLowerLimit(false);
     m_ClimberMotor.setConfig(false, true, kInchesPerRot);
     m_ClimberMotor.setPosition(0);
     m_PID.setTolerance(0.2);
-    m_ClimberMotor.setUpperLimit();
-    m_ClimberMotor.setLowerLimit();
+    
     m_climbState.set(false);
   }
 
@@ -172,8 +173,5 @@ public class Climber extends SubsystemBase {
     }
     SmartDashboard.putBoolean("UpperTarget", m_atUpperTarget);
     SmartDashboard.putBoolean("LowerTarget", m_atLowerTarget);
-
-    SmartDashboard.putBoolean("Raising", m_raising);
-    SmartDashboard.putBoolean("Lowering", m_lowering);
   }
 }

@@ -5,6 +5,7 @@
 package frc.robot.objects;
 
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.LimitSwitchConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.SparkBase;
@@ -29,6 +30,9 @@ public class Motor {
     double m_dpr = 1;
     static boolean m_real = false;
 
+    boolean upperLimitNormalyClosed = false;
+    boolean lowerLimitNormalyClosed = false;
+
     public Motor(int id, boolean isBrushed) {
         rev_motor = new SparkMax(id, isBrushed ? MotorType.kBrushed : MotorType.kBrushless);
         rev_encoder = rev_motor.getEncoder();
@@ -41,13 +45,24 @@ public class Motor {
         m_chnl = id;
     }
 
-    public void setUpperLimit() {
+    public void setUpperLimit(boolean b) {
+        upperLimitNormalyClosed = b;
         m_upperLimit = rev_motor.getForwardLimitSwitch();
     }
 
-    public void setLowerLimit() {
+    public void setLowerLimit(boolean b) {
+        lowerLimitNormalyClosed = b;
         m_lowerLimit = rev_motor.getReverseLimitSwitch();
     }
+
+    public void setUpperLimit() {
+        setUpperLimit(false);
+    }
+
+    public void setLowerLimit() {
+        setLowerLimit(false);
+    }
+
 
     public boolean atUpperLimit() {
         return m_upperLimit == null ? false : m_upperLimit.isPressed();
@@ -107,6 +122,14 @@ public class Motor {
         config.encoder
                 .positionConversionFactor(d)
                 .velocityConversionFactor(d / 60);
+        if (m_upperLimit != null){
+            LimitSwitchConfig.Type upperType = upperLimitNormalyClosed?LimitSwitchConfig.Type.kNormallyClosed:LimitSwitchConfig.Type.kNormallyOpen;
+            config.limitSwitch.forwardLimitSwitchType(upperType);
+        }
+        if (m_lowerLimit != null){
+            LimitSwitchConfig.Type lowerType = lowerLimitNormalyClosed?LimitSwitchConfig.Type.kNormallyClosed:LimitSwitchConfig.Type.kNormallyOpen;
+            config.limitSwitch.reverseLimitSwitchType(lowerType);
+        }
         // config.closedLoop
         // .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
         // .pid(1.0, 0.0, 0.0);
