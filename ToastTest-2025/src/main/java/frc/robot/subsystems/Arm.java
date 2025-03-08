@@ -13,6 +13,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.networktables.FloatSubscriber;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DigitalOutput;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Timer;
 // import balls
@@ -58,6 +59,8 @@ public class Arm extends SubsystemBase {
   DigitalInput m_coralSensor = new DigitalInput(1);
   DigitalInput m_coralSensor2 = new DigitalInput(0);
   //DigitalOutput m_coralState = new DigitalOutput(2);
+  DigitalInput m_encoderInput = new DigitalInput(4);
+  DutyCycleEncoder m_dutyCycleEncoder = new DutyCycleEncoder(m_encoderInput);
 
   boolean newAngle = true;
   private double armSetAngle = 0;
@@ -254,12 +257,26 @@ public class Arm extends SubsystemBase {
     setNewTarget(0);
   }
 
+  public double getBoreEncoderVal() {
+    double value = m_dutyCycleEncoder.get();
+    return value;
+    // double pStart = 3.08;
+    // double pGround = 3.405;
+    // double m = (startAngle-groundAngle)/(pStart-pGround); //max and min of the arm 90 and 210 over the max and min of the POT to find the slope a equation
+    // double b = 0-(m * pStart);
+    // double voltage = potentiometerInput.getVoltage();
+    // double x = voltage * m + b;
+    
+    // return x - START_ANGLE;
+  }
+
   @Override
   public void periodic() {
     //
     boolean coral = coralAtIntake();
     SmartDashboard.putBoolean("CoralDetected", coral);
-    SmartDashboard.putNumber("Pot Value", getPotentiometerValue());
+    //SmartDashboard.putNumber("Pot Value", getPotentiometerValue());
+    SmartDashboard.putNumber("BoreEncoder", getBoreEncoderVal());
     //m_coralState.set(coral);
     if (Constants.testMode == Constants.test.ONEROLLER || Constants.testMode == Constants.test.TWOROLLERS)
       setRollers();

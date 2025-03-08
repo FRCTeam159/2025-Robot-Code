@@ -8,6 +8,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DigitalOutput;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Timer;
 // import balls
@@ -25,7 +26,7 @@ public class Arm extends SubsystemBase {
   static double shelfAngle = 145;
   static double groundAngle = 210;
   static double startAngle = 90;
-  static boolean use_trap_pid=true;
+  static boolean useTrapPID=false;
 
   static public final double kGearRatio = 80*38.0/22.0;
   public static final double kDegreesPerRot = 360 / (kGearRatio);
@@ -47,17 +48,19 @@ public class Arm extends SubsystemBase {
   double intakeValue = 5;
   double ejectValue = -3;
 
-  DigitalInput m_coralSensor = new DigitalInput(1);
+  DigitalInput m_coralSensor1 = new DigitalInput(1);
   DigitalInput m_coralSensor2 = new DigitalInput(0);
-  DigitalOutput m_coralState = new DigitalOutput(2);
+ // DigitalOutput m_coralState = new DigitalOutput(2);
+  DigitalInput m_encoderInput = new DigitalInput(4);
+  DutyCycleEncoder m_dutyCycleEncoder = new DutyCycleEncoder(m_encoderInput);
 
   boolean newAngle = true;
   private double armSetAngle = 0;
-  double m_coralAtIntake=0;
+  double m_coralAtIntake1=0;
   double m_coralAtIntake2=0;
   Averager sensor1_averager = new Averager(5);
   Averager sensor2_averager = new Averager(5);
-  boolean usePOT = false;
+  boolean useAltEncoder = false;
 
   /**
    * Creates a new Arm.
@@ -65,15 +68,15 @@ public class Arm extends SubsystemBase {
    * @param krollers
    */
   public Arm(int armId, int bottomRollers, int topRollers) {
-    if(use_trap_pid){
+    if(useTrapPID){
       m_tPID=new ProfiledPIDController(0.01, 0, 0,
         new TrapezoidProfile.Constraints(200,100));
-      m_tPID.setTolerance(1);
+      m_tPID.setTolerance(2);
       m_tPID.reset(0);
     }
     else{
-      m_PID = new PIDController(0.007, 0, 0);
-      m_PID.setTolerance(1);
+      m_PID = new PIDController(0.005, 0, 0);
+      m_PID.setTolerance(2);
       m_PID.reset();
     }
     // SmartDashboard.putNumber("NavX", 0);
@@ -97,9 +100,9 @@ public class Arm extends SubsystemBase {
 
   public boolean coralAtIntake1() {
     // return !noteSensor1.get();
-    double val= m_coralSensor.get()?1:0.0;
-    m_coralAtIntake = sensor1_averager.getAve(val);
-    return m_coralAtIntake>0.5?false:true;
+    double val= m_coralSensor1.get()?1:0.0;
+    m_coralAtIntake1 = sensor1_averager.getAve(val);
+    return m_coralAtIntake1>0.5?false:true;
   }
 
   public boolean coralAtIntake2() {
@@ -128,13 +131,13 @@ public class Arm extends SubsystemBase {
   }
 
   void setPID(double a){
-    if(use_trap_pid)
+    if(useTrapPID)
       m_tPID.setGoal(a);
     else
       m_PID.setSetpoint(a);
   }
   double getPID(double c){
-    if(use_trap_pid)
+    if(useTrapPID)
       return m_tPID.calculate(c);
     else
       return m_PID.calculate(c);
@@ -219,7 +222,19 @@ public class Arm extends SubsystemBase {
 
   public void goToStart() {
     System.out.println("going to zero");
-    setNewTarget(-10/*for counteracting slack when going back to 90*/);
+    setNewTarget(0);
+  }
+
+  public double getBoreEncoderVal() {
+    double value = m_dutyCycleEncoder.get();
+     double pStart = 0.3667;
+    double pGround = 0.0234;
+    double m = (startAngle-groundAngle)/(pStart-pGround); //max and min of the arm 90 and 210 over the max and min of the POT to find the slope a equation
+    double b = 0-(m * pStart);
+    double voltage = value;
+    double x = voltage * m + b;
+    
+    return x - START_ANGLE;
   }
 
   @Override
@@ -227,7 +242,8 @@ public class Arm extends SubsystemBase {
     //
     boolean coral = coralAtIntake();
     SmartDashboard.putBoolean("CoralDetected", coral);
-    SmartDashboard.putNumber("Pot Value", getPotentiometerValue());
+    //SmartDashboard.putNumber("Pot Value", getPotentiometerValue());
+    SmartDashboard.putNumber("BoreEncoder", getBoreEncoderVal());
     //m_coralState.set(coral);
     setRollers();
     setAngle();
@@ -248,13 +264,13 @@ public class Arm extends SubsystemBase {
 
   public double getAngle() {
     double angle = 0;
-    if (usePOT)
+    if (useAltEncoder)
       angle = getPotentiometerValue(); 
     else
       angle = m_armPosMotor.getPosition();
     angle = unwrap(last_heading, angle);
     last_heading = angle;
-    System.out.println(getPotentiometerValue() + " " + m_armPosMotor.getPosition());
+    //System.out.println(getPotentiometerValue() + " " + m_armPosMotor.getPosition());
     return angle;
   }
 
