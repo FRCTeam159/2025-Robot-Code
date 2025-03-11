@@ -23,7 +23,7 @@ import frc.robot.utils.Averager;
 public class Arm extends SubsystemBase {
 
   double last_heading = 0;
-  static double shelfAngle = 145;
+  static double shelfAngle = 139;
   static double groundAngle = 210;
   static double startAngle = 90;
   static boolean useTrapPID=false;

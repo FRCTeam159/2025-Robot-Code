@@ -23,13 +23,13 @@ public class Climber extends SubsystemBase {
    * @param kclimber
    */
 
-  static double lowValue = 0;
-  static double highValue = 28.5;// Inches
+  static double lowValue = -0.7;
+  static double highValue = 0;// Inches
   private double m_setPoint = 0;
-  double lowerPower = -0.3;
-  double raisePower = 0.3;
+  double lowerPower = -1.5;
+  double raisePower = 1.5;
   static public final double kRotToIn = 0.1;
-  static public final double kGearRatio = 4;
+  static public final double kGearRatio = 250;
   static public final double kInchesPerRot = kRotToIn / kGearRatio;
   boolean m_raising = false;
   boolean m_lowering = false;
@@ -49,7 +49,7 @@ public class Climber extends SubsystemBase {
     SmartDashboard.putString("Climber", "Inactive");
     m_ClimberMotor = new Motor(mTest);
     m_ClimberMotor.setUpperLimit(true);
-    m_ClimberMotor.setLowerLimit(false);
+    m_ClimberMotor.setLowerLimit(true);
     m_ClimberMotor.setConfig(false, true, kInchesPerRot);
     m_ClimberMotor.setPosition(0);
     m_PID.setTolerance(0.2);
@@ -113,7 +113,7 @@ public class Climber extends SubsystemBase {
     }
 
     m_ClimberMotor.set(output);
-    String s = String.format("A:%-1.1f T:%-1.1f C:%-1.1f R:%b L:%b\n", current, m_setPoint, output, m_raising, m_lowering);
+    String s = String.format("A:%-1.5f T:%-1.5f C:%-1.1f R:%b L:%b\n", current, m_setPoint, output, m_raising, m_lowering);
     SmartDashboard.putString("Climber", s);
     //System.out.println(s);
   }

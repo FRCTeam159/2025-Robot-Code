@@ -1,5 +1,8 @@
 <xml version="1.0">
 <dashboard>
+	<widget field="BoreEncoder" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="331" y="90"/>
+	</widget>
 	<widget field="CoralDetected" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
 		<location x="14" y="91"/>
 		<width>74</width>
@@ -64,6 +67,4 @@
 </dashboard>
 <live-window>
 </live-window>
-	<hidden field="Lowering"/>
-	<hidden field="Raising"/>
 </xml>

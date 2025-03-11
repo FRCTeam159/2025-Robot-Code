@@ -48,7 +48,7 @@ public class Drivetrain extends SubsystemBase {
   public static final double kMaxAcceleration = 1;
 
 
-  public static final double kMaxAngularVelocity = Math.toRadians(720); // radians/s
+  public static final double kMaxAngularVelocity = Math.toRadians(1080); // radians/s (previously 720)
   public static final double kMaxAngularAcceleration = Math.toRadians(360); // radians/s/s
 
   public static double dely = 0.5 * kSideWheelBase; // 0.2949 meters

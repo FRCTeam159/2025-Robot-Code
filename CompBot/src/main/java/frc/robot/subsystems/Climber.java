@@ -25,13 +25,13 @@ public class Climber extends SubsystemBase {
    * @param kclimber
    */
 
-  static double lowValue = -4.2;
+  static double lowValue = -0.8;
   static double highValue = 0;// Rotations
   private double m_setPoint = 0;
-  double lowerPower = -0.1;
-  double raisePower = 0.1;
+  double lowerPower = -0.5;
+  double raisePower = 0.5;
   static public final double kRotToIn = 0.1;
-  static public final double kGearRatio = 4;
+  static public final double kGearRatio = 250;
   static public final double kInchesPerRot = kRotToIn / kGearRatio;
   boolean m_raising = false;
   boolean m_lowering = false;
@@ -87,7 +87,6 @@ public class Climber extends SubsystemBase {
   public void stop() {
     if (!noPID)
       setTargetHeight(getHeight());
-
     System.out.println("Stop");
     reset();
   }
@@ -114,7 +113,7 @@ public class Climber extends SubsystemBase {
     }
 
     m_ClimberMotor.set(output);
-    String s = String.format("A:%-1.1f T:%-1.1f C:%-1.1f R:%b L:%b\n", current, m_setPoint, output, m_raising, m_lowering);
+    String s = String.format("A:%-1.5f T:%-1.5f C:%-1.1f R:%b L:%b\n", current, m_setPoint, output, m_raising, m_lowering);
     SmartDashboard.putString("Climber", s);
     // System.out.println(s);
   }
