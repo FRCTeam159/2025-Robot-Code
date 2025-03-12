@@ -3,6 +3,8 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems;
+import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -24,8 +26,8 @@ public class Arm extends SubsystemBase {
 
   double last_heading = 0;
   static double shelfAngle = 139;
-  static double groundAngle = 210;
-  static double startAngle = 90;
+  static double groundAngle = 200;
+  static double startAngle = 80;
   static boolean useTrapPID=false;
 
   static public final double kGearRatio = 80*38.0/22.0;
@@ -40,7 +42,7 @@ public class Arm extends SubsystemBase {
   private Motor m_topRollerMotor = null;
   private Motor m_bottomRollerMotor = null;
 
-  static final double START_ANGLE = 90;
+  static final double START_ANGLE = 80;
   static final double MAX_ANGLE = 200-START_ANGLE;
   static final double MIN_ANGLE = 0;
   boolean m_intake = false;
@@ -50,7 +52,7 @@ public class Arm extends SubsystemBase {
 
   DigitalInput m_coralSensor1 = new DigitalInput(1);
   DigitalInput m_coralSensor2 = new DigitalInput(0);
- // DigitalOutput m_coralState = new DigitalOutput(2);
+ DigitalOutput m_coralState = new DigitalOutput(2);
   DigitalInput m_encoderInput = new DigitalInput(4);
   DutyCycleEncoder m_dutyCycleEncoder = new DutyCycleEncoder(m_encoderInput);
 
@@ -124,8 +126,8 @@ public class Arm extends SubsystemBase {
   }
 
   void setNewTarget(double angle) {
-    // angle=angle>MAX_ANGLE?MAX_ANGLE:angle;
-    // angle=angle<MIN_ANGLE?MIN_ANGLE:angle;
+    angle=angle>MAX_ANGLE?MAX_ANGLE:angle;
+    angle=angle<MIN_ANGLE?MIN_ANGLE:angle;
     armSetAngle = angle;
     setPID(angle);
   }
@@ -227,12 +229,13 @@ public class Arm extends SubsystemBase {
 
   public double getBoreEncoderVal() {
     double value = m_dutyCycleEncoder.get();
-     double pStart = 0.3667;
-    double pGround = 0.0234;
+    double pStart = 0.03317400082935002;
+    double pGround = 0.6920222673005567;
     double m = (startAngle-groundAngle)/(pStart-pGround); //max and min of the arm 90 and 210 over the max and min of the POT to find the slope a equation
-    double b = 0-(m * pStart);
+    double b = startAngle-(m * pStart);
     double voltage = value;
     double x = voltage * m + b;
+    System.out.println("RawBore: " + value);
     
     return x - START_ANGLE;
   }
@@ -242,8 +245,8 @@ public class Arm extends SubsystemBase {
     //
     boolean coral = coralAtIntake();
     SmartDashboard.putBoolean("CoralDetected", coral);
-    //SmartDashboard.putNumber("Pot Value", getPotentiometerValue());
-    SmartDashboard.putNumber("BoreEncoder", getBoreEncoderVal());
+    SmartDashboard.putNumber("Pot Value", getPotentiometerValue() + START_ANGLE);
+    SmartDashboard.putNumber("BoreEncoder", getBoreEncoderVal() + START_ANGLE);
     //m_coralState.set(coral);
     setRollers();
     setAngle();
@@ -252,12 +255,13 @@ public class Arm extends SubsystemBase {
 //3.08 start/90
 //3.405 ground 
   public double getPotentiometerValue() {
-    double pStart = 3.08;
-    double pGround = 3.405;
+    double pStart = 2.202148212;
+    double pGround = 2.515868883;
     double m = (startAngle-groundAngle)/(pStart-pGround); //max and min of the arm 90 and 210 over the max and min of the POT to find the slope a equation
-    double b = 0-(m * pStart);
+    double b = startAngle-(m * pStart);
     double voltage = potentiometerInput.getVoltage();
     double x = voltage * m + b;
+    System.out.println("RawPot: " + voltage);
     
     return x - START_ANGLE;
   }

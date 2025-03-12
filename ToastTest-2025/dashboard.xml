@@ -22,8 +22,8 @@
 		<location x="402" y="67"/>
 	</widget>
 	<widget field="Climber" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="287" y="25"/>
-		<width>197</width>
+		<location x="246" y="24"/>
+		<width>238</width>
 	</widget>
 	<widget field="PrecisionDriving" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
 		<location x="301" y="67"/>

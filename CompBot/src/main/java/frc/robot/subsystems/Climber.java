@@ -26,7 +26,7 @@ public class Climber extends SubsystemBase {
    */
 
   static double lowValue = -0.8;
-  static double highValue = 0;// Rotations
+  static double highValue = 2;// Rotations
   private double m_setPoint = 0;
   double lowerPower = -0.5;
   double raisePower = 0.5;
