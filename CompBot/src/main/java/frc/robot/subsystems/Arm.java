@@ -62,7 +62,9 @@ public class Arm extends SubsystemBase {
   double m_coralAtIntake2=0;
   Averager sensor1_averager = new Averager(5);
   Averager sensor2_averager = new Averager(5);
-  boolean useAltEncoder = false;
+  boolean useAltEncoder = true;
+
+  Timer m_timer = new Timer();
 
   /**
    * Creates a new Arm.
@@ -70,9 +72,11 @@ public class Arm extends SubsystemBase {
    * @param krollers
    */
   public Arm(int armId, int bottomRollers, int topRollers) {
+    //m_dutyCycleEncoder.setInverted(true);
+    m_timer.start();
     if(useTrapPID){
-      m_tPID=new ProfiledPIDController(0.01, 0, 0,
-        new TrapezoidProfile.Constraints(200,100));
+      m_tPID=new ProfiledPIDController(0.005, 0, 0,
+        new TrapezoidProfile.Constraints(100,50));
       m_tPID.setTolerance(2);
       m_tPID.reset(0);
     }
@@ -176,8 +180,29 @@ public class Arm extends SubsystemBase {
   }
 
   public void stopRollers() {
-    m_intake = false;
-    m_eject = false;
+    double rollerSpeed = 0;
+    // if (m_sensorDetected = false){
+    //   m_sensorDetected = true;
+    //   m_timer.reset();
+    // }
+    if (m_intake){
+      if (coralAtIntake()){
+        // if (m_timer.get() > 2){
+        stopRollers();
+        //m_sensorDetected = false;
+        //}
+      }
+      else
+        rollerSpeed = intakeValue;
+    }
+    else if (m_eject){
+      rollerSpeed = ejectValue;
+      m_timer.reset();
+      if (!coralAtIntake() && m_timer.get() >= 2)
+        stopRollers();
+    }
+    else
+      rollerSpeed = 0;
   }
 
   public void setRollers() {
@@ -229,13 +254,13 @@ public class Arm extends SubsystemBase {
 
   public double getBoreEncoderVal() {
     double value = m_dutyCycleEncoder.get();
-    double pStart = 0.03317400082935002;
-    double pGround = 0.6920222673005567;
+    double pStart = 0.9629357490733937;
+    double pGround = 0.3068258326706458;
     double m = (startAngle-groundAngle)/(pStart-pGround); //max and min of the arm 90 and 210 over the max and min of the POT to find the slope a equation
     double b = startAngle-(m * pStart);
     double voltage = value;
     double x = voltage * m + b;
-    System.out.println("RawBore: " + value);
+    //System.out.println("RawBore: " + value);
     
     return x - START_ANGLE;
   }
@@ -246,7 +271,7 @@ public class Arm extends SubsystemBase {
     boolean coral = coralAtIntake();
     SmartDashboard.putBoolean("CoralDetected", coral);
     SmartDashboard.putNumber("Pot Value", getPotentiometerValue() + START_ANGLE);
-    SmartDashboard.putNumber("BoreEncoder", getBoreEncoderVal() + START_ANGLE);
+   // SmartDashboard.putNumber("BoreEncoder", getBoreEncoderVal() + START_ANGLE);
     //m_coralState.set(coral);
     setRollers();
     setAngle();
@@ -261,7 +286,7 @@ public class Arm extends SubsystemBase {
     double b = startAngle-(m * pStart);
     double voltage = potentiometerInput.getVoltage();
     double x = voltage * m + b;
-    System.out.println("RawPot: " + voltage);
+    //System.out.println("RawPot: " + voltage);
     
     return x - START_ANGLE;
   }

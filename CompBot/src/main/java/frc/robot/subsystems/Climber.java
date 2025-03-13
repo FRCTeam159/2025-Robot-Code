@@ -25,8 +25,8 @@ public class Climber extends SubsystemBase {
    * @param kclimber
    */
 
-  static double lowValue = -0.8;
-  static double highValue = 2;// Rotations
+  static double lowValue = -0.61;
+  static double highValue = 0;// Rotations
   private double m_setPoint = 0;
   double lowerPower = -0.5;
   double raisePower = 0.5;
@@ -54,7 +54,7 @@ public class Climber extends SubsystemBase {
     m_ClimberMotor.setConfig(false, true, kInchesPerRot);
     m_ClimberMotor.setPosition(0);
     m_PID.setTolerance(0.2);
-    
+
     m_climbState.set(false);
   }
 
@@ -113,7 +113,8 @@ public class Climber extends SubsystemBase {
     }
 
     m_ClimberMotor.set(output);
-    String s = String.format("A:%-1.5f T:%-1.5f C:%-1.1f R:%b L:%b\n", current, m_setPoint, output, m_raising, m_lowering);
+    String s = String.format("A:%-1.5f T:%-1.5f C:%-1.1f R:%b L:%b\n", current, m_setPoint, output, m_raising,
+        m_lowering);
     SmartDashboard.putString("Climber", s);
     // System.out.println(s);
   }
@@ -172,7 +173,7 @@ public class Climber extends SubsystemBase {
     SmartDashboard.putBoolean("UpperTarget", m_atUpperTarget);
     SmartDashboard.putBoolean("LowerTarget", m_atLowerTarget);
 
-    //SmartDashboard.putBoolean("Raising", m_raising);
-    //SmartDashboard.putBoolean("Lowering", m_lowering);
+    // SmartDashboard.putBoolean("Raising", m_raising);
+    // SmartDashboard.putBoolean("Lowering", m_lowering);
   }
 }

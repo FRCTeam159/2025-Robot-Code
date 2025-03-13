@@ -37,12 +37,12 @@ public class ClimberControl extends Command {
   public void execute() {
     // System.out.println("Climber Commands Executing");
     if (m_controller.getStartButtonPressed())
-    m_climber.raise();
+      m_climber.raise();
     if (m_controller.getStartButtonReleased())
-        m_climber.stop();
+      m_climber.stop();
 
     if (m_controller.getBackButtonPressed())
-    m_climber.lower();
+      m_climber.lower();
     if (m_controller.getBackButtonReleased())
       m_climber.stop();
   }
