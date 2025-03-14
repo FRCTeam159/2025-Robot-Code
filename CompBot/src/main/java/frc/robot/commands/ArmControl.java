@@ -57,6 +57,11 @@ XboxController m_controller;
       m_Arm.decrement(left * ARM_MOVE_RATE);
     else if (right > 0)
       m_Arm.increment(right * ARM_MOVE_RATE);
+
+    if (m_controller.getPOV() == 90)
+      m_Arm.enableSensorStop(true);
+    else if (m_controller.getPOV() == 270)
+    m_Arm.enableSensorStop(false);
   }
 
   // Called once the command ends or is interrupted.

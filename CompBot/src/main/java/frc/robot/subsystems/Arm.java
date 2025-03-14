@@ -47,12 +47,13 @@ public class Arm extends SubsystemBase {
   static final double MIN_ANGLE = 0;
   boolean m_intake = false;
   boolean m_eject = false;
+  boolean m_ejecting = false;
   double intakeValue = 5;
   double ejectValue = -3;
 
   DigitalInput m_coralSensor1 = new DigitalInput(1);
   DigitalInput m_coralSensor2 = new DigitalInput(0);
- DigitalOutput m_coralState = new DigitalOutput(2);
+  DigitalOutput m_coralState = new DigitalOutput(2);
   DigitalInput m_encoderInput = new DigitalInput(4);
   DutyCycleEncoder m_dutyCycleEncoder = new DutyCycleEncoder(m_encoderInput);
 
@@ -63,6 +64,7 @@ public class Arm extends SubsystemBase {
   Averager sensor1_averager = new Averager(5);
   Averager sensor2_averager = new Averager(5);
   boolean useAltEncoder = true;
+  boolean m_sensorEnable = true;
 
   Timer m_timer = new Timer();
 
@@ -180,45 +182,38 @@ public class Arm extends SubsystemBase {
   }
 
   public void stopRollers() {
-    double rollerSpeed = 0;
-    // if (m_sensorDetected = false){
-    //   m_sensorDetected = true;
-    //   m_timer.reset();
-    // }
-    if (m_intake){
-      if (coralAtIntake()){
-        // if (m_timer.get() > 2){
-        stopRollers();
-        //m_sensorDetected = false;
-        //}
-      }
-      else
-        rollerSpeed = intakeValue;
-    }
-    else if (m_eject){
-      rollerSpeed = ejectValue;
-      m_timer.reset();
-      if (!coralAtIntake() && m_timer.get() >= 2)
-        stopRollers();
-    }
-    else
-      rollerSpeed = 0;
+    m_intake = false;
+    m_eject = false;
+  }
+
+  public void enableSensorStop(boolean b) {
+    m_sensorEnable = b;
   }
 
   public void setRollers() {
     double rollerSpeed = 0;
     if (m_intake){
-      if (coralAtIntake()){
-        // if (m_timer.get() > 2){
+      if (coralAtIntake() && m_sensorEnable)
         stopRollers();
-        //m_sensorDetected = false;
-        //}
-      }
       else
         rollerSpeed = intakeValue;
     }
-    else if (m_eject)
+    else if (m_eject){
+      if (!m_ejecting && coralAtIntake() && m_sensorEnable){
+        m_ejecting = true;
+        m_timer.reset();
+      }
+      if (m_ejecting){
+        if (m_timer.get() >= 1){
+          m_ejecting = false;
+          stopRollers();
+        }
+        else
+          rollerSpeed = ejectValue;
+      }
+      else 
       rollerSpeed = ejectValue;
+    }
     else
       rollerSpeed = 0;
     m_topRollerMotor.setVoltage(rollerSpeed);
@@ -271,8 +266,9 @@ public class Arm extends SubsystemBase {
     boolean coral = coralAtIntake();
     SmartDashboard.putBoolean("CoralDetected", coral);
     SmartDashboard.putNumber("Pot Value", getPotentiometerValue() + START_ANGLE);
-   // SmartDashboard.putNumber("BoreEncoder", getBoreEncoderVal() + START_ANGLE);
-    //m_coralState.set(coral);
+    SmartDashboard.putBoolean("SensorAutoStop", m_sensorEnable);
+   //SmartDashboard.putNumber("BoreEncoder", getBoreEncoderVal() + START_ANGLE);
+    m_coralState.set(coral);
     setRollers();
     setAngle();
   }
