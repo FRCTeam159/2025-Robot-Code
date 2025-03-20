@@ -26,9 +26,13 @@ public class Drivetrain extends SubsystemBase {
 
   static public boolean debug = false;
   static public boolean debug_angles = false;
-  static double m_drivePrecisionScale = 0.25;
-  static double m_turnPrecisionScale = 0.06;
+  static double m_drivePrecisionScale = 0.15;
+  static double m_turnPrecisionScale = 0.02;
+  static double driveScale = 1;
+  static double turnScale = 0.04;
   boolean m_precisionDriving = false;
+
+  SmartDashboard.putNumber("Power Value", m_turnPrecisionScale);
 
   double m_driveScale = 1;
   double m_turnScale = 1;
@@ -152,8 +156,8 @@ public class Drivetrain extends SubsystemBase {
       m_turnScale = m_turnPrecisionScale;
     }
     else {
-      m_driveScale = 1;
-      m_turnScale = 1;
+      m_driveScale = driveScale;
+      m_turnScale = turnScale;
     }
   }
 

@@ -10,12 +10,16 @@ import frc.robot.subsystems.Arm;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ArmControl extends Command {
-public static final double ARM_MOVE_RATE = 1;
-Arm m_Arm;
-XboxController m_controller;
-/** Creates a new ArmControl. 
- * @param karm 
- * @param m_controller */
+  public static final double ARM_MOVE_RATE = 1;
+  Arm m_Arm;
+  XboxController m_controller;
+
+  /**
+   * Creates a new ArmControl.
+   * 
+   * @param karm
+   * @param m_controller
+   */
   public ArmControl(Arm arm, XboxController controller) {
     m_Arm = arm;
     m_controller = controller;
@@ -61,12 +65,22 @@ XboxController m_controller;
     if (m_controller.getPOV() == 90)
       m_Arm.enableSensorStop(true);
     else if (m_controller.getPOV() == 270)
-    m_Arm.enableSensorStop(false);
+      m_Arm.enableSensorStop(false);
+
+    // if (m_controller.getPOV() == 90){
+    //   m_Arm.enableSensorStop(true);
+    //   m_Arm.intake();
+    // }
+    // else if (m_controller.getPOV() == -1 && !m_controller.getLeftBumperButtonPressed() || !m_controller.getRightBumperButtonPressed()){
+    //   m_Arm.enableSensorStop(false);
+    //   m_Arm.stopRollers();
+    // }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+  }
 
   // Returns true when the command should end.
   @Override

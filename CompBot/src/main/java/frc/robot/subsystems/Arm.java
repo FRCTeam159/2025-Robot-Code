@@ -25,8 +25,8 @@ import frc.robot.utils.Averager;
 public class Arm extends SubsystemBase {
 
   double last_heading = 0;
-  static double shelfAngle = 139;
-  static double groundAngle = 200;
+  static double shelfAngle = 126;
+  static double groundAngle = 205;
   static double startAngle = 80;
   static boolean useTrapPID=false;
 
@@ -64,7 +64,7 @@ public class Arm extends SubsystemBase {
   Averager sensor1_averager = new Averager(5);
   Averager sensor2_averager = new Averager(5);
   boolean useAltEncoder = true;
-  boolean m_sensorEnable = true;
+  boolean m_sensorEnable = false;
 
   Timer m_timer = new Timer();
 
@@ -276,8 +276,8 @@ public class Arm extends SubsystemBase {
 //3.08 start/90
 //3.405 ground 
   public double getPotentiometerValue() {
-    double pStart = 2.202148212;
-    double pGround = 2.515868883;
+    double pStart = 2.0678708820000002;
+    double pGround = 2.403564207;
     double m = (startAngle-groundAngle)/(pStart-pGround); //max and min of the arm 90 and 210 over the max and min of the POT to find the slope a equation
     double b = startAngle-(m * pStart);
     double voltage = potentiometerInput.getVoltage();

@@ -15,7 +15,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.objects.Motor;
+import frc.robot.utils.Averager;
 import pabeles.concurrency.ConcurrencyOps.Reset;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DigitalOutput;
 
 public class Climber extends SubsystemBase {
@@ -26,21 +28,31 @@ public class Climber extends SubsystemBase {
    */
 
   static double lowValue = -0.61;
-  static double highValue = 0;// Rotations
+  static double highValue = 1;// Rotations
+  static double higestValue = 1;
   private double m_setPoint = 0;
-  double lowerPower = -1;
-  double raisePower = 1;
+  double lowerPower = -2.5;
+  double raisePower = 2.5;
   static public final double kRotToIn = 0.1;
-  static public final double kGearRatio = 250;
+  static public final double kGearRatio = 200;
   static public final double kInchesPerRot = kRotToIn / kGearRatio;
   boolean m_raising = false;
   boolean m_lowering = false;
   boolean m_atUpperTarget = false;
   boolean m_atLowerTarget = false;
+  boolean m_atUpperLimit = false;
+  boolean m_atLowerLimit = false;
+
+  boolean DisableUpperLimit = false;
+
+  boolean useLimitSwitches = false;
 
   boolean noPID = true;
 
   DigitalOutput m_climbState = new DigitalOutput(3);
+  DigitalInput m_climberSensor = new DigitalInput(5);
+  double m_climberLocked = 0;
+  Averager sensor1_averager = new Averager(5);
 
   private final PIDController m_PID = new PIDController(0.01, 0, 0);
 
@@ -51,6 +63,7 @@ public class Climber extends SubsystemBase {
     m_ClimberMotor = new Motor(kClimber);
     m_ClimberMotor.setUpperLimit(true);
     m_ClimberMotor.setLowerLimit(true);
+    SmartDashboard.putBoolean("DisableUpperLimit", DisableUpperLimit);
     m_ClimberMotor.setConfig(false, true, kInchesPerRot);
     m_ClimberMotor.setPosition(0);
     m_PID.setTolerance(0.2);
@@ -61,7 +74,12 @@ public class Climber extends SubsystemBase {
   public void raise() {
     // Raises the climber claw
     System.out.println("Raising the Climber");
-    setTargetHeight(highValue);
+    if (DisableUpperLimit)
+      setTargetHeight(higestValue);
+    else{
+      // m_ClimberMotor.setPosition(0);
+      setTargetHeight(highValue);
+    }
     reset();
     m_raising = true;
     m_climbState.set(false);
@@ -140,11 +158,20 @@ public class Climber extends SubsystemBase {
       return true;
     else
       return m_PID.atSetpoint();// || m_ClimberMotor.atLowerLimit();
+  } 
+
+  public boolean climberLocked() {
+    // return !noteSensor1.get();
+    double val= m_climberSensor.get()?1:0.0;
+    m_climberLocked = sensor1_averager.getAve(val);
+    return m_climberLocked>0.5?true:false;
   }
 
   public void reset() {
     m_atUpperTarget = false;
     m_atLowerTarget = false;
+    m_atUpperLimit = false;
+    m_atLowerLimit = false;
     m_raising = false;
     m_lowering = false;
   }
@@ -154,8 +181,10 @@ public class Climber extends SubsystemBase {
     // This method will be called once per scheduler run
     setHeight();
     if (m_raising) {
-      if (m_ClimberMotor.atUpperLimit())
+      if (m_ClimberMotor.atUpperLimit()){
         stop();
+        m_atUpperLimit = true;
+      }
       else if (atUpperTarget()) {
         m_atUpperTarget = true;
         m_raising = false;
@@ -163,16 +192,24 @@ public class Climber extends SubsystemBase {
       }
     }
     if (m_lowering) {
-      if (m_ClimberMotor.atLowerLimit())
+      if (m_ClimberMotor.atLowerLimit()){
         stop();
+        m_atLowerLimit = true;
+      }
       else if (atLowerTarget()) {
         m_atLowerTarget = true;
         m_lowering = false;
       }
     }
+    boolean locked = climberLocked();
     SmartDashboard.putBoolean("UpperTarget", m_atUpperTarget);
     SmartDashboard.putBoolean("LowerTarget", m_atLowerTarget);
+    SmartDashboard.putBoolean("UpperLimit", m_atUpperLimit);
+    SmartDashboard.putBoolean("LowerLimit", m_atLowerLimit);
+    
+    SmartDashboard.putBoolean("ClimberLocked", locked);
 
+    SmartDashboard.getBoolean("DisableUpperLimit", DisableUpperLimit);
     // SmartDashboard.putBoolean("Raising", m_raising);
     // SmartDashboard.putBoolean("Lowering", m_lowering);
   }

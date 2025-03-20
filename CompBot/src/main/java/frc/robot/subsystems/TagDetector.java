@@ -39,6 +39,7 @@ public class TagDetector extends Thread {
   }
 
   private UsbCamera intakeCamera;
+  private UsbCamera cageCamera;
   public static double maxPoseError = 2;
 
   public static final double kVertOffset = -0.4;
@@ -111,6 +112,10 @@ public class TagDetector extends Thread {
     intakeCamera.setResolution(IMAGE_WIDTH, IMAGE_HEIGHT);
     intakeCamera.setFPS(IMAGE_FPS);
     UsbCameraSink = CameraServer.getVideo(intakeCamera);
+  
+    // cageCamera = CameraServer.startAutomaticCapture(1); // specs for Gazebo camera
+    // cageCamera.setResolution(IMAGE_WIDTH, IMAGE_HEIGHT);
+    // cageCamera.setFPS(IMAGE_FPS);
 
     wpi_detector = new AprilTagDetector();
     try{

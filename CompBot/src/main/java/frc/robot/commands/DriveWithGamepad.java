@@ -21,7 +21,7 @@ public class DriveWithGamepad extends Command {
   private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(.5,-10,0);
 
   boolean movemode = false;
-  public static double pVal = 3;
+  public static double pVal = 2;
   /**
    * Creates a new ExampleCommand.
    *
