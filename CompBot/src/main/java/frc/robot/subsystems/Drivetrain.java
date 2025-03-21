@@ -32,8 +32,6 @@ public class Drivetrain extends SubsystemBase {
   static double turnScale = 0.04;
   boolean m_precisionDriving = false;
 
-  SmartDashboard.putNumber("Power Value", m_turnPrecisionScale);
-
   double m_driveScale = 1;
   double m_turnScale = 1;
 
@@ -118,6 +116,11 @@ public class Drivetrain extends SubsystemBase {
     enable();
     m_gyro.reset();
     SmartDashboard.putBoolean("Field Oriented", m_fieldOriented);
+
+    SmartDashboard.putNumber("TurnScale", m_turnScale);
+    SmartDashboard.putNumber("TurnPrecisionScale", m_turnPrecisionScale);
+    SmartDashboard.putNumber("DriveScale", m_driveScale);
+    SmartDashboard.putNumber("DrivePrecisionScale", m_drivePrecisionScale);
   }
 
   public boolean enabled() {
@@ -349,6 +352,11 @@ public class Drivetrain extends SubsystemBase {
     //boolean fo=m_fieldOriented;
     SmartDashboard.putBoolean("Field Oriented", m_fieldOriented);
     SmartDashboard.putBoolean("PrecisionDriving", m_precisionDriving);
+
+    SmartDashboard.getNumber("TurnScale", m_turnScale);
+    SmartDashboard.putNumber("TurnPrecisionScale", m_turnPrecisionScale);
+    SmartDashboard.getNumber("DriveScale", m_driveScale);
+    SmartDashboard.putNumber("DrivePrecisionScale", m_drivePrecisionScale);
     //if(m_fieldOriented && !fo)
     //  m_gyro.reset();
     updateOdometry();
