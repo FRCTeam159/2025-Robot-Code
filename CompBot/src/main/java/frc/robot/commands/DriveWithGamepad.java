@@ -91,11 +91,12 @@ public class DriveWithGamepad extends Command {
     else if(m_controller.getPOV() == 180){
       m_drive.setSlowDriving(false);
     }
-
-    if (m_controller.getRightStickButtonPressed()){
-      m_drive.setFieldOriented(!m_drive.getFieldOriented()); 
     }
-  }
+
+  //   if (m_controller.getRightStickButtonPressed()){
+  //     m_drive.setFieldOriented(!m_drive.getFieldOriented()); 
+  //   }
+  // }
 
   // Called once the command ends or is interrupted.
   @Override

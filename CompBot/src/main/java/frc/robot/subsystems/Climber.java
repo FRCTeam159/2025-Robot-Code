@@ -31,8 +31,8 @@ public class Climber extends SubsystemBase {
   static double highValue = 1;// Rotations
   static double higestValue = 1;
   private double m_setPoint = 0;
-  double lowerPower = -3;
-  double raisePower = 3;
+  double lowerPower = -4;
+  double raisePower = 4;
   static public final double kRotToIn = 0.1;
   static public final double kGearRatio = 200;
   static public final double kInchesPerRot = kRotToIn / kGearRatio;
@@ -67,8 +67,6 @@ public class Climber extends SubsystemBase {
     m_ClimberMotor.setConfig(false, true, kInchesPerRot);
     m_ClimberMotor.setPosition(0);
     m_PID.setTolerance(0.2);
-
-    m_climbState.set(false);
   }
 
   public void raise() {
@@ -76,13 +74,12 @@ public class Climber extends SubsystemBase {
     System.out.println("Raising the Climber");
     if (DisableUpperLimit)
       setTargetHeight(higestValue);
-    else{
+    else {
       // m_ClimberMotor.setPosition(0);
       setTargetHeight(highValue);
     }
     reset();
     m_raising = true;
-    m_climbState.set(false);
   }
 
   public boolean raising() {
@@ -99,7 +96,6 @@ public class Climber extends SubsystemBase {
     setTargetHeight(lowValue);
     reset();
     m_lowering = true;
-    m_climbState.set(false);
   }
 
   public void stop() {
@@ -158,13 +154,13 @@ public class Climber extends SubsystemBase {
       return true;
     else
       return m_PID.atSetpoint();// || m_ClimberMotor.atLowerLimit();
-  } 
+  }
 
   public boolean climberLocked() {
     // return !noteSensor1.get();
-    double val= m_climberSensor.get()?1:0.0;
+    double val = m_climberSensor.get() ? 1 : 0.0;
     m_climberLocked = sensor1_averager.getAve(val);
-    return m_climberLocked>0.5?true:false;
+    return m_climberLocked > 0.5 ? true : false;
   }
 
   public void reset() {
@@ -181,32 +177,34 @@ public class Climber extends SubsystemBase {
     // This method will be called once per scheduler run
     setHeight();
     if (m_raising) {
-      if (m_ClimberMotor.atUpperLimit()){
+      if (m_ClimberMotor.atUpperLimit()) {
         stop();
         m_atUpperLimit = true;
-      }
-      else if (atUpperTarget()) {
+      } else if (atUpperTarget()) {
         m_atUpperTarget = true;
         m_raising = false;
-        m_climbState.set(true);
       }
     }
     if (m_lowering) {
-      if (m_ClimberMotor.atLowerLimit()){
+      if (m_ClimberMotor.atLowerLimit()) {
         stop();
         m_atLowerLimit = true;
-      }
-      else if (atLowerTarget()) {
+      } else if (atLowerTarget()) {
         m_atLowerTarget = true;
         m_lowering = false;
       }
     }
+
     boolean locked = climberLocked();
+    if (locked)
+      m_climbState.set(false);
+    else
+      m_climbState.set(true);
     SmartDashboard.putBoolean("UpperTarget", m_atUpperTarget);
     SmartDashboard.putBoolean("LowerTarget", m_atLowerTarget);
     SmartDashboard.putBoolean("UpperLimit", m_atUpperLimit);
     SmartDashboard.putBoolean("LowerLimit", m_atLowerLimit);
-    
+
     SmartDashboard.putBoolean("ClimberLocked", locked);
 
     SmartDashboard.getBoolean("DisableUpperLimit", DisableUpperLimit);

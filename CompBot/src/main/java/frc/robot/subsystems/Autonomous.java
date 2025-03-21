@@ -17,6 +17,7 @@ public class Autonomous {
     public static final int DRIVE_TO_TAG = 2;
     public static final int AUTO = 3;
     public static final int DRIVE_PATH = 4;
+    public static final int CENTER_AUTO = 5;
     static SendableChooser<Integer> m_autochooser = new SendableChooser<Integer>();
     double m_Target = 2.5;
     boolean m_center = false;
@@ -29,11 +30,12 @@ public class Autonomous {
         m_autochooser.addOption("Drive To Tag", DRIVE_TO_TAG);
         m_autochooser.addOption("Drive Path", DRIVE_PATH);
         m_autochooser.addOption("Drive Straight", DRIVE_STRAIGHT);
+        m_autochooser.addOption("Center Auto", CENTER_AUTO);
         SmartDashboard.putData(m_autochooser);
 
         SmartDashboard.putBoolean("Center", m_center);
         if (m_center)
-            m_Target = 1.5;
+            m_Target = 0.5;
         else
             m_Target = 2.5;
         SmartDashboard.getBoolean("Center", m_center);
@@ -64,6 +66,11 @@ public class Autonomous {
                         new Eject(m_Arm));
                         // new Eject(m_Arm),
                         // new goToStart(m_Arm));
+            case CENTER_AUTO:
+                return new SequentialCommandGroup(
+                        new GoToShelf(m_Arm),
+                        new DriveToTag(m_drivetrain),
+                        new Eject(m_Arm));
         }
 
         // driveToTag();
@@ -77,5 +84,6 @@ public class Autonomous {
     public void initAuto() {
         SmartDashboard.getBoolean("Center", m_center);
         TagDetector.setTargeting(true);
+        m_drivetrain.setAuto();
     }
 }

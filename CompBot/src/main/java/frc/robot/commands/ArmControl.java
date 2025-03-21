@@ -44,7 +44,9 @@ public class ArmControl extends Command {
       m_Arm.goToShelf();
     if (m_controller.getBButtonPressed())
       m_Arm.goToStart();
-      if (m_controller.getLeftBumperButtonPressed()) {
+    if (m_controller.getXButtonPressed())
+      m_Arm.goToClimberControl();
+    if (m_controller.getLeftBumperButtonPressed()) {
         if (m_Arm.rollersOn())
           m_Arm.stopRollers();
         else

@@ -29,6 +29,7 @@ public class Drivetrain extends SubsystemBase {
   static double m_drivePrecisionScale = 0.15;
   static double m_turnPrecisionScale = 0.02;
   static double driveScale = 1;
+  static double autoDriveScale = 0.9;
   static double turnScale = 0.04;
   boolean m_precisionDriving = false;
 
@@ -108,6 +109,10 @@ public class Drivetrain extends SubsystemBase {
       m_backLeft.setOffset(kBackLeftOffset);
     }
 
+  }
+
+  public void setAuto() {
+    driveScale = autoDriveScale;
   }
 
   public void init() {

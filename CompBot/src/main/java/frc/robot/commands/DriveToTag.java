@@ -18,7 +18,7 @@ public class DriveToTag extends Command {
   Drivetrain m_drive;
   PIDController m_drivePID;
   PIDController m_rotationPID;
-  double m_target=0.40;
+  double m_target=0.35;
   boolean m_started=false;
   DoubleSubscriber xSub;
   DoubleSubscriber ySub;
