@@ -28,7 +28,6 @@ Drivetrain m_drive;
   public DriveStraight(Drivetrain drive, double t) {
     NetworkTableInstance inst = NetworkTableInstance.getDefault();
     NetworkTable table = inst.getTable("datatable");
-    // Use addRequirements() here to declare subsystem dependencies
     m_PID = new PIDController(0.1, 0, 0);
     m_drive = drive;
     m_target = t;
@@ -44,7 +43,7 @@ Drivetrain m_drive;
   public void initialize() {
    // System.out.println("Drive straight target =15 " + m_target);
     m_PID.setSetpoint(m_target);
-    m_PID.setTolerance(0.05);
+    m_PID.setTolerance(0.15);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

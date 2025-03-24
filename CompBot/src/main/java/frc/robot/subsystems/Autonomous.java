@@ -13,32 +13,34 @@ public class Autonomous {
     Drivetrain m_drivetrain;
     TagDetector m_Detector;
     Arm m_Arm;
-    public static final int DRIVE_STRAIGHT = 1;
-    public static final int DRIVE_TO_TAG = 2;
-    public static final int AUTO = 3;
-    public static final int DRIVE_PATH = 4;
-    public static final int CENTER_AUTO = 5;
+    public static final int CENTER_AUTO = 1;
+    public static final int RIGHT_AUTO = 2;
+    public static final int LEFT_AUTO = 3;
+    public static final int DRIVE_TO_TAG = 4;
+    public static final int DRIVE_PATH = 5;
+    public static final int DRIVE_STRAIGHT = 6;
     static SendableChooser<Integer> m_autochooser = new SendableChooser<Integer>();
-    double m_Target = 2.5;
+    double m_sideTarget = 2;
+    double m_centerTarget = 1.4;
     boolean m_center = false;
 
     public Autonomous(Drivetrain drivetrain, TagDetector Detector, Arm arm) {
         m_drivetrain = drivetrain;
         m_Detector = Detector;
         m_Arm = arm;
-        m_autochooser.setDefaultOption("Auto",AUTO);
+        m_autochooser.setDefaultOption("Center Auto",CENTER_AUTO);
+        m_autochooser.addOption("Right Auto", RIGHT_AUTO);
+        m_autochooser.addOption("Left Auto", LEFT_AUTO);
         m_autochooser.addOption("Drive To Tag", DRIVE_TO_TAG);
         m_autochooser.addOption("Drive Path", DRIVE_PATH);
         m_autochooser.addOption("Drive Straight", DRIVE_STRAIGHT);
-        m_autochooser.addOption("Center Auto", CENTER_AUTO);
         SmartDashboard.putData(m_autochooser);
 
         SmartDashboard.putBoolean("Center", m_center);
-        if (m_center)
-            m_Target = 0.5;
-        else
-            m_Target = 2.5;
-        SmartDashboard.getBoolean("Center", m_center);
+        // if (m_center)
+        //     m_Target = 1.35;
+        // else
+        //     m_Target = 3.1;
                 // SmartDashboard.putNumber("target", m_driveStraitTarget);
     }
 
@@ -51,25 +53,28 @@ public class Autonomous {
             default:
                 return null;
             case DRIVE_STRAIGHT:
-                return new SequentialCommandGroup(new DriveStraight(m_drivetrain, m_Target));
+                return new SequentialCommandGroup(new DriveStraight(m_drivetrain, m_sideTarget));
             // return new SequentialCommandGroup(new Eject(m_Arm));
             case DRIVE_TO_TAG:
                 return new SequentialCommandGroup(new DriveToTag(m_drivetrain));
             case DRIVE_PATH:
-                return new SequentialCommandGroup(new DrivePath(m_drivetrain, m_Target));
-            case AUTO:
+                return new SequentialCommandGroup(new DrivePath(m_drivetrain, m_sideTarget));
+            case RIGHT_AUTO:
                 DriveStraight.setEndAtTag(true);
                 return new SequentialCommandGroup(
                         new GoToShelf(m_Arm),
-                        new DriveStraight(m_drivetrain, m_Target),
-                        new DriveToTag(m_drivetrain),
+                        new DriveStraight(m_drivetrain, m_sideTarget),
                         new Eject(m_Arm));
-                        // new Eject(m_Arm),
-                        // new goToStart(m_Arm));
+            case LEFT_AUTO:
+                DriveStraight.setEndAtTag(true);
+                return new SequentialCommandGroup(
+                        new GoToShelf(m_Arm),
+                        new DriveStraight(m_drivetrain, m_sideTarget),
+                        new Eject(m_Arm));
             case CENTER_AUTO:
                 return new SequentialCommandGroup(
                         new GoToShelf(m_Arm),
-                        new DriveToTag(m_drivetrain),
+                        new DriveStraight(m_drivetrain, m_centerTarget),
                         new Eject(m_Arm));
         }
 

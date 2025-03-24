@@ -31,8 +31,8 @@ public class Climber extends SubsystemBase {
   static double highValue = 1;// Rotations
   static double higestValue = 1;
   private double m_setPoint = 0;
-  double lowerPower = -4;
-  double raisePower = 4;
+  double lowerPower = -8;
+  double raisePower = 8;
   static public final double kRotToIn = 0.1;
   static public final double kGearRatio = 200;
   static public final double kInchesPerRot = kRotToIn / kGearRatio;
