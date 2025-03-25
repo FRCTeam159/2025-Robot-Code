@@ -53,6 +53,7 @@ public class Arm extends SubsystemBase {
   boolean m_intaking = false;
   double intakeValue = 5;
   double ejectValue = -3;
+  private static double pVal = 1;
 
   DigitalInput m_coralSensor1 = new DigitalInput(1);
   DigitalInput m_coralSensor2 = new DigitalInput(0);
@@ -68,6 +69,8 @@ public class Arm extends SubsystemBase {
   Averager sensor2_averager = new Averager(5);
   boolean useAltEncoder = true;
   boolean m_sensorEnable = true;
+
+  double rollSpeed = pVal;
 
   Timer m_timer = new Timer();
 
@@ -89,6 +92,9 @@ public class Arm extends SubsystemBase {
       m_PID.setTolerance(2);
       m_PID.reset();
     }
+
+    SmartDashboard.putNumber("Roll Speed", rollSpeed);
+
     // SmartDashboard.putNumber("NavX", 0);
     SmartDashboard.putString("Arm", "Inactive");
     m_topRollerMotor = new Motor(topRollers, false);
@@ -202,7 +208,8 @@ public class Arm extends SubsystemBase {
   }
 
   public void setRollers() {
-    double rollerSpeed = 0;
+    double bottomRollerSpeed = 0;
+    double topRollerSpeed = 0;
     if (m_intake) {
       // if (coralAtIntake() && m_sensorEnable)
       // stopRollers();
@@ -214,10 +221,15 @@ public class Arm extends SubsystemBase {
         if (m_timer.get() >= 0.5) {
           m_intaking = false;
           stopRollers();
-        } else
-          rollerSpeed = intakeValue;
-      } else
-        rollerSpeed = intakeValue;
+        } else{
+          bottomRollerSpeed = intakeValue;
+          topRollerSpeed = intakeValue * rollSpeed;
+        }
+      } else{
+        bottomRollerSpeed = intakeValue;
+        topRollerSpeed = intakeValue * rollSpeed;
+      }
+
     }
 
     else if (m_eject) {
@@ -229,15 +241,21 @@ public class Arm extends SubsystemBase {
         if (m_timer.get() >= 0.8) {
           m_ejecting = false;
           stopRollers();
-        } else
-          rollerSpeed = ejectValue;
-      } else
-        rollerSpeed = ejectValue;
-    } else
-      rollerSpeed = 0;
-    m_topRollerMotor.setVoltage(rollerSpeed);
-    m_bottomRollerMotor.setVoltage(-rollerSpeed);
-    String s = String.format("Eject:%b Intake:%b Speed:%1.2f", m_eject, m_intake, rollerSpeed);
+        } else{
+          bottomRollerSpeed = ejectValue;
+          topRollerSpeed = ejectValue;
+        }
+      } else{
+        bottomRollerSpeed = ejectValue;
+        topRollerSpeed = ejectValue;
+      }
+    } else{
+      bottomRollerSpeed = 0;
+      topRollerSpeed = 0;
+    }
+    m_topRollerMotor.setVoltage(topRollerSpeed);
+    m_bottomRollerMotor.setVoltage(-bottomRollerSpeed);
+    String s = String.format("Eject:%b Intake:%b TopSpeed:%1.2f BottomSpeed:%1.2f", m_eject, m_intake, topRollerSpeed, bottomRollerSpeed);
     SmartDashboard.putString("Rollers", s);
   }
 
@@ -271,19 +289,19 @@ public class Arm extends SubsystemBase {
     setNewTarget(climberControlAngle - START_ANGLE);
   }
 
-  public double getBoreEncoderVal() {
-    double value = m_dutyCycleEncoder.get();
-    double pStart = 0.9629357490733937;
-    double pGround = 0.3068258326706458;
-    double m = (startAngle - groundAngle) / (pStart - pGround); // max and min of the arm 90 and 210 over the max and
-                                                                // min of the POT to find the slope a equation
-    double b = startAngle - (m * pStart);
-    double voltage = value;
-    double x = voltage * m + b;
-    // System.out.println("RawBore: " + value);
+  // public double getBoreEncoderVal() {
+  //   double value = m_dutyCycleEncoder.get();
+  //   double pStart = 0.9629357490733937;
+  //   double pGround = 0.3068258326706458;
+  //   double m = (startAngle - groundAngle) / (pStart - pGround); // max and min of the arm 90 and 210 over the max and
+  //                                                               // min of the POT to find the slope a equation
+  //   double b = startAngle - (m * pStart);
+  //   double voltage = value;
+  //   double x = voltage * m + b;
+  //   // System.out.println("RawBore: " + value);
 
-    return x - START_ANGLE;
-  }
+  //   return x - START_ANGLE;
+  // }
 
   @Override
   public void periodic() {
@@ -293,6 +311,7 @@ public class Arm extends SubsystemBase {
     SmartDashboard.putBoolean("CoralDetected", coral);
     SmartDashboard.putNumber("Pot Value", getPotentiometerValue() + START_ANGLE);
     SmartDashboard.putBoolean("SensorAutoStop", m_sensorEnable);
+    pVal = SmartDashboard.getNumber("Roll Speed", 1);
     // SmartDashboard.putNumber("BoreEncoder", getBoreEncoderVal() + START_ANGLE);
     m_coralState.set(notCoral);
     setRollers();
@@ -302,14 +321,14 @@ public class Arm extends SubsystemBase {
   // 3.08 start/90
   // 3.405 ground
   public double getPotentiometerValue() {
-    double pStart = 2.0678708820000002;
-    double pGround = 2.403564207;
+    double pStart = 2.045898228;
+    double pGround = 2.365722414;
     double m = (startAngle - groundAngle) / (pStart - pGround); // max and min of the arm 90 and 210 over the max and
                                                                 // min of the POT to find the slope a equation
     double b = startAngle - (m * pStart);
     double voltage = potentiometerInput.getVoltage();
     double x = voltage * m + b;
-    // System.out.println("RawPot: " + voltage);
+    //System.out.println("RawPot: " + voltage);
 
     return x - START_ANGLE;
   }
