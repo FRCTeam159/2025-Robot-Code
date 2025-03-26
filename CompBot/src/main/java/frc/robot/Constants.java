@@ -13,7 +13,7 @@ public class Constants {
     public static final int kFl_Drive = 3;
     public static final int kFl_Turn = 8;
     public static final int kFl_Encoder = 12;
-    public static final double kFrontLeftOffset = -0.385010;
+    public static final double kFrontLeftOffset = -0.391357;
 
     public static final int kFr_Drive = 7;
     public static final int kFr_Turn = 6;
@@ -23,12 +23,12 @@ public class Constants {
     public static final int kBl_Drive = 2;
     public static final int kBl_Turn = 4;
     public static final int kBl_Encoder = 9;
-    public static final double kBackLeftOffset = 0.252197;
+    public static final double kBackLeftOffset = 0.247559;
 
     public static final int kBr_Drive = 5;
     public static final int kBr_Turn = 1;
     public static final int kBr_Encoder = 11;
-    public static final double kBackRightOffset = 0.175049;
+    public static final double kBackRightOffset = 0.174316;
  
     public static final int kBottomRollers = 13; // 15
     public static final int kTopRollers = 14; // 14

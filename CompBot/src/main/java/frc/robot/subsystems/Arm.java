@@ -27,7 +27,7 @@ public class Arm extends SubsystemBase {
 
   double last_heading = 0;
   static double shelfAngle = 126;
-  static double groundAngle = 205;
+  static double groundAngle = 191;
   static double climberControlAngle = 105;
   static double startAngle = 80;
   static boolean useTrapPID = false;
@@ -53,7 +53,6 @@ public class Arm extends SubsystemBase {
   boolean m_intaking = false;
   double intakeValue = 5;
   double ejectValue = -3;
-  private static double pVal = 1;
 
   DigitalInput m_coralSensor1 = new DigitalInput(1);
   DigitalInput m_coralSensor2 = new DigitalInput(0);
@@ -67,10 +66,10 @@ public class Arm extends SubsystemBase {
   double m_coralAtIntake2 = 0;
   Averager sensor1_averager = new Averager(5);
   Averager sensor2_averager = new Averager(5);
-  boolean useAltEncoder = true;
+  boolean useAltEncoder = false;
   boolean m_sensorEnable = true;
 
-  double rollSpeed = pVal;
+  public static double rollSpeed = 1;
 
   Timer m_timer = new Timer();
 
@@ -93,7 +92,7 @@ public class Arm extends SubsystemBase {
       m_PID.reset();
     }
 
-    SmartDashboard.putNumber("Roll Speed", rollSpeed);
+    SmartDashboard.putNumber("Roll Speed", 1);
 
     // SmartDashboard.putNumber("NavX", 0);
     SmartDashboard.putString("Arm", "Inactive");
@@ -311,7 +310,7 @@ public class Arm extends SubsystemBase {
     SmartDashboard.putBoolean("CoralDetected", coral);
     SmartDashboard.putNumber("Pot Value", getPotentiometerValue() + START_ANGLE);
     SmartDashboard.putBoolean("SensorAutoStop", m_sensorEnable);
-    pVal = SmartDashboard.getNumber("Roll Speed", 1);
+    rollSpeed = SmartDashboard.getNumber("Roll Speed", 1);
     // SmartDashboard.putNumber("BoreEncoder", getBoreEncoderVal() + START_ANGLE);
     m_coralState.set(notCoral);
     setRollers();
@@ -321,7 +320,7 @@ public class Arm extends SubsystemBase {
   // 3.08 start/90
   // 3.405 ground
   public double getPotentiometerValue() {
-    double pStart = 2.045898228;
+    double pStart = 1.983642375;
     double pGround = 2.365722414;
     double m = (startAngle - groundAngle) / (pStart - pGround); // max and min of the arm 90 and 210 over the max and
                                                                 // min of the POT to find the slope a equation

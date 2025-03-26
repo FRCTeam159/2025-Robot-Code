@@ -43,7 +43,7 @@ Drivetrain m_drive;
   public void initialize() {
    // System.out.println("Drive straight target =15 " + m_target);
     m_PID.setSetpoint(m_target);
-    m_PID.setTolerance(0.15);
+    m_PID.setTolerance(0.1);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

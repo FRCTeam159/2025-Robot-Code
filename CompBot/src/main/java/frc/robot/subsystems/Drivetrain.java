@@ -173,7 +173,7 @@ public class Drivetrain extends SubsystemBase {
     return m_fieldOriented;
   }
 
-  private void resetPositions() {
+  public void resetPositions() {
     for (int i = 0; i < modules.length; i++)
       modules[i].reset();
     updatePositions();

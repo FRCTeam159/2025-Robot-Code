@@ -14,14 +14,13 @@ public class Autonomous {
     TagDetector m_Detector;
     Arm m_Arm;
     public static final int CENTER_AUTO = 1;
-    public static final int RIGHT_AUTO = 2;
-    public static final int LEFT_AUTO = 3;
-    public static final int DRIVE_TO_TAG = 4;
-    public static final int DRIVE_PATH = 5;
-    public static final int DRIVE_STRAIGHT = 6;
+    public static final int SIDE_AUTO = 2;
+    public static final int DRIVE_TO_TAG = 3;
+    public static final int DRIVE_PATH = 4;
+    public static final int DRIVE_STRAIGHT = 5;
     static SendableChooser<Integer> m_autochooser = new SendableChooser<Integer>();
-    double m_sideTarget = 2;
-    double m_centerTarget = 1.4;
+    double m_sideTarget = 2.95;
+    double m_centerTarget = 1.25;
     boolean m_center = false;
 
     public Autonomous(Drivetrain drivetrain, TagDetector Detector, Arm arm) {
@@ -29,8 +28,7 @@ public class Autonomous {
         m_Detector = Detector;
         m_Arm = arm;
         m_autochooser.setDefaultOption("Center Auto",CENTER_AUTO);
-        m_autochooser.addOption("Right Auto", RIGHT_AUTO);
-        m_autochooser.addOption("Left Auto", LEFT_AUTO);
+        m_autochooser.addOption("Side Auto", SIDE_AUTO);
         m_autochooser.addOption("Drive To Tag", DRIVE_TO_TAG);
         m_autochooser.addOption("Drive Path", DRIVE_PATH);
         m_autochooser.addOption("Drive Straight", DRIVE_STRAIGHT);
@@ -59,13 +57,7 @@ public class Autonomous {
                 return new SequentialCommandGroup(new DriveToTag(m_drivetrain));
             case DRIVE_PATH:
                 return new SequentialCommandGroup(new DrivePath(m_drivetrain, m_sideTarget));
-            case RIGHT_AUTO:
-                DriveStraight.setEndAtTag(true);
-                return new SequentialCommandGroup(
-                        new GoToShelf(m_Arm),
-                        new DriveStraight(m_drivetrain, m_sideTarget),
-                        new Eject(m_Arm));
-            case LEFT_AUTO:
+            case SIDE_AUTO:
                 DriveStraight.setEndAtTag(true);
                 return new SequentialCommandGroup(
                         new GoToShelf(m_Arm),
