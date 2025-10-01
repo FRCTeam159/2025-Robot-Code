@@ -1,100 +1,104 @@
-<xml version="1.0">
-<dashboard>
-	<widget field="SensorAutoStop" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
-		<location x="4" y="170"/>
-	</widget>
-	<widget field="PrecisionDriving" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
-		<location x="182" y="75"/>
-	</widget>
-	<widget field="Field Oriented" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
-		<location x="184" y="56"/>
-	</widget>
-	<widget field="DisableUpperLimit" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
-		<location x="4" y="153"/>
-	</widget>
-	<widget field="Center" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
-		<location x="185" y="42"/>
-	</widget>
-	<widget field="Show Tags" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.CheckBox">
-		<location x="185" y="24"/>
-	</widget>
-	<widget field="CoralDetected" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
-		<location x="4" y="87"/>
-	</widget>
-	<widget field="ClimberLocked" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
-		<location x="402" y="89"/>
-		<width>122</width>
-		<height>98</height>
-	</widget>
-	<widget field="UpperTarget" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
-		<location x="5" y="123"/>
-	</widget>
-	<widget field="LowerTarget" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
-		<location x="76" y="124"/>
-	</widget>
-	<widget field="UpperLimit" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
-		<location x="5" y="109"/>
-	</widget>
-	<widget field="LowerLimit" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
-		<location x="76" y="110"/>
-	</widget>
-	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.CameraServerViewer">
-		<location x="-1" y="192"/>
-		<width>674</width>
-		<height>498</height>
-		<property name="Camera Choice" value=""/>
-	</static-widget>
-	<widget field="SendableChooser[0]" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
-		<location x="290" y="76"/>
-	</widget>
-	<widget field="Rollers" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="353" y="29"/>
-		<width>214</width>
-	</widget>
-	<widget field="Pot Value" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="4" y="64"/>
-	</widget>
-	<widget field="Gyro" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="4" y="25"/>
-	</widget>
-	<widget field="Pose" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="186" y="4"/>
-		<width>195</width>
-	</widget>
-	<widget field="Tags" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="315" y="58"/>
-		<width>343</width>
-		<height>19</height>
-	</widget>
-	<widget field="DrivePrecisionScale" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="530" y="109"/>
-		<width>141</width>
-	</widget>
-	<widget field="DriveScale" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="571" y="127"/>
-		<width>100</width>
-	</widget>
-	<widget field="TurnPrecisionScale" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="532" y="145"/>
-		<width>136</width>
-	</widget>
-	<widget field="TurnScale" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="573" y="162"/>
-		<width>95</width>
-	</widget>
-	<widget field="Arm" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="5" y="5"/>
-		<width>127</width>
-	</widget>
-	<widget field="Climber" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="424" y="4"/>
-		<width>241</width>
-	</widget>
-	<widget field="Power Value" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="5" y="44"/>
-		<width>109</width>
-	</widget>
-</dashboard>
-<live-window>
-</live-window>
-</xml>
+plugins {
+    id "java"
+    id "edu.wpi.first.GradleRIO" version "2025.1.1"
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+def ROBOT_MAIN_CLASS = "frc.robot.Main"
+
+// Define my targets (RoboRIO) and artifacts (deployable files)
+// This is added by GradleRIO's backing project DeployUtils.
+deploy {
+    targets {
+        roborio(getTargetTypeClass('RoboRIO')) {
+            // Team number is loaded either from the .wpilib/wpilib_preferences.json
+            // or from command line. If not found an exception will be thrown.
+            // You can use getTeamOrDefault(team) instead of getTeamNumber if you
+            // want to store a team number in this file.
+            team = project.frc.getTeamNumber()
+            debug = project.frc.getDebugOrDefault(false)
+
+            artifacts {
+                // First part is artifact name, 2nd is artifact type
+                // getTargetTypeClass is a shortcut to get the class type using a string
+
+                frcJava(getArtifactTypeClass('FRCJavaArtifact')) {
+                }
+
+                // Static files artifact
+                frcStaticFileDeploy(getArtifactTypeClass('FileTreeArtifact')) {
+                    files = project.fileTree('src/main/deploy')
+                    directory = '/home/lvuser/deploy'
+                    deleteOldFiles = false // Change to true to delete files on roboRIO that no
+                                           // longer exist in deploy directory of this project
+                }
+            }
+        }
+    }
+}
+
+def deployArtifact = deploy.targets.roborio.artifacts.frcJava
+
+// Set to true to use debug for JNI.
+wpi.java.debugJni = false
+
+// Set this to true to enable desktop support.
+def includeDesktopSupport = true
+
+// Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
+// Also defines JUnit 5.
+dependencies {
+    annotationProcessor wpi.java.deps.wpilibAnnotations()
+    implementation wpi.java.deps.wpilib()
+    implementation wpi.java.vendor.java()
+
+    roborioDebug wpi.java.deps.wpilibJniDebug(wpi.platforms.roborio)
+    roborioDebug wpi.java.vendor.jniDebug(wpi.platforms.roborio)
+
+    roborioRelease wpi.java.deps.wpilibJniRelease(wpi.platforms.roborio)
+    roborioRelease wpi.java.vendor.jniRelease(wpi.platforms.roborio)
+
+    nativeDebug wpi.java.deps.wpilibJniDebug(wpi.platforms.desktop)
+    nativeDebug wpi.java.vendor.jniDebug(wpi.platforms.desktop)
+    simulationDebug wpi.sim.enableDebug()
+
+    nativeRelease wpi.java.deps.wpilibJniRelease(wpi.platforms.desktop)
+    nativeRelease wpi.java.vendor.jniRelease(wpi.platforms.desktop)
+    simulationRelease wpi.sim.enableRelease()
+
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.1'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    useJUnitPlatform()
+    systemProperty 'junit.jupiter.extensions.autodetection.enabled', 'true'
+}
+
+// Simulation configuration (e.g. environment variables).
+wpi.sim.addGui().defaultEnabled = true
+wpi.sim.addDriverstation()
+
+// Setting up my Jar File. In this case, adding all libraries into the main jar ('fat jar')
+// in order to make them all available at runtime. Also adding the manifest so WPILib
+// knows where to look for our Robot Class.
+jar {
+    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+    from sourceSets.main.allSource
+    manifest edu.wpi.first.gradlerio.GradleRIOPlugin.javaManifest(ROBOT_MAIN_CLASS)
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}
+
+// Configure jar and deploy tasks
+deployArtifact.jarTask = jar
+wpi.java.configureExecutableTasks(jar)
+wpi.java.configureTestTasks(test)
+
+// Configure string concat to always inline compile
+tasks.withType(JavaCompile) {
+    options.compilerArgs.add '-XDstringConcat=inline'
+}

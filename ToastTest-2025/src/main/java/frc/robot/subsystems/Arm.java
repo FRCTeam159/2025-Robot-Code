@@ -307,7 +307,7 @@ public class Arm extends SubsystemBase {
       angle = m_armPosMotor.getPosition();
     angle = unwrap(last_heading, angle);
     last_heading = angle;
-    System.out.println(getPotentiometerValue() + " " + m_armPosMotor.getPosition());
+    //System.out.println(getPotentiometerValue() + " " + m_armPosMotor.getPosition());
     return angle;
   }
 

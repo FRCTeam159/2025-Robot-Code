@@ -8,10 +8,10 @@ package frc.robot;
 public class Constants {
 
     public enum test {
-        CLIMBER, ONEROLLER, TWOROLLERS, ARMGYRO, ARMMOTOR
+        CLIMBER, ONEROLLER, TWOROLLERS, ARMGYRO, ARMMOTOR, NONE
     }
 
-    public static test testMode = test.CLIMBER;
+    public static test testMode = test.NONE;
 
     public static final double kBackRightOffset = -0.169434;
     public static final double kBackLeftOffset = -0.215332;

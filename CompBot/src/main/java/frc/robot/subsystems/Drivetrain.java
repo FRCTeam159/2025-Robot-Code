@@ -122,10 +122,10 @@ public class Drivetrain extends SubsystemBase {
     m_gyro.reset();
     SmartDashboard.putBoolean("Field Oriented", m_fieldOriented);
 
-    SmartDashboard.putNumber("TurnScale", m_turnScale);
-    SmartDashboard.putNumber("TurnPrecisionScale", m_turnPrecisionScale);
-    SmartDashboard.putNumber("DriveScale", m_driveScale);
-    SmartDashboard.putNumber("DrivePrecisionScale", m_drivePrecisionScale);
+    // SmartDashboard.putNumber("TurnScale", m_turnScale);
+    // SmartDashboard.putNumber("TurnPrecisionScale", m_turnPrecisionScale);
+    // SmartDashboard.putNumber("DriveScale", m_driveScale);
+    // SmartDashboard.putNumber("DrivePrecisionScale", m_drivePrecisionScale);
   }
 
   public boolean enabled() {
@@ -358,10 +358,10 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putBoolean("Field Oriented", m_fieldOriented);
     SmartDashboard.putBoolean("PrecisionDriving", m_precisionDriving);
 
-    SmartDashboard.getNumber("TurnScale", m_turnScale);
-    SmartDashboard.putNumber("TurnPrecisionScale", m_turnPrecisionScale);
-    SmartDashboard.getNumber("DriveScale", m_driveScale);
-    SmartDashboard.putNumber("DrivePrecisionScale", m_drivePrecisionScale);
+    // SmartDashboard.getNumber("TurnScale", m_turnScale);
+    // SmartDashboard.putNumber("TurnPrecisionScale", m_turnPrecisionScale);
+    // SmartDashboard.getNumber("DriveScale", m_driveScale);
+    // SmartDashboard.putNumber("DrivePrecisionScale", m_drivePrecisionScale);
     //if(m_fieldOriented && !fo)
     //  m_gyro.reset();
     updateOdometry();

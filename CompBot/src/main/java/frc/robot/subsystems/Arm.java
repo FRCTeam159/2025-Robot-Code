@@ -69,7 +69,7 @@ public class Arm extends SubsystemBase {
   boolean useAltEncoder = false;
   boolean m_sensorEnable = true;
 
-  public static double rollSpeed = 1;
+  public static double topRollSpeed = 1;
 
   Timer m_timer = new Timer();
 
@@ -87,7 +87,7 @@ public class Arm extends SubsystemBase {
       m_tPID.setTolerance(2);
       m_tPID.reset(0);
     } else {
-      m_PID = new PIDController(0.005, 0, 0);
+      m_PID = new PIDController(0.008, 0, 0);
       m_PID.setTolerance(2);
       m_PID.reset();
     }
@@ -222,11 +222,11 @@ public class Arm extends SubsystemBase {
           stopRollers();
         } else{
           bottomRollerSpeed = intakeValue;
-          topRollerSpeed = intakeValue * rollSpeed;
+          topRollerSpeed = intakeValue * topRollSpeed;
         }
       } else{
         bottomRollerSpeed = intakeValue;
-        topRollerSpeed = intakeValue * rollSpeed;
+        topRollerSpeed = intakeValue * topRollSpeed;
       }
 
     }
@@ -310,7 +310,7 @@ public class Arm extends SubsystemBase {
     SmartDashboard.putBoolean("CoralDetected", coral);
     SmartDashboard.putNumber("Pot Value", getPotentiometerValue() + START_ANGLE);
     SmartDashboard.putBoolean("SensorAutoStop", m_sensorEnable);
-    rollSpeed = SmartDashboard.getNumber("Roll Speed", 1);
+    topRollSpeed = SmartDashboard.getNumber("Roll Speed", 1);
     // SmartDashboard.putNumber("BoreEncoder", getBoreEncoderVal() + START_ANGLE);
     m_coralState.set(notCoral);
     setRollers();

@@ -8,6 +8,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.IntegerSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.TagDetector;
@@ -23,6 +24,8 @@ Drivetrain m_drive;
   static boolean m_endAtTag = false;
 
   IntegerSubscriber nSub;
+
+  Timer m_timer = new Timer();
 
 
   public DriveStraight(Drivetrain drive, double t) {
@@ -44,6 +47,8 @@ Drivetrain m_drive;
    // System.out.println("Drive straight target =15 " + m_target);
     m_PID.setSetpoint(m_target);
     m_PID.setTolerance(0.1);
+    m_timer.start();
+    m_timer.reset();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -64,12 +69,16 @@ Drivetrain m_drive;
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (m_endAtTag) {
-      long n = nSub.get();
-      if (n>0) {
-        System.out.println("April tag detected");
-        return true;
-      }
+    // if (m_endAtTag) {
+    //   long n = nSub.get();
+    //   if (n>0) {
+    //     System.out.println("April tag detected");
+    //     return true;
+    //   }
+    // }
+    if(m_timer.get() > 14.8){
+      System.out.println("Time out");
+      return true;
     }
     boolean atTarget = m_PID.atSetpoint();
     if(atTarget)

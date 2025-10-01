@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.DriveToTag;
 import frc.robot.commands.Eject;
 import frc.robot.commands.GoToShelf;
+import frc.robot.commands.GoToZero;
 import frc.robot.commands.DrivePath;
 import frc.robot.commands.DriveStraight;
 
@@ -19,7 +20,7 @@ public class Autonomous {
     public static final int DRIVE_PATH = 4;
     public static final int DRIVE_STRAIGHT = 5;
     static SendableChooser<Integer> m_autochooser = new SendableChooser<Integer>();
-    double m_sideTarget = 2.95;
+    double m_sideTarget = 3.159;
     double m_centerTarget = 1.25;
     boolean m_center = false;
 
@@ -62,12 +63,14 @@ public class Autonomous {
                 return new SequentialCommandGroup(
                         new GoToShelf(m_Arm),
                         new DriveStraight(m_drivetrain, m_sideTarget),
-                        new Eject(m_Arm));
+                        new Eject(m_Arm),
+                        new GoToZero(m_Arm));
             case CENTER_AUTO:
                 return new SequentialCommandGroup(
                         new GoToShelf(m_Arm),
                         new DriveStraight(m_drivetrain, m_centerTarget),
-                        new Eject(m_Arm));
+                        new Eject(m_Arm),
+                        new GoToZero(m_Arm));
         }
 
         // driveToTag();
